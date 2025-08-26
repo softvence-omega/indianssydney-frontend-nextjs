@@ -27,7 +27,7 @@ const AIRecommendations = () => {
     <div>
       <h2 className="text-lg font-medium mb-4">Recommendation</h2>
       <p className="text-sm text-gray-600 mb-6">
-        Select which areas of the news you'd like to explore. This will help
+        Select which areas of the news you&apos;d like to explore. This will help
         refine your preferences.
       </p>
 

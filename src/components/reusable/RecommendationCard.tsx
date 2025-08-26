@@ -1,7 +1,6 @@
 // RecommendationCard.tsx
+import Image from "next/image";
 import React from "react";
-
-
 
 interface RecommendationCardProps {
   id: string;
@@ -29,7 +28,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
       }`}
     >
       <div className="flex items-start justify-between">
-        <img src={icon} alt="" />
+        <Image src={icon} alt="" />
         <input
           type="checkbox"
           checked={isSelected}
