@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 // ✅ Schema with password confirmation
 const signUpSchema = z
@@ -66,7 +67,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
         <div className="grid md:grid-cols-12 max-w-full md:gap-6 lg:items-center">
           {/* Left Image */}
           <div className="hidden md:block md:col-span-7">
-            <img
+            <Image
               src={signUpImg}
               alt="Register"
               className="w-full h-full object-cover"

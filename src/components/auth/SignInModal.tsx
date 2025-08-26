@@ -18,6 +18,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux"; // Import useDispatch
 import { login } from "@/store/Slices/AuthSlice/authSlice"; // Adjust path to your authSlice
+import Image from "next/image";
 
 // ✅ Schema
 const signInSchema = z.object({
@@ -74,7 +75,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
         <div className="grid md:grid-cols-12 max-w-full md:gap-6 lg:items-center">
           {/* Left Image */}
           <div className="hidden md:block md:col-span-7">
-            <img
+            <Image
               src={signInImg}
               alt="Sign In"
               className="w-full h-full object-cover"

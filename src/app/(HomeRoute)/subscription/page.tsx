@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import CommonPadding from "@/common/CommonPadding";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import paypalImg from "@/assets/other/paypal.svg";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import Image from "next/image";
 
 const benefits = [
   {
@@ -99,7 +100,7 @@ const Subscription = () => {
                 className="bg-blue-primary text-white hover:bg-blue-primary/90 border-blue-primary px-8 py-2"
               />
               <Button className="bg-transparent text-white hover:bg-white px-8 border-blue-primary sm:px-4 md:px-6 py-2 rounded-none text-sm cursor-pointer border-2">
-                <img src={paypalImg} alt="PayPal" />
+                <Image src={paypalImg} alt="PayPal" width={60} height={10} />
               </Button>
             </div>
 
@@ -119,7 +120,11 @@ const Subscription = () => {
                     <strong className="text-lg md:text-2xl font-semibold">
                       {benefit.title}
                     </strong>
-                    <br /><p className="text-sm md:text-base"> {benefit.description}</p>
+                    <br />
+                    <p className="text-sm md:text-base">
+                      {" "}
+                      {benefit.description}
+                    </p>
                   </li>
                 ))}
               </ul>

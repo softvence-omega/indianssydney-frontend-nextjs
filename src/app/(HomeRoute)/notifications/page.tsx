@@ -64,33 +64,37 @@ const Notifications = () => {
             </div>
 
             {/* Notifications List */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               {notificationsData.map((notification, index) => (
                 <div
                   key={index}
-                  className="flex justify-between items-start border-b border-gray-200 py-4"
+                  className="flex justify-between items-center border-b border-gray-200 py-4"
                 >
                   {/* Left Section - Article Details */}
 
                   <div>
                     <p className="text-xs text-gray-500">
-                      {notification.author}
+                     {notification.status === "saved"
+                        ? "You have saved this article"
+                        : notification.status === "pending"
+                        ? "You've submitted an article"
+                        : "You're submitted article has been rejected"}
                     </p>
-                    <p className="text-sm font-semibold">
+                    <p className="text-sm font-semibold py-1">
                       {notification.title}
                     </p>
                     <p className="text-xs text-gray-400">{notification.date}</p>
                   </div>
 
                   {/* Right Section - Status and Action */}
-                  <div className="flex flex-col items-end">
+                  <div className="flex">
                     <span
-                      className={`text-xs py-1 px-3 rounded-full ${
+                      className={`text-xs py-1 px-3 text-white ${
                         notification.status === "saved"
-                          ? "bg-green-200 text-green-700"
+                          ? "bg-blue-primary"
                           : notification.status === "pending"
-                          ? "bg-yellow-200 text-yellow-700"
-                          : "bg-red-200 text-red-700"
+                          ? "bg-[#8D9B90] "
+                          : "bg-brick-red "
                       }`}
                     >
                       {notification.status === "saved"
@@ -99,9 +103,7 @@ const Notifications = () => {
                         ? "Pending"
                         : "Rejected"}
                     </span>
-                    <button className="text-sm text-blue-600 hover:underline mt-2">
-                      View Details
-                    </button>
+                  
                   </div>
                 </div>
               ))}
