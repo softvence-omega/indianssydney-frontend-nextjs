@@ -14,7 +14,7 @@ const fetchArticleData = async (articleId: string): Promise<FormData> => {
       subCategory: "Finance",
       title: "Volkswagen Profits Tumble as Tariffs Weigh on Auto Industry",
       subTitle: "German automaker faces challenges amid trade disputes",
-      imageOrVideo: null,
+      imageOrVideo: "https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?q=80&w=400&auto=format&fit=crop",
       imageCaption: "A modern Volkswagen car design",
       shortQuote: "Trade tensions are reshaping the auto industry.",
       paragraph:
@@ -31,7 +31,7 @@ const fetchArticleData = async (articleId: string): Promise<FormData> => {
         },
         additional_1756283991656: {
           type: "image/video",
-          value: "kjoksjof",
+          value: "https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?q=80&w=400&auto=format&fit=crop",
         },
       },
     },
