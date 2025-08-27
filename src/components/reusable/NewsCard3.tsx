@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 type NewsCardProps = {
@@ -22,9 +23,7 @@ const NewsCard3: React.FC<NewsCardProps> = ({
   return (
     <div className="grid  gap-6">
       {/* Image Section */}
-      <div
-        className={`w-full overflow-hidden ${imgHeight}`}
-      >
+      <div className={`w-full overflow-hidden ${imgHeight}`}>
         <img src={image} alt={title} className="w-full h-full object-cover" />
       </div>
 
