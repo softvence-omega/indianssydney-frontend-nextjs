@@ -28,7 +28,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
       }`}
     >
       <div className="flex items-start justify-between">
-        <Image src={icon} alt="" />
+        <img src={icon} alt="" />
         <input
           type="checkbox"
           checked={isSelected}

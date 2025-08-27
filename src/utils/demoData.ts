@@ -36,7 +36,7 @@ export const newsItems = [
   {
     id: "3",
     image:
-      "https://images.unsplash.com/photo-1527169402691-a0973fb750bf?q=80&w=400&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1508519829430-40f7d3d161b4?q=80&w=700&auto=format&fit=crop",
     tag: "CULTURE",
     category: "culture-identity",
     subcategory: "festivals-traditions",
@@ -191,7 +191,7 @@ export const newsItems = [
   {
     id: "12",
     image:
-      "https://images.unsplash.com/photo-1603052875619-08a239f95b3f?q=80&w=400",
+      "https://images.unsplash.com/photo-1576078361289-d7c4da40e7cd?q=80&w=870&auto=format&fit=crop",
     tag: "POLITICS",
     category: "news-current-affairs",
     subcategory: "politics-policy",
@@ -226,7 +226,7 @@ export const newsItems = [
   {
     id: "14",
     image:
-      "https://images.unsplash.com/photo-1605902711622-cfb43c4437d5?q=80&w=400",
+      "https://images.unsplash.com/photo-1537511446984-935f663eb1f4?q=80&w=870&auto=format&fit=crop",
     tag: "FINANCE",
     category: "business-innovation",
     subcategory: "investing-finance",
@@ -245,7 +245,7 @@ export const newsItems = [
   {
     id: "15",
     image:
-      "https://images.unsplash.com/photo-1527169402691-a0973fb750bf?q=80&w=400",
+      "https://images.unsplash.com/photo-1508519829430-40f7d3d161b4?q=80&w=770&auto=format&fit=crop",
     tag: "CULTURE",
     category: "culture-identity",
     subcategory: "festivals-traditions",
@@ -261,7 +261,7 @@ export const newsItems = [
   {
     id: "16",
     image:
-      "https://images.unsplash.com/photo-1602313180549-1ef1a3c3ba34?q=80&w=400",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=970&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     tag: "HERITAGE",
     category: "culture-identity",
     subcategory: "language-heritage",
@@ -296,7 +296,7 @@ export const newsItems = [
   {
     id: "18",
     image:
-      "https://images.unsplash.com/photo-1543353071-087092ec393f?q=80&w=400",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     tag: "CUISINE",
     category: "food-flavours",
     subcategory: "recipes-from-home",
@@ -330,7 +330,7 @@ export const newsItems = [
   {
     id: "20",
     image:
-      "https://images.unsplash.com/photo-1536548664027-5d5cd6b3f9b3?q=80&w=400",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     tag: "MEDITATION",
     category: "/mind-wellbeing",
     subcategory: "/mind-wellbeing/mindfulness-meditation",
@@ -440,7 +440,7 @@ export const newsItems = [
   {
     id: "26",
     image:
-      "https://images.unsplash.com/photo-1516382799247-86b58b48e1f9?q=80&w=400",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     tag: "OPINION",
     category: "/voices-perspectives",
     subcategory: "/voices-perspectives/opinion-editorial",

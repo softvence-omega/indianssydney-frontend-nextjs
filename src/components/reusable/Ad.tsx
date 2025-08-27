@@ -1,9 +1,10 @@
 import adImg from "@/assets/other/ad.png";
+import Image from "next/image";
 
 const Ad = () => {
   return (
     <div>
-      <img src={adImg} className="w-full" alt="" />
+      <Image src={adImg} className="w-full" alt="" />
     </div>
   );
 };
