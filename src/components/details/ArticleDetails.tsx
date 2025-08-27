@@ -29,31 +29,6 @@ const ArticleDetails = ({
   onBack,
   onPublish,
 }: ArticlePreviewProps) => {
-  const mockRecommendedArticles = [
-    {
-      title: "EQS Audi buyers were declining, affecting EBITDA...",
-      image: "/automotive-industry.png",
-    },
-    {
-      title: "EQS Audi buyers were declining, affecting EBITDA...",
-      image: "/modern-electric-car.png",
-    },
-    {
-      title: "EQS Audi buyers were declining, affecting EBITDA...",
-      image: "/car-manufacturing.png",
-    },
-    {
-      title: "EQS Audi buyers were declining, affecting EBITDA...",
-      image: "/audi-car.png",
-    },
-  ];
-
-  const mockFinancialData = [
-    { label: "Q3 2024 Profit", value: "$4.5B", change: "Decrease" },
-    { label: "Revenue", value: "$78.9B", change: "" },
-    { label: "Stock Price", value: "$102.45", change: "" },
-  ];
-
   // Use current date and time (03:18 PM +06, August 27, 2025)
   const currentDate = new Date(
     "2025-08-27T15:18:00+06:00"
@@ -201,36 +176,6 @@ const ArticleDetails = ({
                     )
                   )}
                 </div>
-
-                {/* Key Financial Highlights */}
-                <Card className="mt-8 bg-gray-50">
-                  <CardContent className="p-6">
-                    <h3 className="text-xl font-bold mb-4 flex items-center">
-                      <TrendingUp className="w-5 h-5 mr-2" />
-                      Key Financial Highlights
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {mockFinancialData.map((item, index) => (
-                        <div key={index} className="text-center">
-                          <div className="flex items-center justify-center mb-2">
-                            <DollarSign className="w-4 h-4 mr-1 text-green-600" />
-                            <span className="text-sm text-gray-600">
-                              {item.label}
-                            </span>
-                          </div>
-                          <div className="text-2xl font-bold text-gray-900">
-                            {item.value}
-                          </div>
-                          {item.change && (
-                            <div className="text-sm text-red-600">
-                              {item.change}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
               </CardContent>
             </Card>
           </div>
