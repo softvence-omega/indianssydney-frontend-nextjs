@@ -97,6 +97,7 @@ const ArticleDetailsForm = ({
       },
     });
   };
+
   const handleTagAdd = (tag: string) => {
     if (tag && !formData.tags.includes(tag)) {
       onUpdate({ tags: [...formData.tags, tag] });
@@ -187,6 +188,7 @@ const ArticleDetailsForm = ({
       />
     );
   };
+
   // Dynamic header based on content type
   const getHeaderText = () => {
     switch (formData.contentType) {
@@ -200,6 +202,7 @@ const ArticleDetailsForm = ({
         return "Publish Article:";
     }
   };
+
   return (
     <div className="min-h-screen bg-white p-4">
       <div className="max-w-4xl mx-auto">
@@ -214,20 +217,16 @@ const ArticleDetailsForm = ({
           </h1>
           <p className="text-gray-600">
             Lorem ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem ipsum has been the industrys standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book.
+            industry...
           </p>
         </div>
 
         <Card className="mb-4 rounded-none shadow-none">
           <CardContent>
+            {/* Category + Subcategory */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
-                <Label
-                  htmlFor="category"
-                  className="text-sm font-medium mb-2 block"
-                >
+                <Label className="text-sm font-medium mb-2 block">
                   Choose Category *
                 </Label>
                 <Select
@@ -250,10 +249,7 @@ const ArticleDetailsForm = ({
               </div>
 
               <div>
-                <Label
-                  htmlFor="subCategory"
-                  className="text-sm font-medium mb-2 block"
-                >
+                <Label className="text-sm font-medium mb-2 block">
                   Choose Sub-Category *
                 </Label>
                 <Select
@@ -292,15 +288,11 @@ const ArticleDetailsForm = ({
               </Label>
               <Input
                 id="title"
-                className="w-full rounded-none shadow-none"
                 placeholder="What is your title for this content"
                 value={formData.title}
                 onChange={(e) => onUpdate({ title: e.target.value })}
+                className="w-full rounded-none shadow-none"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Lorem ipsum is simply dummy text of the printing and typesetting
-                industry
-              </p>
             </div>
 
             {/* Sub-Title */}
@@ -313,15 +305,11 @@ const ArticleDetailsForm = ({
               </Label>
               <Input
                 id="subTitle"
-                className="w-full rounded-none shadow-none"
                 placeholder="What is sub title for your content"
                 value={formData.subTitle}
                 onChange={(e) => onUpdate({ subTitle: e.target.value })}
+                className="w-full rounded-none shadow-none"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Lorem ipsum is simply dummy text of the printing and typesetting
-                industry
-              </p>
             </div>
 
             {/* Audio File */}
@@ -417,141 +405,38 @@ const ArticleDetailsForm = ({
 
             {/* Image Caption */}
             <div>
-              <Label
-                htmlFor="imageCaption"
-                className="text-sm font-medium mb-2 block"
-              >
-                6. Type a cation for image
+              <Label className="text-sm font-medium mb-2 block">
+                6. Type a quote for image
               </Label>
               <Input
-                id="imageCaption"
-                className="w-full rounded-none shadow-none"
-                placeholder="Lorem ipsum is simply dummy text of the printing and typesetting industry"
                 value={formData.imageCaption}
                 onChange={(e) => onUpdate({ imageCaption: e.target.value })}
+                className="w-full rounded-none shadow-none"
               />
             </div>
 
             {/* Short Quote */}
             <div>
-              <Label
-                htmlFor="shortQuote"
-                className="text-sm font-medium mb-2 block"
-              >
+              <Label className="text-sm font-medium mb-2 block">
                 7. Short Quote
               </Label>
               <Input
-                id="shortQuote"
-                className="w-full rounded-none shadow-none"
-                placeholder="Lorem ipsum is simply dummy text of the printing and typesetting industry"
                 value={formData.shortQuote}
                 onChange={(e) => onUpdate({ shortQuote: e.target.value })}
+                className="w-full rounded-none shadow-none"
               />
             </div>
 
             {/* Paragraph */}
             <div>
-              <Label
-                htmlFor="paragraph"
-                className="text-sm font-medium mb-2 block"
-              >
-                8. Paragraph <span className="text-red-500">*</span>
+              <Label className="text-sm font-medium mb-2 block">
+                8. Paragraph *
               </Label>
               <Textarea
-                id="paragraph"
-                placeholder="Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-                className="min-h-[120px] w-full rounded-none shadow-none"
                 value={formData.paragraph}
                 onChange={(e) => onUpdate({ paragraph: e.target.value })}
+                className="min-h-[120px] w-full rounded-none shadow-none"
               />
-              <div className="flex justify-end mt-2">
-                <Button
-                  size="sm"
-                  className="bg-gray-800 text-white text-sm rounded-none"
-                >
-                  🤖 Generate by AI
-                </Button>
-              </div>
-            </div>
-
-            {formData.contentType === "live-event" && (
-              <div>
-                <Label
-                  htmlFor="liveEventDate"
-                  className="text-sm font-medium mb-2 block"
-                >
-                  Live Event Date <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="liveEventDate"
-                  type="dateTime-local"
-                  className="w-full rounded-none shadow-none"
-                  value={formData.dateTimeSlot}
-                  onChange={(e) => onUpdate({ dateTimeSlot: e.target.value })}
-                />
-              </div>
-            )}
-
-            {/* Tags */}
-            <div>
-              <Label className="text-sm font-medium mb-2 block">
-                8. Tags{" "}
-                <span className="text-gray-400">
-                  (Choose a suggestion tags)
-                </span>{" "}
-                <span className="text-red-500">*</span>
-              </Label>
-
-              {/* Selected Tags */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                {formData.tags.map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant="secondary"
-                    className="bg-orange-100 text-orange-800"
-                  >
-                    {tag}
-                    <button
-                      onClick={() => handleTagRemove(tag)}
-                      className="ml-2 text-orange-600 hover:text-orange-800"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </Badge>
-                ))}
-              </div>
-
-              {/* Predefined Tags */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                {predefinedTags.map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant="outline"
-                    className="cursor-pointer hover:bg-orange-50"
-                    onClick={() => handleTagAdd(tag)}
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-
-              {/* Custom Tag Input */}
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Add custom tag"
-                  value={newTag}
-                  className="w-full rounded-none shadow-none"
-                  onChange={(e) => setNewTag(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleTagAdd(newTag)}
-                />
-                <Button
-                  className="h-auto rounded-none shadow-none bg-accent-orange"
-                  onClick={() => handleTagAdd(newTag)}
-                  size="sm"
-                >
-                  Add
-                </Button>
-              </div>
             </div>
 
             {/* Additional Fields */}

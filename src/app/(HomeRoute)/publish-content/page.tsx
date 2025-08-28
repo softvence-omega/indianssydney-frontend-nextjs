@@ -6,35 +6,33 @@ import { useState } from "react";
 
 export type ContentType = "article" | "video" | "podcast" | "live-event";
 
-// Define the possible types for additional fields
-export type AdditionalFieldType = "paragraph" | "quote" | "image/video" | "Checkbox List";
+export type AdditionalFieldType = "paragraph" | "quote" | "image" | "video";
 
-// Define the structure for each additional field
 export interface AdditionalField {
   type: AdditionalFieldType;
-  value: string | File | string[] | null; // ✅ can hold text, uploaded file, or checkbox list
+  value: string | File | string[] | null;
 }
 
-// Updated FormData interface with proper typing
 export interface FormData {
-  id?: string; // optional if you want to reference articles
+  id?: string;
   contentType: ContentType | null;
   category: string;
   subCategory: string;
   title: string;
   subTitle: string;
 
-  audioFile: File | string | null; // ✅ support both uploaded File and stored URL
-  imageOrVideo: File | string | null; // ✅ support both uploaded File and stored URL
+  audioFile: File | null;
+  image: File | null;
+  video: File | null;
   imageCaption: string;
   shortQuote: string;
   paragraph: string;
 
   tags: string[];
-  additionalFields: Record<string, AdditionalField>; // ✅ fully typed additional fields
+  additionalFields: Record<string, AdditionalField>;
 
-  dateTimeSlot?: string; // ✅ for live-event
-  about: string; // ✅ for video/podcast/live-event
+  dateTimeSlot?: string;
+  about: string;
 
   publishedAt?: string;
   views?: number;
@@ -42,6 +40,33 @@ export interface FormData {
   comments?: number;
 }
 
+
+export interface DetailsData {
+  id?: string;
+  contentType: ContentType | null;
+  category: string;
+  subCategory: string;
+  title: string;
+  subTitle: string;
+
+  audioFile: string | null;
+  image: string | null;
+  video: string | null;
+  imageCaption: string;
+  shortQuote: string;
+  paragraph: string;
+
+  tags: string[];
+  additionalFields: Record<string, AdditionalField>;
+
+  dateTimeSlot?: string;
+  about: string;
+
+  publishedAt?: string;
+  views?: number;
+  likes?: number;
+  comments?: number;
+}
 
 const PublishContent = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -52,7 +77,8 @@ const PublishContent = () => {
     title: "",
     subTitle: "",
     audioFile: null,
-    imageOrVideo: null,
+    image: null,
+    video: null,
     imageCaption: "",
     shortQuote: "",
     paragraph: "",

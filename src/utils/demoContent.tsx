@@ -1,8 +1,6 @@
-import { FormData } from '../app/(HomeRoute)/publish-content/page';
 
 
-
-export const demoContents: (FormData & { id: string })[] = [
+export const demoContents = [
   {
     id: "1",
     contentType: "article",
@@ -11,8 +9,8 @@ export const demoContents: (FormData & { id: string })[] = [
     title: "Volkswagen Profits Tumble as Tariffs Weigh on Auto Industry",
     subTitle: "German automaker faces challenges amid trade disputes",
     audioFile: null,
-    imageOrVideo:
-      "https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?q=80&w=400&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?q=80&w=400&auto=format&fit=crop",
+    video: null,
     imageCaption: "A modern Volkswagen car design",
     shortQuote: "Trade tensions are reshaping the auto industry.",
     paragraph:
@@ -22,12 +20,16 @@ export const demoContents: (FormData & { id: string })[] = [
       additional_1: { type: "paragraph", value: "This is an extra paragraph." },
       additional_2: { type: "quote", value: "Markets are unpredictable." },
       additional_3: {
-        type: "image/video",
+        type: "image",
         value:
           "https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?q=80&w=400&auto=format&fit=crop",
       },
     },
     about: "",
+    publishedAt: "2025-08-20T09:00:00Z",
+    views: 1200,
+    likes: 320,
+    comments: 45,
   },
   {
     id: "2",
@@ -37,8 +39,8 @@ export const demoContents: (FormData & { id: string })[] = [
     title: "Sydney AI Startup Raises $50M in Series B Funding",
     subTitle: "Healthtech disruptor attracts global investment",
     audioFile: null,
-    imageOrVideo:
-      "https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?q=80&w=400&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?q=80&w=400&auto=format&fit=crop",
+    video: null,
     imageCaption: "AI-powered health diagnostics in action",
     shortQuote: "AI is transforming healthcare worldwide.",
     paragraph: "A Sydney-based AI startup closed a $50M funding round...",
@@ -48,6 +50,10 @@ export const demoContents: (FormData & { id: string })[] = [
       additional_2: { type: "quote", value: "AI is the new electricity." },
     },
     about: "This video covers the funding story of a Sydney AI startup.",
+    publishedAt: "2025-08-21T11:30:00Z",
+    views: 850,
+    likes: 210,
+    comments: 30,
   },
   {
     id: "3",
@@ -57,7 +63,8 @@ export const demoContents: (FormData & { id: string })[] = [
     title: "The Future of Australian Startups",
     subTitle: "Challenges and Opportunities in 2025",
     audioFile: null,
-    imageOrVideo: null,
+    image: null,
+    video: null,
     imageCaption: "",
     shortQuote: "Innovation is thriving in Australia.",
     paragraph:
@@ -65,6 +72,10 @@ export const demoContents: (FormData & { id: string })[] = [
     tags: ["Startups", "Australia", "Innovation"],
     additionalFields: {},
     about: "Podcast discussion on Australia's startup ecosystem.",
+    publishedAt: "2025-08-22T14:00:00Z",
+    views: 500,
+    likes: 150,
+    comments: 20,
   },
   {
     id: "4",
@@ -74,8 +85,8 @@ export const demoContents: (FormData & { id: string })[] = [
     title: "Australia vs India: Live Cricket Match",
     subTitle: "Day 1 Test Match Coverage",
     audioFile: null,
-    imageOrVideo:
-      "https://images.unsplash.com/photo-1505842465776-3d90f616310d?q=80&w=400&auto=format&fit=crop",
+    image: null,
+    video: null,
     imageCaption: "Live cricket match between Australia and India",
     shortQuote: "Cricket unites fans worldwide.",
     paragraph: "Catch all the live updates from the iconic MCG stadium...",
@@ -83,5 +94,9 @@ export const demoContents: (FormData & { id: string })[] = [
     additionalFields: {},
     about: "Live streaming of the Australia vs India Test Match.",
     dateTimeSlot: "2025-08-30T10:00:00Z",
+    publishedAt: "2025-08-23T18:00:00Z",
+    views: 2000,
+    likes: 600,
+    comments: 95,
   },
 ];

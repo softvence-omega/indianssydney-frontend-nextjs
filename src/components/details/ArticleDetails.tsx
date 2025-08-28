@@ -5,19 +5,23 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeft, Share2, Eye, Calendar, User } from "lucide-react";
-import { FormData } from "@/app/(HomeRoute)/publish-content/page";
+import { DetailsData } from "@/app/(HomeRoute)/publish-content/page";
 import RecommendedArticles from "./RecommendedArticles";
 import Newsletter from "./Newsletter";
 
 interface ArticlePreviewProps {
-  formData: FormData;
+  formData: DetailsData;
   onBack: () => void;
-  onPublish: () => void;
 }
 
 const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
-  // Use current date
   const currentDate = new Date().toLocaleDateString();
+
+  // helper to resolve File | string -> string (for src attributes)
+  const resolveSrc = (value: File | string | null): string => {
+    if (!value) return "";
+    return typeof value === "string" ? value : URL.createObjectURL(value);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -59,7 +63,7 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                         </p>
                         <div className="flex items-center text-sm text-gray-500">
                           <Calendar className="w-4 h-4 mr-1" />
-                          {currentDate}
+                          {formData.dateTimeSlot || currentDate}
                         </div>
                       </div>
                     </div>
@@ -91,10 +95,10 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 </div>
 
                 {/* Hero Image */}
-                {formData.imageOrVideo && (
+                {formData.image && (
                   <div className="mb-6">
                     <img
-                      src={typeof formData.imageOrVideo === "string" ? formData.imageOrVideo : ""}
+                      src={resolveSrc(formData.image)}
                       alt="Article hero image"
                       className="w-full h-64 md:h-80 object-cover rounded-lg"
                     />
@@ -103,6 +107,28 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                         {formData.imageCaption}
                       </p>
                     )}
+                  </div>
+                )}
+
+                {/* Audio */}
+                {formData.audioFile && (
+                  <div className="mb-6">
+                    <audio
+                      controls
+                      className="w-full"
+                      src={resolveSrc(formData.audioFile)}
+                    />
+                  </div>
+                )}
+
+                {/* Video */}
+                {formData.video && (
+                  <div className="mb-6">
+                    <video
+                      controls
+                      className="w-full rounded-lg"
+                      src={resolveSrc(formData.video)}
+                    />
                   </div>
                 )}
 
@@ -116,31 +142,42 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
 
                   <div className="text-gray-700 leading-relaxed space-y-4">
                     {formData.paragraph &&
-                      formData.paragraph.split("\n").map((p, i) => (
-                        <p key={i}>{p}</p>
-                      ))}
+                      formData.paragraph
+                        .split("\n")
+                        .map((p, i) => <p key={i}>{p}</p>)}
                   </div>
 
                   {/* Additional Fields */}
-                  {Object.entries(formData.additionalFields).map(([key, field]) => (
-                    <div key={key} className="my-6">
-                      {field.type === "quote" && (
-                        <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-700">
-                          {field.value}
-                        </blockquote>
-                      )}
-                      {field.type === "paragraph" && (
-                        <p className="text-gray-700 leading-relaxed">{field.value}</p>
-                      )}
-                      {field.type === "image/video" && field.value && (
-                        <img
-                          src={field.value}
-                          alt="Additional content"
-                          className="w-full h-48 object-cover rounded-lg"
-                        />
-                      )}
-                    </div>
-                  ))}
+                  {Object.entries(formData.additionalFields).map(
+                    ([key, field]) => (
+                      <div key={key} className="my-6">
+                        {field.type === "quote" && (
+                          <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-700">
+                            {field.value as string}
+                          </blockquote>
+                        )}
+                        {field.type === "paragraph" && (
+                          <p className="text-gray-700 leading-relaxed">
+                            {field.value as string}
+                          </p>
+                        )}
+                        {field.type === "image" && field.value && (
+                          <img
+                            src={resolveSrc(field.value as File | string)}
+                            alt="Additional content"
+                            className="w-full h-48 object-cover rounded-lg"
+                          />
+                        )}
+                        {field.type === "video" && field.value && (
+                          <video
+                            controls
+                            className="w-full rounded-lg"
+                            src={resolveSrc(field.value as File | string)}
+                          />
+                        )}
+                      </div>
+                    )
+                  )}
                 </div>
               </CardContent>
             </Card>
