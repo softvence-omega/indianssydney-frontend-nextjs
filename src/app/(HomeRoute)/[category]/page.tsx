@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useParams, usePathname } from "next/navigation";
@@ -11,11 +10,20 @@ import BusinessTemplate from "@/components/templates/BusinessTemplate";
 import EducationTemplate from "@/components/templates/EducationTemplate";
 import PodcastTemplate from "@/components/templates/PodcastTemplate";
 import FoodTemplate from "@/components/templates/FoodTemplate";
+import { MenuItem } from "@/types";
 
+type TemplateKeys =
+  | "NewsTemplate"
+  | "BusinessTemplate"
+  | "EducationTemplate"
+  | "PodcastTemplate"
+  | "FoodTemplate";
+type TemplateProps = {
+  category: MenuItem;
+  subcategorySlug: string;
+};
 
-
-// map template names to components
-const templateMap: Record<string, any> = {
+const templateMap: Record<TemplateKeys, React.FC<TemplateProps>> = {
   NewsTemplate,
   BusinessTemplate,
   EducationTemplate,
@@ -61,9 +69,14 @@ const CategoryPage = () => {
     );
   }
 
+
   // choose template (default to NewsTemplate if none specified)
-  let Template = templateMap[category.template || "NewsTemplate"];
-  if (!Template) {
+  const templateKey = (category.template ?? "NewsTemplate") as string;
+
+  let Template: React.FC<TemplateProps>;
+  if (templateKey in templateMap) {
+    Template = templateMap[templateKey as TemplateKeys];
+  } else {
     console.warn(
       `Template '${category.template}' not found. Falling back to NewsTemplate.`
     );
