@@ -1,6 +1,3 @@
-
-
-
 "use client";
 
 import ArticleDetailsForm from "@/components/article-input/ArticleDetailsForm";
@@ -9,22 +6,42 @@ import { useState } from "react";
 
 export type ContentType = "article" | "video" | "podcast" | "live-event";
 
+// Define the possible types for additional fields
+export type AdditionalFieldType = "paragraph" | "quote" | "image/video" | "Checkbox List";
+
+// Define the structure for each additional field
+export interface AdditionalField {
+  type: AdditionalFieldType;
+  value: string | File | string[] | null; // ✅ can hold text, uploaded file, or checkbox list
+}
+
+// Updated FormData interface with proper typing
 export interface FormData {
+  id?: string; // optional if you want to reference articles
   contentType: ContentType | null;
   category: string;
   subCategory: string;
   title: string;
   subTitle: string;
-  audioFile: File | null;
-  imageOrVideo: File | null;
+
+  audioFile: File | string | null; // ✅ support both uploaded File and stored URL
+  imageOrVideo: File | string | null; // ✅ support both uploaded File and stored URL
   imageCaption: string;
   shortQuote: string;
   paragraph: string;
+
   tags: string[];
-  additionalFields: Record<string, any>;
-  dateTimeSlot?: string; // Added for live-event
-  about: string; // Added for video/podcast/live-event
+  additionalFields: Record<string, AdditionalField>; // ✅ fully typed additional fields
+
+  dateTimeSlot?: string; // ✅ for live-event
+  about: string; // ✅ for video/podcast/live-event
+
+  publishedAt?: string;
+  views?: number;
+  likes?: number;
+  comments?: number;
 }
+
 
 const PublishContent = () => {
   const [currentStep, setCurrentStep] = useState(1);

@@ -4,7 +4,6 @@ import React, { useState, useMemo } from "react";
 import CommonWrapper from "@/common/CommonWrapper";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { newsItems } from "@/utils/demoData";
 import GridCard from "@/components/profile/GridCard";
 import ListCard from "@/components/profile/ListCard";
 import UploadCard from "@/components/profile/UploadCard";

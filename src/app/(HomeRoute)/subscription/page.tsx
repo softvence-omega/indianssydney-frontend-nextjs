@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import paypalImg from "@/assets/other/paypal.svg";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import Image from "next/image";
+
 
 const benefits = [
   {
