@@ -3,7 +3,7 @@
 import { DetailsData } from "@/app/(HomeRoute)/publish-content/page";
 import VideoDetails from "@/components/details/VideoDetails";
 import { demoContents } from "@/utils/demoContent";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function VideoDetailPage({
   params,
