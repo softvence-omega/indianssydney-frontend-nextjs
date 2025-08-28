@@ -2,7 +2,6 @@
 import React from "react";
 import PrimaryButton from "../reusable/PrimaryButton";
 import { FilePlus2 } from "lucide-react";
-import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context";
 import { useRouter } from "next/navigation";
 
 interface UploadCardProps {
