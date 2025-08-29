@@ -12,7 +12,7 @@ export default function PodcastDetailsPage({
 }) {
   const router = useRouter();
   const podcast = demoContents.find(
-    (item) => item.id === params.podcastId && item.contentType === "podcast"
+    (item) => item.id === params?.podcastId && item.contentType === "podcast"
   ) as DetailsData | undefined;
 
   if (!podcast) return <div>Video not found</div>;
