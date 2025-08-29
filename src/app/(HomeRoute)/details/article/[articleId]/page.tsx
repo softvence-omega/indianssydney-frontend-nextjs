@@ -13,7 +13,7 @@ export default function ArticleDetailPage({
   const router = useRouter();
 
   const article = demoContents.find(
-    (item) => item.id === params.articleId && item.contentType === "article"
+    (item) => item.id === params?.articleId && item.contentType === "article"
   ) as DetailsData | undefined;
 
   if (!article) {

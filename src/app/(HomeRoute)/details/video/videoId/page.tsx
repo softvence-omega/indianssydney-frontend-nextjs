@@ -13,7 +13,7 @@ export default function VideoDetailPage({
   const router = useRouter();
 
   const video = demoContents.find(
-    (item) => item.id === params.videoId && item.contentType === "video"
+    (item) => item.id === params?.videoId && item.contentType === "video"
   ) as DetailsData | undefined;
   if (!video) return <div>Video not found</div>;
 
