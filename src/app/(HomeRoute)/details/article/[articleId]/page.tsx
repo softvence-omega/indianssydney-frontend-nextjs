@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import ArticleDetails from "@/components/details/ArticleDetails";
 import { demoContents } from "@/utils/demoContent";
-import { DetailsData } from "@/app/(HomeRoute)/publish-content/page";
+import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
 
 export default function ArticleDetailPage({
   params,

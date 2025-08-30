@@ -224,14 +224,14 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           className="hidden md:flex flex-col fixed top-0 left-0 h-screen z-20 bg-pure-white dark:bg-gray-900 shadow-md w-72 p-6 px-10"
         >
           <div className="flex items-center justify-center mb-5 pb-5 border-b border-slight-border">
-            <Link href="/" className="w-24 h-full">
+            <div className="w-24 h-full">
               <Image
                 src="/logoDashboard.png"
                 alt="Logo"
                 width={100}
                 height={100}
               />
-            </Link>
+            </div>
           </div>
 
           <NavMenu
