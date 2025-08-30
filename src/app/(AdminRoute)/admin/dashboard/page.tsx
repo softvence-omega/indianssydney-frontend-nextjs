@@ -1,9 +1,15 @@
-import Wrapper from "@/common/Wrapper";
-import EngagementChart from "@/components/Admin/dashboard/EngagementChart";
-import OverviewCard from "@/components/Admin/dashboard/OverviewCard";
-import React from "react";
+"use client";
 
-const page = () => {
+import Wrapper from "@/common/Wrapper";
+import dynamic from "next/dynamic";
+import OverviewCard from "@/components/Admin/dashboard/OverviewCard";
+
+const EngagementChart = dynamic(
+  () => import("@/components/Admin/dashboard/EngagementChart"),
+  { ssr: false }
+);
+
+const Page = () => {
   return (
     <Wrapper>
       <div>
@@ -19,4 +25,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
