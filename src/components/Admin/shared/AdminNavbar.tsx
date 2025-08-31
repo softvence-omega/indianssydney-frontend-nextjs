@@ -69,7 +69,7 @@ const AdminNavBar = () => {
                   onClick={() => {
                     handleLogout();
                   }}
-                  href="#"
+                  href="/"
                   className="flex items-center gap-3 px-5 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors duration-150"
                 >
                   <TbLogout className="text-red-500 text-lg" />
