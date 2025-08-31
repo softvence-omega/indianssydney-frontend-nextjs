@@ -32,31 +32,30 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { title: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboardIcon },
+  { title: "Dashboard", href: "/editor/dashboard", icon: LayoutDashboardIcon },
   {
     title: "Content",
-    href: "/admin/content",
+    href: "/editor/content",
     icon: CopyIcon,
     subItems: [
-      { title: "Articles", href: "/admin/articles" },
-      { title: "Videos", href: "/admin/videos" },
-      { title: "Podcasts", href: "/admin/podcasts" },
-      { title: "Live Events", href: "/admin/live-events" },
+      { title: "Articles", href: "/editor/articles" },
+      { title: "Videos", href: "/editor/videos" },
+      { title: "Podcasts", href: "/editor/podcasts" },
     ],
   },
   {
     title: "Analytics",
-    href: "/admin/analytics",
+    href: "/editor/analytics",
     icon: ChartNoAxesCombined,
   },
   {
     title: "Role Management",
-    href: "/admin/role",
+    href: "/editor/role",
     icon: UserRoundCog,
   },
   {
     title: "Settings",
-    href: "/admin/settings",
+    href: "/editor/settings",
     icon: Settings,
   },
 ];
@@ -185,8 +184,8 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) {
+      setIsMobile(window.innerWidth < 1024);
+      if (window.innerWidth >= 1024) {
         setMobileMenuOpen(false);
       }
     };
@@ -207,16 +206,11 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const hideNavBar =
-    pathname === "/admin/active-user-details" ||
-    pathname === "/admin/user-payment" ||
-    pathname === "/admin/memnoy-refund/" ||
-    pathname.startsWith("/admin/all-payment/") ||
-    pathname.startsWith("/admin/memnoy-refund") ||
-    pathname.startsWith("/admin/user-management/");
+    pathname === "/admin/active-user-details" 
 
   return (
     <div className="flex flex-col min-h-screen bg-[#ECF4F8] font-Robot">
-      <div className="flex flex-col md:flex-row h-screen overflow-hidden">
+      <div className="flex flex-col lg:flex-row h-screen overflow-hidden">
         {/* Sidebar for Desktop */}
         <motion.aside
           initial={false}
@@ -224,14 +218,14 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           className="hidden md:flex flex-col fixed top-0 left-0 h-screen z-20 bg-pure-white dark:bg-gray-900 shadow-md w-72 p-6 px-10"
         >
           <div className="flex items-center justify-center mb-5 pb-5 border-b border-slight-border">
-            <div className="w-24 h-full">
+            <Link href="/" className="w-24 h-full">
               <Image
                 src="/logoDashboard.png"
                 alt="Logo"
                 width={100}
                 height={100}
               />
-            </div>
+            </Link>
           </div>
 
           <NavMenu
@@ -254,7 +248,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </motion.aside>
 
-        {/* Mobile Topbar */}
+        {/* Mobile Top bar */}
         <header className="md:hidden sticky top-0 z-20 bg-pure-white shadow-sm flex justify-between items-center px-4 py-3">
           <div className="flex items-center gap-3">
             <button
