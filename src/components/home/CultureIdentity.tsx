@@ -10,7 +10,10 @@ const CultureIdentity = () => {
     <div>
       <CommonPadding>
         <div className="border-b border-slight-border">
-          <PrimaryHeading title="Culture & Identity" seeAllRoute="/education" />
+          <PrimaryHeading
+            title="Culture & Identity"
+            seeAllRoute="/culture-identity"
+          />
           <div className="py-3 border-t border-slight-border mt-5 grid gap-4 ">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:border-b border-slight-border lg:pb-4">
               <div className="col-span-2">
@@ -29,10 +32,7 @@ const CultureIdentity = () => {
 
             <div className="grid grid-cols-2 lg:grid-cols-3">
               {newsItems.slice(2, 5).map((item) => (
-                <NewsCardSecondary
-                  key={item.id}
-                  {...item}
-                />
+                <NewsCardSecondary key={item.id} {...item} />
               ))}
             </div>
           </div>

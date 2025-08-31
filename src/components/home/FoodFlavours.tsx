@@ -7,7 +7,7 @@ const FoodFlavours = () => {
   return (
     <div>
       <div className="border-b border-slight-border">
-        <PrimaryHeading title="Food & Flavours" seeAllRoute="/education" />
+        <PrimaryHeading title="Food & Flavours" seeAllRoute="/food-flavours" />
         <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-1 gap-4">
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:border-b border-slight-border lg:pb-4">
             <div className="col-span-2">
@@ -28,7 +28,12 @@ const FoodFlavours = () => {
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {newsItems.slice(0, 4).map((item) => (
-              <NewsCard4 key={item.id} {...item} type="gradient" imgHeight = "h-[200px] md:h-[300px]" />
+              <NewsCard4
+                key={item.id}
+                {...item}
+                type="gradient"
+                imgHeight="h-[200px] md:h-[300px]"
+              />
             ))}
           </div>
         </div>

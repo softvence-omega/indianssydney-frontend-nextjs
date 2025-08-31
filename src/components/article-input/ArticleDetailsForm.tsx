@@ -19,7 +19,7 @@ import type {
   AdditionalField,
   AdditionalFieldType,
   FormData,
-} from "../../app/(HomeRoute)/publish-content/page";
+} from "../../app/(HomeRoute)/publish-content/types";
 
 interface ArticleDetailsFormProps {
   formData: FormData;
