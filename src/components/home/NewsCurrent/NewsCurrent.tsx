@@ -4,7 +4,6 @@ import NewsSlider from "./NewsSlider";
 import NewsCardSecondary from "../../reusable/NewsCardSecondary";
 import { newsItems } from "@/utils/demoData";
 
-
 const NewsCurrent = () => {
   return (
     <div>
@@ -12,7 +11,7 @@ const NewsCurrent = () => {
         <div className="border-b border-slight-border">
           <PrimaryHeading
             title="News & Current Affairs"
-            seeAllRoute="/current-affairs"
+            seeAllRoute="/news-current-affairs"
           />
           <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-1 xl:grid-cols-3 gap-4 xl:divide-x xl:divide-slight-border">
             {/* Main slider section */}

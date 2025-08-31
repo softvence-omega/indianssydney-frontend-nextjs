@@ -40,7 +40,6 @@
 //   comments?: number;
 // }
 
-
 // export interface DetailsData {
 //   id?: string;
 //   contentType: ContentType | null;
@@ -126,16 +125,124 @@
 
 // export default PublishContent;
 
+// <----------------------------------------------------------------------------------------------------------------------------------->
 
+// "use client";
 
-// app/(HomeRoute)/publish-content/page.tsx
+// import { useState } from "react";
+
+// import { FormData } from "./types";
+// import ArticleDetailsForm from "@/lib/test";
+// import ArticlePreview from "./ArticlePreview";
+
+// export default function PublishContent() {
+//   // Initial form data
+//   const initialFormData: FormData = {
+//     contentType: "article",
+//     category: "",
+//     subCategory: "",
+//     title: "",
+//     subTitle: "",
+//     audioFile: null,
+//     image: null,
+//     video: null,
+//     imageCaption: "",
+//     shortQuote: "",
+//     paragraph: "",
+//     dateTimeSlot: "",
+//     tags: [],
+//     additionalFields: {},
+//   };
+
+//   // State to manage form data and mode
+//   const [formData, setFormData] = useState<FormData>(initialFormData);
+//   const [mode, setMode] = useState<"form" | "preview" | "submitted">("form");
+
+//   // Handle updates from the form
+//   const handleUpdate = (updates: Partial<FormData>) => {
+//     setFormData((prev) => ({ ...prev, ...updates }));
+//   };
+
+//   // Handle form submission to show preview
+//   const handleFormSubmit = () => {
+//     setMode("preview");
+//   };
+
+//   // Handle final publish action
+//   const handlePublish = async () => {
+//     try {
+//       // Simulate API call to submit the content
+//       console.log("Submitting content:", formData);
+//       // Example: await fetch('/api/publish', { method: 'POST', body: JSON.stringify(formData) });
+
+//       setMode("submitted");
+//       // Optionally reset formData or redirect
+//       setFormData(initialFormData);
+//     } catch (error) {
+//       console.error("Error submitting content:", error);
+//       // Handle error (e.g., show toast notification)
+//     }
+//   };
+
+//   // Handle back navigation (from preview to form or form to previous page)
+//   const handleBack = () => {
+//     if (mode === "preview") {
+//       setMode("form");
+//     } else if (mode === "form") {
+//       // Navigate back to a previous page (e.g., categories)
+//       console.log("Navigate back to categories");
+//       // Example: router.push('/categories');
+//     }
+//   };
+
+//   return (
+//     <div>
+//       {mode === "form" && (
+//         <ArticleDetailsForm
+//           formData={formData}
+//           onUpdate={handleUpdate}
+//           onSubmit={handleFormSubmit}
+//           onBack={handleBack}
+//         />
+//       )}
+//       {mode === "preview" && (
+//         <ArticlePreview
+//           formData={formData}
+//           onBack={handleBack}
+//           onPublish={handlePublish}
+//         />
+//       )}
+//       {mode === "submitted" && (
+//         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+//           <div className="text-center">
+//             <h1 className="text-2xl font-bold mb-4">Content Published!</h1>
+//             <p className="text-gray-600 mb-4">
+//               Your content has been successfully published.
+//             </p>
+//             <button
+//               onClick={() => setMode("form")}
+//               className="bg-brick-red text-white px-4 py-2 rounded"
+//             >
+//               Publish Another
+//             </button>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
 "use client";
 
 import { useState } from "react";
-
-import { FormData } from "./types";
-import ArticleDetailsForm from "@/lib/test";
+import CategorySelection from "@/components/article-input/CategorySelection";
+import ArticleDetailsForm from "@/components/article-input/ArticleDetailsForm";
 import ArticlePreview from "./ArticlePreview";
+import { ContentType, FormData } from "./types";
+
+// Types
+
+// Main Component
 
 export default function PublishContent() {
   // Initial form data
@@ -151,55 +258,63 @@ export default function PublishContent() {
     imageCaption: "",
     shortQuote: "",
     paragraph: "",
-    dateTimeSlot: "",
     tags: [],
+    dateTimeSlot: "0",
     additionalFields: {},
   };
 
-  // State to manage form data and mode
+  // State
   const [formData, setFormData] = useState<FormData>(initialFormData);
-  const [mode, setMode] = useState<"form" | "preview" | "submitted">("form");
+  const [step, setStep] = useState<
+    "category" | "form" | "preview" | "submitted"
+  >("category");
 
-  // Handle updates from the form
+  // Handle category select
+  const handleCategorySelect = (contentType: ContentType) => {
+    setFormData((prev) => ({ ...prev, contentType }));
+    setStep("form");
+    console.log("Selected content type:", contentType);
+  };
+
+  // Handle form updates
   const handleUpdate = (updates: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...updates }));
+    console.log("Form updated:", updates);
   };
 
-  // Handle form submission to show preview
+  // Handle submit (go to preview)
   const handleFormSubmit = () => {
-    setMode("preview");
+    setStep("preview");
   };
 
-  // Handle final publish action
+  // Handle publish
   const handlePublish = async () => {
     try {
-      // Simulate API call to submit the content
-      console.log("Submitting content:", formData);
-      // Example: await fetch('/api/publish', { method: 'POST', body: JSON.stringify(formData) });
-
-      setMode("submitted");
-      // Optionally reset formData or redirect
-      setFormData(initialFormData);
+      console.log("Publishing content:", formData);
+      // API call could go here
+      setStep("submitted");
+      setFormData(initialFormData); // reset
     } catch (error) {
-      console.error("Error submitting content:", error);
-      // Handle error (e.g., show toast notification)
+      console.error("Error publishing content:", error);
     }
   };
 
-  // Handle back navigation (from preview to form or form to previous page)
+  // Handle back
   const handleBack = () => {
-    if (mode === "preview") {
-      setMode("form");
-    } else if (mode === "form") {
-      // Navigate back to a previous page (e.g., categories)
-      console.log("Navigate back to categories");
-      // Example: router.push('/categories');
+    if (step === "form") {
+      setStep("category");
+    } else if (step === "preview") {
+      setStep("form");
     }
   };
 
   return (
     <div>
-      {mode === "form" && (
+      {step === "category" && (
+        <CategorySelection onSelect={handleCategorySelect} />
+      )}
+
+      {step === "form" && (
         <ArticleDetailsForm
           formData={formData}
           onUpdate={handleUpdate}
@@ -207,14 +322,16 @@ export default function PublishContent() {
           onBack={handleBack}
         />
       )}
-      {mode === "preview" && (
+
+      {step === "preview" && (
         <ArticlePreview
           formData={formData}
           onBack={handleBack}
           onPublish={handlePublish}
         />
       )}
-      {mode === "submitted" && (
+
+      {step === "submitted" && (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">Content Published!</h1>
@@ -222,7 +339,7 @@ export default function PublishContent() {
               Your content has been successfully published.
             </p>
             <button
-              onClick={() => setMode("form")}
+              onClick={() => setStep("category")}
               className="bg-brick-red text-white px-4 py-2 rounded"
             >
               Publish Another

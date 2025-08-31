@@ -6,12 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeft, Share2, Eye, Calendar, User } from "lucide-react";
-import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
-import RecommendedArticles from "@/components/details/RecommendedArticles";
-import Newsletter from "@/components/details/Newsletter";
+import { FormData } from "./types";
+
 
 interface ArticlePreviewProps {
-  formData: DetailsData;
+  formData: FormData;
   onBack: () => void;
   onPublish: () => void; // New prop for final submission
 }

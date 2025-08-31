@@ -16,6 +16,7 @@ import { RootState } from "@/store/store"; // Adjust path to your store types
 import ProfileSheet from "@/components/profile/ProfileSheet";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -118,7 +119,7 @@ const Navbar: React.FC = () => {
               <select
                 value={selectedLang}
                 onChange={(e) => setSelectedLang(e.target.value)}
-                className="appearance-none border-none bg-transparent text-sm cursor-pointer pl-6 pr-6 py-2 outline-none"
+                className="appearance-none border-none bg-transparent text-sm cursor-pointer pl-6 pr-2 py-2 outline-none"
                 style={{
                   backgroundImage: `url(${
                     languages.find((l) => l.code === selectedLang)?.flag
@@ -130,6 +131,7 @@ const Navbar: React.FC = () => {
               >
                 {languages.map((lang) => (
                   <option key={lang.code} value={lang.code}>
+                   <Image src={lang.flag} width={10} height={10} alt="" />
                     {lang.code}
                   </option>
                 ))}

@@ -8,7 +8,7 @@ const LifeLiving = () => {
   return (
     <div>
       <div className="border-b border-slight-border">
-        <PrimaryHeading title="Life & Living" seeAllRoute="/education" />
+        <PrimaryHeading title="Life & Living" seeAllRoute="/life-living" />
         <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-1 gap-4">
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:border-b border-slight-border lg:pb-4">
             <div className="col-span-2">
@@ -34,7 +34,11 @@ const LifeLiving = () => {
               ))}
             </div>
             {newsItems.slice(0, 2).map((item) => (
-              <NewsCard3 key={item.id} {...item} imgHeight = "h-[200px] md:h-[340px]"/>
+              <NewsCard3
+                key={item.id}
+                {...item}
+                imgHeight="h-[200px] md:h-[340px]"
+              />
             ))}
           </div>
         </div>

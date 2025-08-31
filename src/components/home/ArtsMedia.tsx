@@ -11,9 +11,8 @@ const ArtsMedia = () => {
       <CommonPadding>
         <div className="border-b border-slight-border">
           <PrimaryHeading
-            title="Arts, Media & Expression
-"
-            seeAllRoute="/culture"
+            title="Arts, Media & Expression"
+            seeAllRoute="/arts-media-expression"
           />
           <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-1 lg:grid-cols-4 gap-4 xl:divide-x xl:divide-slight-border">
             {/* Main slider section */}
