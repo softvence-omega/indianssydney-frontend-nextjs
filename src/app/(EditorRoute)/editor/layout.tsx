@@ -41,6 +41,7 @@ const navItems: NavItem[] = [
       { title: "Articles", href: "/editor/articles" },
       { title: "Videos", href: "/editor/videos" },
       { title: "Podcasts", href: "/editor/podcasts" },
+      { title: "Category Management", href: "/editor/category-management" },
     ],
   },
   {

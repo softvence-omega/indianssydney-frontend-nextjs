@@ -3,24 +3,25 @@
 import React, { useState } from "react";
 import DashboardHeader from "@/components/reusable/DashboardHeader";
 import LiveEventCard, { LiveEvent } from "./LiveEventCard";
+
 type LiveEventStatus = "current" | "past" | "upcoming";
 export const demoLiveEvents: LiveEvent[] = [
   {
     id: "1",
     title: "Next.js Best Practices",
     description: "Learn how to build scalable Next.js apps.",
-    coverImage: "/images/nextjs.jpg",
+    coverImage: "/register.png",
     author: "John Doe",
     date: "2025-09-01",
     startTime: "09:00",
-    endTime: "10:00",
+    endTime: "16:00",
     status: "current",
   },
   {
     id: "2",
     title: "React Performance Workshop",
     description: "Optimize your React apps for speed.",
-    coverImage: "/images/react.jpg",
+    coverImage: "/register.png",
     author: "Jane Smith",
     date: "2025-09-03",
     startTime: "15:00",
@@ -31,7 +32,7 @@ export const demoLiveEvents: LiveEvent[] = [
     id: "3",
     title: "AI in Web Development",
     description: "How AI is transforming frontend workflows.",
-    coverImage: "/images/ai.jpg",
+    coverImage: "/register.png",
     author: "Alex Johnson",
     date: "2025-08-25",
     startTime: "11:00",
@@ -49,7 +50,10 @@ const LiveEventsPage = () => {
 
   return (
     <div>
-      <DashboardHeader title="Live Events" />
+     <div> <DashboardHeader title="Live Events" /> 
+     
+     
+     </div>
 
       {/* Tabs */}
       <div className="flex gap-4 mb-6">

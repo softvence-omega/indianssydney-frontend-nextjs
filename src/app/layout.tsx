@@ -1,6 +1,7 @@
 import { Inter, Playfair_Display, UnifrakturCook } from "next/font/google";
 import ReduxProviderWrapper from "@/store/redux-provider/ReduxProviderWrapper";
 import { Toaster } from "sonner";
+import type { Metadata } from "next";
 
 import "./globals.css";
 
@@ -14,6 +15,11 @@ const unifraktur = UnifrakturCook({
   weight: "700",
   variable: "--font-cursive",
 });
+
+export const metadata: Metadata = {
+  title: "The Australian Canvas",
+  description: "Newspaper Website",
+};
 
 export default function RootLayout({
   children,
