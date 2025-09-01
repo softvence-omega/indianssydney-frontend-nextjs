@@ -147,6 +147,10 @@ const router = useRouter();
           className="px-4 py-2 text-white w-full text-sm md:text-base"
           title="Save Changes"
         />
+
+        <div className="">
+          <h2>Notifications</h2>
+        </div>
       </div>
     </div>
   );

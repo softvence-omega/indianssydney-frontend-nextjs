@@ -131,7 +131,6 @@ const Navbar: React.FC = () => {
               >
                 {languages.map((lang) => (
                   <option key={lang.code} value={lang.code}>
-                   <Image src={lang.flag} width={10} height={10} alt="" />
                     {lang.code}
                   </option>
                 ))}
