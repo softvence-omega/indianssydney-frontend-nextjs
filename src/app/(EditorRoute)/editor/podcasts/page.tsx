@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import PodcastCard, { Podcast } from "./PodcastCard";
 import DashboardHeader from "@/components/reusable/DashboardHeader";
-
+type PodcastStatus = "recent" | "pending" | "approved" | "declined";
 const initialPodcasts: Podcast[] = [
   {
     id: "1",
@@ -104,7 +104,7 @@ const initialPodcasts: Podcast[] = [
 const PodcastsPage = () => {
   const [podcasts, setPodcasts] = useState<Podcast[]>(initialPodcasts);
   const [filter, setFilter] = useState<
-    "recent" | "pending" | "approved" | "declined"
+PodcastStatus
   >("recent");
 
   const handleStatusChange = (id: string, status: "approved" | "declined") => {
@@ -126,7 +126,7 @@ const PodcastsPage = () => {
             className={`cursor-pointer ${
               filter === tab ? "text-accent-orange" : ""
             }`}
-            onClick={() => setFilter(tab as any)}
+            onClick={() => setFilter(tab as PodcastStatus)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>

@@ -25,7 +25,7 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${playfair.variable} ${unifraktur.variable}`}
     >
-      <body>
+      <body suppressHydrationWarning>
         <ReduxProviderWrapper>{children}</ReduxProviderWrapper>
         <Toaster />
       </body>

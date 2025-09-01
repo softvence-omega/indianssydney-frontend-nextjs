@@ -16,7 +16,7 @@ import { RootState } from "@/store/store"; // Adjust path to your store types
 import ProfileSheet from "@/components/profile/ProfileSheet";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,10 +1,13 @@
 "use client";
 
 import Wrapper from "@/common/Wrapper";
-import dynamic from "next/dynamic";
 import AdminOverviewCard from "./AdminOverviewCard";
 import RecentActivity from "./RecentActivity";
+import UserActivity from "./UserActivity";
+import EditorActivity from "./EditorActivity";
+import dynamic from "next/dynamic";
 
+// Dynamic import for browser-only components
 const AdminEngagementChart = dynamic(() => import("./AdminEngagementChart"), {
   ssr: false,
 });
@@ -20,8 +23,13 @@ const Page = () => {
         <div className="my-6 md:my-8 lg:my-10">
           <AdminEngagementChart />
         </div>
-        <div className="my-6 md:my-8 lg:my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          
+        <div className="my-6 md:my-8 lg:my-10 grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div>
+            <UserActivity />
+          </div>
+          <div className="lg:col-span-2">
+            <EditorActivity />
+          </div>
         </div>
         <div>
           <RecentActivity />
