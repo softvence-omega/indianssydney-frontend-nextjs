@@ -33,24 +33,24 @@ const LiveEventCard: React.FC<{ live: LiveEvent }> = ({ live }) => {
     live.status !== "past" && now >= eventStart && now <= eventEnd;
 
   return (
-    <Card className="mb-4 shadow-none">
-      <CardContent>
-        <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
-          <div className="flex gap-4">
+    <Card className="mb-4 shadow-none py-4">
+      <CardContent className="px-4">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+          <div className="flex flex-row gap-4">
             <img
               src={live.coverImage}
-              className="h-28 w-32 object-cover object-center rounded-lg"
+              className="h-24 w-32 object-cover object-center rounded-lg"
               alt={live.title}
             />
             <div>
-              <h2 className="font-semibold text-lg line-clamp-2">
+              <h2 className="font-semibold text-lg line-clamp-1">
                 {live.title}
               </h2>
-              <p className="text-sm text-gray-600 line-clamp-2">
+              <p className="text-sm text-gray-600 line-clamp-1">
                 {live.description}
               </p>
               <p className="text-xs mt-2 text-gray-500">
-                Author - {live.author} | {live.date} ({live.startTime} -{" "}
+                Host - {live.author} | {live.date} ({live.startTime} -{" "}
                 {live.endTime})
               </p>
             </div>

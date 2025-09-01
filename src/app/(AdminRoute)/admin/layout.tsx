@@ -8,13 +8,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { TbLogout } from "react-icons/tb";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 import {
-  ChartNoAxesCombined,
   CopyIcon,
   LayoutDashboardIcon,
   Settings,
   UserRoundCog,
   ChevronDown,
   X,
+  CreditCard,
 } from "lucide-react";
 import logo from "@/assets/other/mic.svg";
 import profile from "@/assets/other/mic.svg";
@@ -42,17 +42,18 @@ const navItems: NavItem[] = [
       { title: "Videos", href: "/admin/videos" },
       { title: "Podcasts", href: "/admin/podcasts" },
       { title: "Live Events", href: "/admin/live-events" },
+      { title: "Category Management", href: "/admin/category-management" },
     ],
   },
   {
-    title: "Analytics",
-    href: "/admin/analytics",
-    icon: ChartNoAxesCombined,
+    title: "User Management",
+    href: "/admin/user-management",
+    icon: UserRoundCog,
   },
   {
-    title: "Role Management",
-    href: "/admin/role",
-    icon: UserRoundCog,
+    title: "Manage Plan",
+    href: "/admin/manage-plan",
+    icon: CreditCard,
   },
   {
     title: "Settings",
@@ -192,8 +193,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     setOpenDropdown(openDropdown === title ? null : title);
   };
 
-  const hideNavBar =
-    pathname === "/admin/active-user-details"
+  const hideNavBar = pathname === "/admin/active-user-details";
 
   return (
     <div className="flex flex-col min-h-screen bg-[#ECF4F8] font-Robot">
