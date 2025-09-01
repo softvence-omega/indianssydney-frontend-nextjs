@@ -1,8 +1,16 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ApexCharts from "apexcharts";
 import { useRef } from "react";
+import DashboardHeader from "@/components/reusable/DashboardHeader";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const EngagementChart = () => {
   const chartRef = useRef(null);
@@ -42,17 +50,18 @@ const EngagementChart = () => {
         type: "gradient",
         gradient: {
           shadeIntensity: 1,
+          shade: "dark",
           inverseColors: false,
           opacityFrom: 0.45,
           opacityTo: 0.05,
           stops: [20, 100, 100, 100],
-          colors: ["#FBB03B", "#D96B3B"], // Gradient colors relevant to orange
         },
+        colors: ["#D96B3B66", "#D96B3B0D"], // Gradient colors relevant to orange
       },
       yaxis: {
         labels: {
           style: {
-            colors: "#D96B3B",
+            fontSize: "14px",
           },
           offsetX: 0,
           formatter: function (val: number) {
@@ -82,19 +91,12 @@ const EngagementChart = () => {
           "Dec",
         ],
         labels: {
-          rotate: -15,
+          rotate: -45,
           rotateAlways: true,
           style: {
-            colors: "#D96B3B",
+            colors: "#000",
+            fontSize: "14px",
           },
-        },
-      },
-      title: {
-        text: "Engagement in Content Articles",
-        align: "left",
-        offsetX: 4,
-        style: {
-          color: "#D96B3B",
         },
       },
       tooltip: {
@@ -115,7 +117,34 @@ const EngagementChart = () => {
     };
   }, []);
 
-  return <div id="chart" ref={chartRef}></div>;
+  // Generate years dynamically
+  const years = Array.from({ length: 11 }, (_, i) => 2023 + i);
+
+  // Default year
+  const [selectedYear, setSelectedYear] = useState("2025");
+
+  return (
+    <div className="bg-white px-2 py-4 rounded-xl shadow">
+      <div className="px-4 flex flex-col md:flex-row justify-between items-center md:gap-4 mb-4 md:mb-0">
+        <DashboardHeader title="Content Engagement" />
+
+        <Select value={selectedYear} onValueChange={setSelectedYear}>
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder="Select a year" />
+          </SelectTrigger>
+          <SelectContent>
+            {years.map((year) => (
+              <SelectItem key={year} value={year.toString()}>
+                {year}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div id="chart" ref={chartRef}></div>
+    </div>
+  );
 };
 
 export default EngagementChart;

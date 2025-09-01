@@ -29,7 +29,7 @@ const AdminNavBar = () => {
     <div className="w-full px-4 py-4 mx-auto h-full bg-white shadow pt-2">
       <div className="w-full mt-2 flex justify-between items-center">
         {/* Left side */}
-        <div className=" text-2xl font-bold">Editor</div>
+        <div className=" text-2xl font-bold">Admin</div>
 
         {/* Right side: Search Bar, Profile and Notifications */}
         <div className="flex items-center gap-4">

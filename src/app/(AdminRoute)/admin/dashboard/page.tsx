@@ -2,12 +2,12 @@
 
 import Wrapper from "@/common/Wrapper";
 import dynamic from "next/dynamic";
-import OverviewCard from "@/components/Admin/dashboard/OverviewCard";
+import AdminOverviewCard from "./AdminOverviewCard";
+import RecentActivity from "./RecentActivity";
 
-const EngagementChart = dynamic(
-  () => import("@/components/Admin/dashboard/EngagementChart"),
-  { ssr: false }
-);
+const AdminEngagementChart = dynamic(() => import("./AdminEngagementChart"), {
+  ssr: false,
+});
 
 const Page = () => {
   return (
@@ -16,9 +16,15 @@ const Page = () => {
         <p className="mb-2">
           Welcome back! Here&apos;s an overview of your content.
         </p>
-        <OverviewCard />
+        <AdminOverviewCard />
         <div className="my-6 md:my-8 lg:my-10">
-          <EngagementChart />
+          <AdminEngagementChart />
+        </div>
+        <div className="my-6 md:my-8 lg:my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          
+        </div>
+        <div>
+          <RecentActivity />
         </div>
       </div>
     </Wrapper>
