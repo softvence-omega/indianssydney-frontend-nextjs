@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import VideoCard, { Video } from "./VideoCard";
 import DashboardHeader from "@/components/reusable/DashboardHeader";
-
+type VideoStatus = "recent" | "pending" | "approved" | "declined";
 const initialArticles: Video[] = [
   {
     id: "1",
@@ -104,7 +104,7 @@ const initialArticles: Video[] = [
 const VideosPage = () => {
   const [videos, setVideos] = useState<Video[]>(initialArticles);
   const [filter, setFilter] = useState<
-    "recent" | "pending" | "approved" | "declined"
+  VideoStatus
   >("recent");
 
   const handleStatusChange = (id: string, status: "approved" | "declined") => {
@@ -126,7 +126,7 @@ const VideosPage = () => {
             className={`cursor-pointer ${
               filter === tab ? "text-accent-orange" : ""
             }`}
-            onClick={() => setFilter(tab as any)}
+            onClick={() => setFilter(tab as VideoStatus)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>

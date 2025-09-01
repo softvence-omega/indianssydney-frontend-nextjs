@@ -2,9 +2,10 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { FileText, Play, Mic, Radio } from "lucide-react";
-import type { ContentType } from "@/app/(HomeRoute)/publish-content/page";
+
 import CommonPadding from "@/common/CommonPadding";
 import PrimaryButton from "../reusable/PrimaryButton";
+import { ContentType } from "@/utils/myContentData";
 
 interface CategorySelectionProps {
   onSelect: (contentType: ContentType) => void;

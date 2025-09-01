@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import ArticleCard, { Article } from "./ArticleCard";
 import DashboardHeader from "@/components/reusable/DashboardHeader";
 
+type ArticleStatus = "recent" | "pending" | "approved" | "declined";
+
 const initialArticles: Article[] = [
   {
     id: "1",
@@ -99,7 +101,7 @@ const initialArticles: Article[] = [
 const ArticlesPage = () => {
   const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [filter, setFilter] = useState<
-    "recent" | "pending" | "approved" | "declined"
+   ArticleStatus
   >("recent");
 
   const handleStatusChange = (id: string, status: "approved" | "declined") => {
@@ -121,7 +123,7 @@ const ArticlesPage = () => {
             className={`cursor-pointer ${
               filter === tab ? "text-accent-orange" : ""
             }`}
-            onClick={() => setFilter(tab as any)}
+            onClick={() => setFilter(tab as ArticleStatus)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>

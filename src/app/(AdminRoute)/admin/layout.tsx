@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TbLogout } from "react-icons/tb";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
@@ -177,24 +177,10 @@ const NavMenu = ({
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const dispatch = useDispatch();
   const router = useRouter();
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) {
-        setMobileMenuOpen(false);
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -207,12 +193,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const hideNavBar =
-    pathname === "/admin/active-user-details" ||
-    pathname === "/admin/user-payment" ||
-    pathname === "/admin/memnoy-refund/" ||
-    pathname.startsWith("/admin/all-payment/") ||
-    pathname.startsWith("/admin/memnoy-refund") ||
-    pathname.startsWith("/admin/user-management/");
+    pathname === "/admin/active-user-details"
 
   return (
     <div className="flex flex-col min-h-screen bg-[#ECF4F8] font-Robot">

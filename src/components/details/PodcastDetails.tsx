@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeft, Share2, Eye, Calendar, User } from "lucide-react";
-import { DetailsData } from "@/app/(HomeRoute)/publish-content/page";
+
 import RecommendedArticles from "./RecommendedArticles";
 import Newsletter from "./Newsletter";
+import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
 
 interface PodcastPreviewProps {
   formData: DetailsData;

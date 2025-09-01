@@ -1,6 +1,7 @@
 "use client";
 
-import { DetailsData } from "@/app/(HomeRoute)/publish-content/page";
+
+import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
 import PodcastDetails from "@/components/details/PodcastDetails";
 import { demoContents } from "@/utils/demoContent";
 import { useRouter } from "next/navigation";

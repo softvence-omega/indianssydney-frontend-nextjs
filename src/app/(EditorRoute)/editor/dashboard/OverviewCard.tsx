@@ -1,11 +1,9 @@
 "use client";
 
-
 import DashboardHeader from "@/components/reusable/DashboardHeader";
 import { Newspaper, ScanEye, SquareActivity, Users } from "lucide-react";
 
 const OverviewCard = () => {
-
   const statusData = [
     {
       title: "Total Articles Published",
@@ -33,7 +31,7 @@ const OverviewCard = () => {
 
   return (
     <div>
-         <DashboardHeader title="Overview" />
+      <DashboardHeader title="Overview" />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {statusData.map((single) => (
           <div

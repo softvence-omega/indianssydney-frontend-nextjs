@@ -2,13 +2,13 @@
 
 import Wrapper from "@/common/Wrapper";
 import dynamic from "next/dynamic";
-import OverviewCard from "@/components/Admin/dashboard/OverviewCard";
-import RecentActivity from "@/components/Admin/dashboard/RecentActivity";
-import TopContents from "@/components/Admin/dashboard/TopContents";
-import TopContributor from "@/components/Admin/dashboard/TopContributor";
+import OverviewCard from "@/app/(EditorRoute)/editor/dashboard/OverviewCard";
+import RecentActivity from "@/app/(EditorRoute)/editor/dashboard/RecentActivity";
+import TopContents from "@/app/(EditorRoute)/editor/dashboard/TopContents";
+import TopContributor from "@/app/(EditorRoute)/editor/dashboard/TopContributor";
 
 const EngagementChart = dynamic(
-  () => import("@/components/Admin/dashboard/EngagementChart"),
+  () => import("@/app/(EditorRoute)/editor/dashboard/EngagementChart"),
   { ssr: false }
 );
 
