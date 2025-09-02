@@ -755,7 +755,7 @@ export const allMenus = [
   },
   {
     label: "Podcasts & Video",
-    href: "/podcasts-video",
+    href: "/podcast-video",
     template: "NewsTemplate",
     submenus: [
       {

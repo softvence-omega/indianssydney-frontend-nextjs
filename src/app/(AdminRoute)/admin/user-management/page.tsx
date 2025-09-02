@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import DashboardHeader from "@/components/reusable/DashboardHeader";
 import { toast } from "sonner";
@@ -59,23 +60,35 @@ const UserManagement = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-4">
         <DashboardHeader title="User & Role Management" />
       </div>
 
-      <UserTable
-        title="Contributor Management"
-        users={users.filter((u) => u.role === "contributor")}
-        onEdit={openEditModal}
-        onDelete={openDeleteModal}
-      />
+      {/* Tabs for role management */}
+      <Tabs defaultValue="contributors" className="w-full">
+        <TabsList>
+          <TabsTrigger value="contributors">Contributors</TabsTrigger>
+          <TabsTrigger value="editors">Editors</TabsTrigger>
+        </TabsList>
 
-      <UserTable
-        title="Editor Management"
-        users={users.filter((u) => u.role === "editor")}
-        onEdit={openEditModal}
-        onDelete={openDeleteModal}
-      />
+        <TabsContent value="contributors">
+          <UserTable
+            title="Contributor Management"
+            users={users.filter((u) => u.role === "contributor")}
+            onEdit={openEditModal}
+            onDelete={openDeleteModal}
+          />
+        </TabsContent>
+
+        <TabsContent value="editors">
+          <UserTable
+            title="Editor Management"
+            users={users.filter((u) => u.role === "editor")}
+            onEdit={openEditModal}
+            onDelete={openDeleteModal}
+          />
+        </TabsContent>
+      </Tabs>
 
       {/* Modals */}
       <EditUserModal
