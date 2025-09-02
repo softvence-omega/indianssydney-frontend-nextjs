@@ -41,7 +41,7 @@ const AdminNavBar = () => {
               placeholder="Search"
             />
             <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500">
-             <Search/>
+              <Search />
             </span>
           </div>
 
