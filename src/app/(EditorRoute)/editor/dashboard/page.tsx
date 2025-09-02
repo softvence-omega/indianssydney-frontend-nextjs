@@ -1,16 +1,15 @@
 "use client";
 
 import Wrapper from "@/common/Wrapper";
-import dynamic from "next/dynamic";
 import OverviewCard from "@/app/(EditorRoute)/editor/dashboard/OverviewCard";
 import RecentActivity from "@/app/(EditorRoute)/editor/dashboard/RecentActivity";
 import TopContents from "@/app/(EditorRoute)/editor/dashboard/TopContents";
 import TopContributor from "@/app/(EditorRoute)/editor/dashboard/TopContributor";
+import dynamic from "next/dynamic";
 
-const EngagementChart = dynamic(
-  () => import("@/app/(EditorRoute)/editor/dashboard/EngagementChart"),
-  { ssr: false }
-);
+const EngagementChart = dynamic(() => import("./EngagementChart"), {
+  ssr: false,
+});
 
 const Page = () => {
   return (

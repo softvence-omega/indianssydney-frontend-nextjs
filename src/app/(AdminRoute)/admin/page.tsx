@@ -1,9 +1,13 @@
-"use client"
+"use client";
 
-const Page = () => {
+import Page from "./dashboard/page";
+
+const page = () => {
   return (
-    <div>page</div>
-  )
-}
+    <div>
+      <Page />
+    </div>
+  );
+};
 
-export default Page
+export default page;
