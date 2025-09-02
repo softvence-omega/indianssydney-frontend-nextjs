@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { MessageCircle, MessageSquare, Share2, ThumbsUp } from "lucide-react";
+import PrimaryButton from "@/components/reusable/PrimaryButton";
 
 dayjs.extend(relativeTime);
 
@@ -32,6 +33,7 @@ type Post = {
   description: string;
   thamble?: string;
   video?: string;
+  image?: string;
   createdAt: string;
   user: User;
   postReactions?: Reaction[];
@@ -47,8 +49,8 @@ const CommunityPage = () => {
       {
         id: "1",
         description: "This is my first post!",
-        thamble:
-          "https://lgcglobalcontractingltd.com/js/files/16db0ffa-9838-4909-90f9-433ea317e9d0.jpg",
+        image:
+          "https://lgcglobalcontractingltd.com/js/files/1f030dab-2cae-4aa8-8908-2e1754363cc9.jpg",
         video:
           "https://lgcglobalcontractingltd.com/js/files/48bec27c-6751-45b6-a951-384131b7e359.mp4",
         createdAt: "2025-08-31T11:39:26.956Z",
@@ -101,10 +103,8 @@ const CommunityPage = () => {
         id: "2",
         description:
           "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        thamble:
-          "https://lgcglobalcontractingltd.com/js/files/99c0dc28-93e8-4e68-87f2-817bfe7e62e4.jpg",
-        video:
-          "https://lgcglobalcontractingltd.com/js/files/ce87eef7-dfec-4a6a-ab61-7e9e28985643.mp4",
+        image:
+          "https://images.unsplash.com/photo-1603215317604-385cde394880?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         createdAt: "2025-08-30T10:20:00.000Z",
         user: {
           id: "u2",
@@ -145,34 +145,28 @@ const CommunityPage = () => {
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-4xl mx-auto p-4 sm:p-6">
         {/* Post input box */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-white shadow-md p-4 mb-6">
           <div className="flex items-center gap-3 mb-3">
-            <img
-              src="https://randomuser.me/api/portraits/women/44.jpg"
-              alt="Current user"
-              className="w-10 h-10 rounded-full"
-            />
             <textarea
               placeholder="What's on your mind?"
-              className="w-full bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none resize-none"
+              className="w-full bg-gray-100 px-4 py-2 text-sm focus:outline-none resize-none"
             />
           </div>
           <div className="flex justify-end">
-            <button className="bg-blue-600 text-white px-4 py-1.5 rounded-full text-sm font-medium hover:bg-blue-700">
-              Post
-            </button>
+            <div></div>
+            <PrimaryButton title="Post" />
           </div>
         </div>
 
         {/* Posts */}
         {posts.map((post) => (
-          <div key={post.id} className="bg-white rounded-lg shadow-md mb-6">
+          <div key={post.id} className="bg-white shadow-md mb-6">
             {/* Post Header */}
             <div className="flex items-center gap-3 p-4">
               <img
                 src={post.user.profilePhoto}
                 alt={post.user.fullName}
-                className="w-10 h-10 rounded-full"
+                className="w-10 h-10 rounded-lg"
               />
               <div>
                 <h3 className="font-semibold text-sm">{post.user.fullName}</h3>
@@ -184,21 +178,22 @@ const CommunityPage = () => {
 
             {/* Post Content */}
             <div className="px-4 pb-4">
-              <p className="text-gray-800 text-sm mb-3">{post.description}</p>
-              {post.video ? (
-                <video
-                  controls
-                  className="w-full rounded-lg"
-                  src={post.video}
-                  poster={post.thamble}
-                />
-              ) : post.thamble ? (
-                <img
-                  src={post.thamble}
-                  alt="Post thumbnail"
-                  className="w-full rounded-lg"
-                />
-              ) : null}
+              <p className="text-gray-800 text-sm mb-3 ">{post.description}</p>
+              <div className="h-24 md:h-42 lg:h-64">
+                {post.video ? (
+                  <video
+                    controls
+                    className="w-full h-full object-cover"
+                    src={post.video}
+                  />
+                ) : post.image ? (
+                  <img
+                    src={post.image}
+                    alt="Post Image"
+                    className="w-full h-full object-cover"
+                  />
+                ) : null}
+              </div>
             </div>
 
             {/* Post Stats */}
