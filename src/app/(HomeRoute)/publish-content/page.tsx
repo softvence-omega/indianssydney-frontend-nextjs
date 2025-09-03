@@ -259,7 +259,7 @@ export default function PublishContent() {
     shortQuote: "",
     paragraph: "",
     tags: [],
-    dateTimeSlot: "0",
+    dateTimeSlot: new Date().toISOString(),
     additionalFields: {},
   };
 
