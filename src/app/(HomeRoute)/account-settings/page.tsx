@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import CommonPadding from "@/common/CommonPadding";
@@ -6,6 +6,7 @@ import AccountDetails from "@/components/account-settings/AccountDetails";
 import PrivacySettings from "@/components/account-settings/PrivacySettings";
 import AIRecommendations from "@/components/account-settings/AIRecommendations";
 import CommonWrapper from "@/common/CommonWrapper";
+import NotificationSettings from "@/components/account-settings/NotificationSettings";
 
 // Define tabs configuration
 const tabs = [
@@ -18,6 +19,11 @@ const tabs = [
     key: "privacy",
     label: "Privacy",
     component: <PrivacySettings />,
+  },
+  {
+    key: "notifications",
+    label: "Notifications",
+    component: <NotificationSettings />,
   },
   {
     key: "recommendations",
