@@ -5,11 +5,11 @@ import AdminOverviewCard from "./AdminOverviewCard";
 import RecentActivity from "./RecentActivity";
 import UserActivity from "./UserActivity";
 import EditorActivity from "./EditorActivity";
-// import dynamic from "next/dynamic";
+import dynamic from "next/dynamic";
 
-// const AdminEngagementChart = dynamic(() => import("./AdminEngagementChart"), {
-//   ssr: false,
-// });
+const AdminEngagementChart = dynamic(() => import("./AdminEngagementChart"), {
+  ssr: false,
+});
 
 const Page = () => {
   return (
@@ -20,7 +20,7 @@ const Page = () => {
         </p>
         <AdminOverviewCard />
         <div className="my-6 md:my-8 lg:my-10">
-          {/* <AdminEngagementChart /> */}
+          <AdminEngagementChart />
         </div>
         <div className="my-6 md:my-8 lg:my-10 grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div>
