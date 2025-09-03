@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
@@ -16,7 +16,6 @@ import { RootState } from "@/store/store"; // Adjust path to your store types
 import ProfileSheet from "@/components/profile/ProfileSheet";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -90,7 +89,7 @@ const Navbar: React.FC = () => {
     <nav className="w-full bg-bg-cream z-50 text-ink-black border-b border-slight-border">
       <CommonWrapper>
         {/* Top bar */}
-        <div className="flex items-center justify-between py-2 lg:py-0">
+        <div className="flex items-center justify-between py-2 md:py-4 lg:py-3">
           {/* Date - Hidden on small screens */}
           <div className="hidden lg:block text-xs lg:text-sm text-gray-600 flex-shrink-0">
             {today}
@@ -99,17 +98,21 @@ const Navbar: React.FC = () => {
           {/* Mobile hamburger - Left side on mobile */}
           <button
             onClick={toggleMenu}
-            className="lg:hidden text-gray-700 focus:outline-none order-1 md:order-none"
+            className="lg:hidden text-gray-700 focus:outline-none order-1 md:order-none  mr-2"
           >
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {isOpen ? (
+              <X className="h-4 w-4 md:h-6 md:w-6" />
+            ) : (
+              <Menu className="h-4 w-4 md:h-6 md:w-6" />
+            )}
           </button>
 
           {/* Logo/Title - Centered on mobile, normal on desktop */}
           <Link
             href="/"
-            className="text-center font-cursive text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[72px] font-bold py-3 flex-1 md:flex-none order-2 md:order-none cursor-pointer"
+            className="  flex-1 md:flex-none order-2 md:order-none cursor-pointer"
           >
-            The Australian Canvas
+            <img src="/TAC1.png" className="h-4 sm:h-6 md:h-8" alt="" />
           </Link>
 
           {/* Right actions */}
@@ -144,7 +147,7 @@ const Navbar: React.FC = () => {
                   className="flex items-center space-x-2 cursor-pointer"
                   onClick={toggleProfileSheet}
                 >
-                  <span className="text-xs md:text-sm">{user.name}</span>
+                  <span className="text-xs md:text-sm">{user.name.split(" ")[0]}</span>
                   <span className="text-sm">▼</span>
                 </div>
               </div>
@@ -167,7 +170,7 @@ const Navbar: React.FC = () => {
         {/* Search + menu (desktop only) */}
         <div className="hidden lg:block">
           {/* Searchbar */}
-          <div className="flex items-center justify-center py-6">
+          <div className="flex items-center justify-center py-4">
             <div className="flex gap-3 w-full max-w-xl relative items-center">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
                 <Search className="h-4 w-4" />
@@ -367,6 +370,3 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
-
-
-

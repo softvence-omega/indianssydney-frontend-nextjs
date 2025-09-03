@@ -61,12 +61,10 @@ const Footer = () => {
   return (
     <footer className="bg-[#1D1D1F] text-white  py-10">
       <CommonWrapper>
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-8">
           {/* Logo + Newsletter (larger column) */}
-          <div className="md:col-span-2">
-            <h2 className="font-bold text-2xl sm:text-3xl  md:text-4xl mb-4 font-cursive">
-              The Australian Canvas
-            </h2>
+          <div className="sm:col-span-2">
+            <img src="/TAC2.png" className="h-5 sm:h-8 mb-4" alt="" />
             <div className="flex flex-col gap-3">
               <input
                 type="email"
