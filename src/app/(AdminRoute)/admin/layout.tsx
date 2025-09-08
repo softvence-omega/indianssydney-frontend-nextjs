@@ -14,6 +14,7 @@ import {
   ChevronDown,
   X,
   CreditCard,
+  FileChartLine,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminNavBar from "@/components/Admin/shared/AdminNavbar";
@@ -51,6 +52,11 @@ const navItems: NavItem[] = [
     title: "Manage Plan",
     href: "/admin/manage-plan",
     icon: CreditCard,
+  },
+  {
+    title: "Reports",
+    href: "/admin/reports",
+    icon: FileChartLine ,
   },
   {
     title: "Settings",
@@ -150,7 +156,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
- const sidebarRef = useRef<HTMLDivElement | null>(null);
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -165,7 +171,6 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const hideNavBar = pathname === "/admin/active-user-details";
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

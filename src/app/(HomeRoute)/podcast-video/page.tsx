@@ -2,6 +2,9 @@ import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
 import LivePodcastCard from "@/components/live-podcast/LiveCard";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
+import LivePodcasts from "./LivePodcasts";
+import UpcomingPodcasts from "./UpcomingPodcasts";
+import WeeklyMagazine from "./WeeklyMagazine";
 
 const PodcastVideoPage = () => {
   return (
@@ -10,16 +13,15 @@ const PodcastVideoPage = () => {
         <CommonPadding>
           <PrimaryHeading title="Podcasts & Videos" icon={false} />
 
-          <div>
-            <PrimaryHeading title="Live Podcasts" />
-            <LivePodcastCard
-              episode="01"
-              title="Understanding TypeScript"
-              description="A deep dive into the features and benefits of TypeScript for modern web development."
-              liveStatus={true}
-              views={150}
-              imageSrc="/images/podcast-thumbnail.jpg"
-            />
+          <div className="mt-6 grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <div className="col-span-3">
+              <LivePodcasts />
+            </div>
+            <UpcomingPodcasts />
+          </div>
+          <div className="my-6">
+
+          <WeeklyMagazine  />
           </div>
         </CommonPadding>
       </CommonWrapper>

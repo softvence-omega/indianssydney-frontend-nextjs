@@ -7,7 +7,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
+    <div className="bg-bg-cream">
       <Navbar />
       {children}
       <Footer />

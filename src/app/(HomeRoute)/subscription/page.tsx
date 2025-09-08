@@ -1,15 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { Button } from "@/components/ui/button";
 
-import paypalImg from "@/assets/other/paypal.svg";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
+import PlanCard from "./PlanCard";
 
 const benefits = [
   {
@@ -35,34 +31,45 @@ const benefits = [
 ];
 const plans = [
   {
-    id: "weekly",
-    label:
-      "$0.25/week for your first year, billed as $1 every four weeks, then $12 thereafter.",
-    price: "$0.25/week",
+    price: "$5",
+    duration: "/Month",
     description:
-      "$1 every four weeks for your first year, then $12 thereafter.",
+      "Access daily articles, breaking news, and limited features. Perfect for casual readers.",
+    features: [
+      "Daily news updates",
+      "Access to top stories",
+      "Mobile-friendly design",
+      "Limited access to archives",
+      "Limited access to archives",
+    ],
+    buttonText: "Subscribe Basic",
   },
   {
-    id: "yearly",
-    label: "$10/year billed once for your first year, then $90 thereafter.",
-    price: "$10/year",
-    description: "Billed once for your first year, then $90 thereafter.",
+    price: "$15",
+    duration: "/Month",
+    description:
+      "Enjoy unlimited access to premium articles, in-depth reports, and exclusive newsletters.",
+    features: [
+      "Unlimited premium articles",
+      "Full archive access",
+      "Exclusive newsletters",
+      "Ad-free experience",
+      "Early access to special reports",
+    ],
+    buttonText: "Subscribe Premium",
   },
 ];
 
 const Subscription = () => {
   // Dynamic plan array
 
-  const [subscriptionPlan, setSubscriptionPlan] = useState<string>(plans[0].id);
 
   return (
     <div>
       <CommonWrapper>
         <CommonPadding>
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-[40px] font-bold mb-2 font-cursive">
-              The Australian Canvas
-            </h1>
+            <img src="/TAC1.png" className="w-full" alt="" />
             <p className="text-xl md:text-3xl lg:text-[32px] font-bold mb-2 py-3 md:py-5">
               With no limits comes new horizons
             </p>
@@ -72,38 +79,11 @@ const Subscription = () => {
               className="bg-transparent text-brick-red font-semibold border-2 border-brick-red hover:bg-amber-50 mb-6 md:mb-8"
             />
 
-            {/* Subscription Plan Selection with RadioGroup */}
-            <div className="mb-6 max-w-md mx-auto">
-              <RadioGroup
-                value={subscriptionPlan}
-                onValueChange={setSubscriptionPlan}
-                className="space-y-4"
-              >
-                {plans.map((plan) => (
-                  <div key={plan.id} className="flex items-start space-x-3">
-                    <RadioGroupItem value={plan.id} id={plan.id} />
-                    <Label
-                      htmlFor={plan.id}
-                      className="text-base md:text-lg font-medium leading-snug cursor-pointer"
-                    >
-                      {plan.label}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center items-center py-10">
+              {plans.map((plan, index) => (
+                <PlanCard key={index} {...plan} />
+              ))}
             </div>
-
-            {/* CTA buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mt-6">
-              <PrimaryButton
-                title="Continue With Card"
-                className="bg-blue-primary text-white hover:bg-blue-primary/90 border-blue-primary px-8 py-2"
-              />
-              <Button className="bg-transparent text-white hover:bg-white px-8 border-blue-primary sm:px-4 md:px-6 py-2 rounded-none text-sm cursor-pointer border-2">
-                <img src={paypalImg} alt="PayPal" width={60} height={10} />
-              </Button>
-            </div>
-
             {/* Subscribers enjoy more section */}
             <div className="mt-10 md:mt-16 text-left">
               <h3 className="text-2xl md:text-3xl lg:text-[32px] font-bold mb-4 md:mb-8 max-w-xl text-center mx-auto">

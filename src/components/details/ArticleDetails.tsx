@@ -8,6 +8,9 @@ import { ArrowLeft, Share2, Eye, Calendar, User } from "lucide-react";
 import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
 import RecommendedArticles from "./RecommendedArticles";
 import Newsletter from "./Newsletter";
+import PrimaryButton from "../reusable/PrimaryButton";
+import { useState } from "react";
+import ReportModal from "./ReportModal";
 
 interface ArticlePreviewProps {
   formData: DetailsData;
@@ -15,6 +18,7 @@ interface ArticlePreviewProps {
 }
 
 const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const currentDate = new Date().toLocaleDateString();
 
   // Sort additional fields by order
@@ -191,6 +195,54 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                     }
                   })}
                 </div>
+
+                {/* Report Button */}
+                <div className="my-4">
+                  <PrimaryButton
+                    title="Report"
+                    onClick={() => {
+                      setIsReportModalOpen(true);
+                    }}
+                  />
+                </div>
+
+                {/* Related Topics */}
+
+                <div>
+                  <h2 className="mb-4 text-xl font-semibold">Related Topics</h2>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {formData.tags.map((tag) => (
+                      <Badge
+                        key={tag}
+                        variant="secondary"
+                        className="bg-orange-100 text-orange-800"
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Profile Details */}
+                <div className="bg-bg-cream p-4 flex gap-4 items-center">
+                  <div>
+                    <img
+                      src={
+                        formData.user?.profilePhoto || "/default-profile.png"
+                      }
+                      className="w-10 h-10 md:w-16 md:h-16 rounded-full object-cover object-center"
+                      alt={formData.user?.fullName || "Author"}
+                    />
+                  </div>
+                  <div>
+                    <h2 className="text-xl md:text-2xl font-semibold">
+                      {formData.user?.fullName || "Author"}
+                    </h2>
+                    <h2 className="text-sm md:text-base">
+                      {formData.user?.email || "E-mail"}
+                    </h2>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -202,6 +254,11 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
           </div>
         </div>
       </div>
+      <ReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        contentId={formData.id}
+      />
     </div>
   );
 };
