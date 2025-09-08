@@ -7,6 +7,7 @@ import { logout } from "@/store/Slices/AuthSlice/authSlice";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ContributorApplicationModal from "./ContributorApplicationModal";
 
 interface ProfileSheetProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
   const [aiRecommendations, setAiRecommendations] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
 
   // Handle clicks outside the sidebar
   useEffect(() => {
@@ -48,6 +50,7 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
 
   // Check if the user role is Contributor
   const isContributor = user?.role === "contributor";
+  const isUser = user?.role === "user";
 
   return (
     <>
@@ -136,6 +139,15 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
               </Switch>
             </div>
 
+            {isUser && (
+              <div
+                className="pb-2 border-b border-gray-200 text-gray-700 hover:text-accent-orange transition"
+                 onClick={() => setOpen(true)}
+              >
+                Application for Contributor
+              </div>
+            )}
+
             {/* Notifications and Role-Specific Sections */}
             {isContributor && (
               <>
@@ -210,6 +222,7 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
           />
         </div>
       </aside>
+       <ContributorApplicationModal isOpen={open} onClose={() => setOpen(false)} />
     </>
   );
 };

@@ -90,7 +90,7 @@ export interface SubCategory {
 }
 
 export interface DetailsData {
-  id?: string;
+  id: string;
   contentType: "ARTICLE" | "VIDEO" | "PODCAST"; // Can be extended to other content types if necessary
   title: string;
   subTitle: string;
