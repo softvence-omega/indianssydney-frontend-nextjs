@@ -1,8 +1,13 @@
+import PrimaryHeading from "@/components/reusable/PrimaryHeading";
 
 const UpcomingPodcasts = () => {
   return (
-    <div>UpcomingPodcasts</div>
-  )
-}
+    <div>
+      <PrimaryHeading title="Upcoming Podcast" className="mb-4" />
 
-export default UpcomingPodcasts
+      
+    </div>
+  );
+};
+
+export default UpcomingPodcasts;

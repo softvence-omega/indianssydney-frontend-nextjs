@@ -3,7 +3,7 @@ export const demoDetailsData = {
   message: "Content created successfully",
   data: {
     id: "bfd09272-b294-40b9-8288-0e2f2f4964b1",
-    contentType: "VIDEO",
+  contentType: "VIDEO",
     title: "NestJS Upload Demo",
     subTitle: "Learn how to upload files using NestJS",
     paragraph:
