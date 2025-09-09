@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
 import React from "react";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-
 
 type PrimaryHeadingProps = {
   title: string;
   icon?: boolean;
   className?: string;
   seeAllRoute?: string;
+  iconSrc?: string;
 };
 
 const PrimaryHeading: React.FC<PrimaryHeadingProps> = ({
@@ -17,6 +17,7 @@ const PrimaryHeading: React.FC<PrimaryHeadingProps> = ({
   icon = true,
   className,
   seeAllRoute,
+  iconSrc = "/headingIcon.svg",
 }) => {
   const router = useRouter();
 
@@ -28,13 +29,7 @@ const PrimaryHeading: React.FC<PrimaryHeadingProps> = ({
       )}
     >
       <div className="flex items-center gap-2">
-        {icon && (
-          <img
-            src="/headingIcon.svg"
-            alt=""
-            className="w-4 h-4 md:w-6 md:h-6"
-          />
-        )}
+        {icon && <img src={iconSrc} alt="" className="w-4 h-4 md:w-6 md:h-6" />}
         <span className="text-nowrap">{title}</span>
       </div>
 
