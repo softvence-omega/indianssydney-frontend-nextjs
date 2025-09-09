@@ -16,7 +16,7 @@ const initialState: AuthState = {
   user: {
     profileImage:
       "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=300&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    role: "user",
+    role: "contributor",
     name: "John Doe",
     email: "s0y2K@example.com",
     about: "I am a test user",
