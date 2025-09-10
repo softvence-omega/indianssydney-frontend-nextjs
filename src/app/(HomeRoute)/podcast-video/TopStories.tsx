@@ -17,22 +17,18 @@ interface VideoCardProps {
   onPlay: (id: string) => void;
 }
 
-// Video Card Component
 const VideoCard: React.FC<VideoCardProps> = ({ video, isActive, onPlay }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const handlePlay = () => {
-    onPlay(video.id);
-  };
-
   return (
     <div
-      className="relative w-60 h-72 overflow-hidden bg-gray-900 shadow-lg cursor-pointer flex-shrink-0"
+      className="relative w-40 h-56 sm:w-52 sm:h-64 md:w-60 md:h-72 lg:w-64 lg:h-80 
+                 flex-shrink-0 overflow-hidden bg-gray-900 shadow-lg cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={handlePlay}
+      onClick={() => onPlay(video.id)}
     >
-      {/* Video Thumbnail */}
+      {/* Thumbnail */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${video.thumbnail})` }}
@@ -41,20 +37,20 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, isActive, onPlay }) => {
       </div>
 
       {/* Play Button */}
-      <div className="absolute top-4 left-4">
-        <div className="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center backdrop-blur-sm">
-          <Play className="w-5 h-5 text-white fill-white" />
+      <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-black/50 rounded-full flex items-center justify-center backdrop-blur-sm">
+          <Play className="w-4 h-4 sm:w-5 sm:h-5 text-white fill-white" />
         </div>
       </div>
 
-      {/* Video Title */}
-      <div className="absolute bottom-0 left-0 right-0 p-4">
-        <h3 className="text-white font-medium text-lg leading-tight font-playfair">
+      {/* Title */}
+      <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+        <h3 className="text-white font-medium text-sm sm:text-base md:text-lg leading-tight font-playfair line-clamp-2">
           {video.title}
         </h3>
       </div>
 
-      {/* Hover Effect */}
+      {/* Hover Overlay */}
       {isHovered && (
         <div className="absolute inset-0 bg-black/20 transition-all duration-200" />
       )}
@@ -163,36 +159,26 @@ const TopStories: React.FC = () => {
     ],
   };
 
-  const availableTabs = Object.keys(videoData);
-
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-    setActiveVideo(null);
-  };
-
-  const handleVideoPlay = (videoId: string) => {
-    setActiveVideo(videoId);
-  };
-
-  const currentVideos = videoData[activeTab] || [];
+const availableTabs = Object.keys(videoData);
 
   return (
-    <div className="bg-brick-red p-8">
+    <div className="bg-brick-red px-4 sm:px-6 md:px-8 py-6 sm:py-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 sm:mb-8 scrollbar-hide">
           <PrimaryHeading
             title="Top Shorts"
             iconSrc="/headingIcon2.svg"
             className="text-white"
           />
+
           {/* Tabs */}
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto md:overflow-visible">
             {availableTabs.map((tab) => (
               <button
                 key={tab}
-                onClick={() => handleTabChange(tab)}
-                className={`font-medium transition-colors duration-200 ${
+                onClick={() => setActiveTab(tab)}
+                className={`whitespace-nowrap font-medium transition-colors duration-200 ${
                   activeTab === tab
                     ? "text-white border-b-2 border-[#F9A03F] pb-1"
                     : "text-white/70 hover:text-white/90"
@@ -201,20 +187,20 @@ const TopStories: React.FC = () => {
                 {tab}
               </button>
             ))}
-            <button className="text-white/70 hover:text-white/90 font-medium transition-colors duration-200">
+            <button className="whitespace-nowrap text-white/70 hover:text-white/90 font-medium transition-colors duration-200">
               See all
             </button>
           </div>
         </div>
 
         {/* Video Cards */}
-        <div className="flex space-x-4 overflow-x-auto pb-4">
-          {currentVideos.map((video) => (
+        <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 sm:pb-4 scrollbar-hide">
+          {videoData[activeTab]?.map((video) => (
             <VideoCard
               key={video.id}
               video={video}
               isActive={activeVideo === video.id}
-              onPlay={handleVideoPlay}
+              onPlay={setActiveVideo}
             />
           ))}
         </div>

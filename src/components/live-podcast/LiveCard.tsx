@@ -62,20 +62,20 @@ const LivePodcastCard: React.FC<PodcastProps> = ({
           <Play className="w-6 h-6 text-black" fill="currentColor" />
         </div>
       </div>
-      <div className=" absolute bottom-0 right-0 left-0 flex justify-between items-center p-4 bg-white/20 backdrop-blur-[4px] border-white/30 border-t">
+      <div className=" absolute bottom-0 right-0 left-0 flex flex-col sm:flex-row gap-1 justify-between sm:items-center p-2 sm:p-4 bg-white/20 backdrop-blur-[4px] border-white/30 border-t">
         {/* Bottom Left Episode Info */}
         <div>
-          <div className=" text-white px-2 py-1 text-sm font-medium mb-2 border border-white ">
+          <span className=" text-white px-2 py-1 text-xs sm:text-sm font-medium  border border-white ">
             EPS - {episode}
-          </div>
-          <h3 className="text-white font-medium text-xl leading-tight max-w-xs font-playfair">
+          </span>
+          <h3 className="text-white font-medium text-base sm:text-xl mt-2 max-w-xs font-playfair">
             {title}
           </h3>
         </div>
 
         {/* Bottom Right Description */}
         <div className="max-w-sm">
-          <p className="text-white text-sm p-3 rounded  line-clamp-2">
+          <p className="text-white text-xs sm:text-sm rounded  line-clamp-2">
             {description}
           </p>
         </div>
