@@ -25,7 +25,7 @@ const UpcomingPodcasts = () => {
     <div>
       <PrimaryHeading title="Upcoming Podcast" className="mb-4" />
 
-      <div className="grid grid-cols-2 md:grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
         {events.slice(0,2).map((event, index) => (
           <CountdownTimerCard
             key={index}
