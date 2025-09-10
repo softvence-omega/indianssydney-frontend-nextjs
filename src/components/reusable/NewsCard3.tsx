@@ -1,4 +1,5 @@
 
+import Link from "next/link";
 import React from "react";
 
 type NewsCardProps = {
@@ -21,7 +22,7 @@ const NewsCard3: React.FC<NewsCardProps> = ({
   imgHeight = "h-[200px] md:h-[300px]",
 }) => {
   return (
-    <div className="grid  gap-6">
+    <Link href="/details/article/1" className="grid  gap-6">
       {/* Image Section */}
       <div className={`w-full overflow-hidden ${imgHeight}`}>
         <img src={image} alt={title} className="w-full h-full object-cover" />
@@ -42,7 +43,7 @@ const NewsCard3: React.FC<NewsCardProps> = ({
           <span>by {author}</span> • {readTime}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

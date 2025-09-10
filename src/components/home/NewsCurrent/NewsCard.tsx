@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 type NewsCardProps = {
@@ -18,7 +19,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
   readTime,
 }) => {
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-12 gap-6">
+    <Link href="/details/article/1" className="grid md:grid-cols-2 lg:grid-cols-12 gap-6">
       {/* Image Section */}
       <div className="w-full h-[300px] md:h-[400px] overflow-hidden lg:col-span-7">
         <img src={image} alt={title} className="w-full h-full object-cover" />
@@ -39,7 +40,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
           <span>by {author}</span> • {readTime}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
