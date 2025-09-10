@@ -1,17 +1,28 @@
 import React from "react";
 import Link from "next/link";
 
-// Sample dynamic data - in a real app, this would come from an API based on the ID
-const getReportData = (id) => {
-  const reports = {
+// Define types for report data
+interface Report {
+  id: number;
+  profile: string;
+  avatar: string;
+  contentTitle: string;
+  reason: string;
+  screenshots: string[];
+  reportedAt: string;
+  status: "pending" | "reviewed" | "rejected";
+}
+
+const getReportData = (id: string | number): Report | undefined => {
+  const reports: Record<number, Report> = {
     1: {
       id: 1,
       profile: "John Doe",
-      avatar: "/api/placeholder/40/40", // In a real app, this would be the actual avatar URL
+      avatar: "/api/placeholder/40/40",
       contentTitle:
         "Lorem ipsum is simply dummy text of the printing and typesetting industry.",
       reason:
-        "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
+        "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using &apos;Content here, content here&apos;, making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for &apos;lorem ipsum&apos; will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
       screenshots: ["/api/placeholder/200/150", "/api/placeholder/200/150"],
       reportedAt: "2024-01-15T10:30:00Z",
       status: "pending",
@@ -54,16 +65,20 @@ const getReportData = (id) => {
       status: "reviewed",
     },
   };
-  return reports[id];
+
+  const numericId = typeof id === "string" ? parseInt(id, 10) : id;
+  return reports[numericId];
 };
 
-// This is the App Router version - receives params as a prop
-const ReportDetailPage = ({ params }) => {
-  // In App Router, params is passed directly as a prop
-  const id = params?.id;
+// App Router page props
+interface ReportDetailPageProps {
+  params: {
+    id: string;
+  };
+}
 
-  // Get report data based on ID
-  const report = getReportData(id);
+const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ params }) => {
+  const report = getReportData(params.id);
 
   if (!report) {
     return (
@@ -74,7 +89,7 @@ const ReportDetailPage = ({ params }) => {
               Report Not Found
             </h2>
             <p className="text-gray-500 mb-4">
-              The report you're looking for doesn't exist.
+              The report you are looking for does not exist.
             </p>
             <Link
               href="/admin/reports"
@@ -88,7 +103,7 @@ const ReportDetailPage = ({ params }) => {
     );
   }
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -98,7 +113,7 @@ const ReportDetailPage = ({ params }) => {
     });
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: Report["status"]) => {
     switch (status) {
       case "pending":
         return "bg-yellow-100 text-yellow-800";
@@ -110,6 +125,7 @@ const ReportDetailPage = ({ params }) => {
         return "bg-gray-100 text-gray-800";
     }
   };
+
 
   return (
     <div className=" p-4 sm:p-6 lg:p-8">
