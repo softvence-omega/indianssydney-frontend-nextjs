@@ -63,7 +63,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, isActive, onPlay }) => {
 };
 
 // Main Top Shorts Component
-const TopShorts: React.FC = () => {
+const TopStories: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("Featured");
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
@@ -223,4 +223,4 @@ const TopShorts: React.FC = () => {
   );
 };
 
-export default TopShorts;
+export default TopStories;

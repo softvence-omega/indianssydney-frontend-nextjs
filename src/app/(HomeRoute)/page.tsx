@@ -12,6 +12,7 @@ import PodcastVideo from "@/components/home/PodcastVideo";
 import FoodFlavours from "@/components/home/FoodFlavours";
 import CultureIdentity from "@/components/home/CultureIdentity";
 import VoicesPerspective from "@/components/home/VoicesPerspective";
+import Chatbot from "@/components/chatbot/Chatbot";
 
 const page = () => {
   return (
@@ -31,6 +32,9 @@ const page = () => {
         <CultureIdentity />
         <VoicesPerspective />
         <Recommendation />
+        <div className=" bottom-4 right-4 fixed z-50">
+          <Chatbot/>
+        </div>
       </CommonWrapper>
     </div>
   );

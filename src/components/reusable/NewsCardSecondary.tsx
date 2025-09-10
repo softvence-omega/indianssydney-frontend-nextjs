@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 // Updated props to match Article interface
@@ -34,7 +35,7 @@ const NewsCardSecondary: React.FC<NewsCardProps> = ({
   publishedAt,
 }) => {
   return (
-    <div
+    <Link href="/details/article/1"
       className={`grid md:grid-cols-2 gap-6 ${
         layout === "right" ? "md:flex-row-reverse" : "md:flex-row"
       }`}
@@ -66,7 +67,7 @@ const NewsCardSecondary: React.FC<NewsCardProps> = ({
           {publishedAt && <span> • {publishedAt}</span>}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
