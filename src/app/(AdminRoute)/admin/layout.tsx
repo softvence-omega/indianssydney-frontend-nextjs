@@ -15,6 +15,7 @@ import {
   X,
   CreditCard,
   FileChartLine,
+  Settings2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminNavBar from "@/components/Admin/shared/AdminNavbar";
@@ -41,6 +42,17 @@ const navItems: NavItem[] = [
       { title: "Podcasts", href: "/admin/podcasts" },
       { title: "Live Events", href: "/admin/live-events" },
       { title: "Category Management", href: "/admin/category-management" },
+      { title: "Content Moderation", href: "/admin/content-moderation" },
+    ],
+  },
+  {
+    title: "Site Settings",
+    href: "/admin/website-management",
+    icon: Settings2,
+    subItems: [
+      { title: "Privacy Policy", href: "/admin/privacy-policy" },
+      { title: "Terms & Conditions", href: "/admin/terms" },
+      { title: "FAQ Management", href: "/admin/faq" },
     ],
   },
   {
@@ -56,7 +68,7 @@ const navItems: NavItem[] = [
   {
     title: "Reports",
     href: "/admin/reports",
-    icon: FileChartLine ,
+    icon: FileChartLine,
   },
   {
     title: "Settings",
