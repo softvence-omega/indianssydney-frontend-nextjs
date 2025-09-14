@@ -1,5 +1,24 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 // Define types for report data
 interface Report {
@@ -22,47 +41,10 @@ const getReportData = (id: string | number): Report | undefined => {
       contentTitle:
         "Lorem ipsum is simply dummy text of the printing and typesetting industry.",
       reason:
-        "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using &apos;Content here, content here&apos;, making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for &apos;lorem ipsum&apos; will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
+        "It is a long established fact that a reader will be distracted by the readable content...",
       screenshots: ["/api/placeholder/200/150", "/api/placeholder/200/150"],
       reportedAt: "2024-01-15T10:30:00Z",
       status: "pending",
-    },
-    2: {
-      id: 2,
-      profile: "John Doe",
-      avatar: "/api/placeholder/40/40",
-      contentTitle: "Another sample content report for demonstration purposes.",
-      reason:
-        "This is another example report with different content to show how the detail page adapts to various content lengths and types. The system should handle both short and long descriptions effectively.",
-      screenshots: ["/api/placeholder/200/150"],
-      reportedAt: "2024-01-14T15:45:00Z",
-      status: "reviewed",
-    },
-    3: {
-      id: 3,
-      profile: "Jane Smith",
-      avatar: "/api/placeholder/40/40",
-      contentTitle: "Sample content report for testing purposes.",
-      reason:
-        "This is a comprehensive test report to verify the functionality and layout of the reporting system across different devices and screen sizes.",
-      screenshots: [
-        "/api/placeholder/200/150",
-        "/api/placeholder/200/150",
-        "/api/placeholder/200/150",
-      ],
-      reportedAt: "2024-01-13T09:15:00Z",
-      status: "pending",
-    },
-    4: {
-      id: 4,
-      profile: "Mike Johnson",
-      avatar: "/api/placeholder/40/40",
-      contentTitle: "Test content with longer description.",
-      reason:
-        "This report contains extensive details about the reported content to test how the system handles longer text content and ensures proper formatting and readability across different viewport sizes.",
-      screenshots: ["/api/placeholder/200/150"],
-      reportedAt: "2024-01-12T14:20:00Z",
-      status: "reviewed",
     },
   };
 
@@ -70,48 +52,41 @@ const getReportData = (id: string | number): Report | undefined => {
   return reports[numericId];
 };
 
-// App Router page props
 interface ReportDetailPageProps {
-  params: {
-    id: string;
-  };
+  params: { id: string };
 }
 
 const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ params }) => {
-  const report = getReportData(params.id);
+  const reportData = getReportData(params.id);
+
+  const [report, setReport] = useState(reportData);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newStatus, setNewStatus] = useState<Report["status"]>("pending");
 
   if (!report) {
     return (
-      <div className="min-h-screen p-4 sm:p-6 lg:p-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-lg shadow p-8 text-center">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              Report Not Found
-            </h2>
-            <p className="text-gray-500 mb-4">
-              The report you are looking for does not exist.
-            </p>
-            <Link
-              href="/admin/reports"
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Back to Reports
-            </Link>
-          </div>
-        </div>
+      <div className="p-6">
+        <Card className="p-8 text-center">
+          <h2 className="text-xl font-semibold mb-2">Report Not Found</h2>
+          <p className="text-gray-500 mb-4">
+            The report you are looking for does not exist.
+          </p>
+          <Link href="/admin/reports">
+            <Button>Back to Reports</Button>
+          </Link>
+        </Card>
       </div>
     );
   }
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
 
   const getStatusColor = (status: Report["status"]) => {
     switch (status) {
@@ -126,146 +101,129 @@ const ReportDetailPage: React.FC<ReportDetailPageProps> = ({ params }) => {
     }
   };
 
+  const handleSaveStatus = () => {
+    if (report) {
+      setReport({ ...report, status: newStatus });
+    }
+    setIsModalOpen(false);
+  };
 
   return (
-    <div className=" p-4 sm:p-6 lg:p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header with Back Button */}
-        <div className="mb-6 sm:mb-8">
-          <Link
-            href="/admin/reports"
-            className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 mb-4 transition-colors"
-          >
-            <svg
-              className="mr-2 h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            Back to Reports
-          </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-            Reports
-          </h1>
-        </div>
+    <div className="p-4 sm:p-6 lg:p-8">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Back Link */}
+        <Link
+          href="/admin/reports"
+          className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
+        >
+          ← Back to Reports
+        </Link>
 
-        {/* Main Content Card */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          {/* Profile Section */}
-          <div className="p-6 sm:p-8 border-b border-gray-200">
-            <div className="flex items-center space-x-4">
-              <div className="flex-shrink-0">
-                <div className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center">
-                  <span className="text-sm font-medium text-gray-700">
-                    {report.profile
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </span>
-                </div>
+        {/* Report Card */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold">{report.profile}</h1>
+                <p className="text-sm text-gray-500">
+                  Reported on {formatDate(report.reportedAt)}
+                </p>
               </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
-                  {report.profile}
-                </h2>
-                <div className="mt-1 flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-                  <p className="text-sm text-gray-500">
-                    Reported on {formatDate(report.reportedAt)}
-                  </p>
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize mt-1 sm:mt-0 ${getStatusColor(
-                      report.status
-                    )}`}
-                  >
-                    {report.status}
-                  </span>
-                </div>
-              </div>
+              <Badge className={getStatusColor(report.status)}>
+                {report.status}
+              </Badge>
             </div>
-          </div>
+          </CardHeader>
 
-          {/* Content Details */}
-          <div className="p-6 sm:p-8 space-y-6">
+          <CardContent className="space-y-6">
             {/* Content Title */}
             <div>
-              <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">
-                Content Title:
+              <h3 className="text-sm font-medium text-gray-500 uppercase">
+                Content Title
               </h3>
-              <p className="text-base text-gray-900 leading-relaxed">
-                {report.contentTitle}
-              </p>
+              <p className="mt-1 text-base">{report.contentTitle}</p>
             </div>
 
             {/* Reason */}
             <div>
-              <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">
-                Reason:
+              <h3 className="text-sm font-medium text-gray-500 uppercase">
+                Reason
               </h3>
-              <p className="text-base text-gray-900 leading-relaxed">
-                {report.reason}
-              </p>
+              <p className="mt-1 text-base">{report.reason}</p>
             </div>
 
             {/* Screenshots */}
-            {report.screenshots && report.screenshots.length > 0 && (
+            {report.screenshots.length > 0 && (
               <div>
-                <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">
-                  Screen-shots:
+                <h3 className="text-sm font-medium text-gray-500 uppercase mb-2">
+                  Screenshots
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {report.screenshots.map((screenshot, index) => (
-                    <div key={index} className="relative group">
-                      <div className="aspect-w-4 aspect-h-3 bg-gray-200 rounded-lg overflow-hidden">
-                        <div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300">
-                          <div className="text-center">
-                            <svg
-                              className="mx-auto h-8 w-8 text-gray-400 mb-2"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                              />
-                            </svg>
-                            <p className="text-xs text-gray-500">
-                              Screenshot {index + 1}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      {/* Overlay for interaction */}
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-200 rounded-lg cursor-pointer"></div>
-                    </div>
+                  {report.screenshots.map((s, i) => (
+                    <img
+                      key={i}
+                      src={s}
+                      alt={`screenshot-${i}`}
+                      className="rounded-lg border"
+                    />
                   ))}
                 </div>
               </div>
             )}
-          </div>
+          </CardContent>
 
-          {/* Action Buttons */}
-          <div className="px-6 sm:px-8 py-4 bg-gray-50 border-t border-gray-200">
-            <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
-              <button className="inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                Mark as Reviewed
-              </button>
-              <button className="inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
-                Take Action
-              </button>
-            </div>
+          {/* Footer Actions */}
+          <div className="flex justify-end gap-3 p-4 border-t bg-gray-50">
+            <Button
+              variant="outline"
+              onClick={() => setReport({ ...report, status: "reviewed" })}
+            >
+              Mark as Reviewed
+            </Button>
+            <Button
+              className="bg-red-600 hover:bg-red-700 text-white"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Take Action
+            </Button>
           </div>
-        </div>
+        </Card>
       </div>
+
+      {/* Action Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Take Action on Report</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">
+              Select a new status for this report.
+            </p>
+            <Select
+              value={newStatus}
+              onValueChange={(value: Report["status"]) => setNewStatus(value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Choose status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="reviewed">Reviewed</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveStatus} className="bg-red-600">
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
