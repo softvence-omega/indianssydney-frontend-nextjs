@@ -34,23 +34,17 @@ const CategorySelection = ({ onSelect }: CategorySelectionProps) => {
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       icon: Mic,
     },
-    {
-      type: "live-event" as ContentType,
-      title: "Live Event",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      icon: Radio,
-    },
+    
   ];
 
   return (
     <div className="min-h-screen bg-white">
       <CommonPadding>
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <Card className="border border-dashed border-[#EDEFF0] bg-pure-white rounded-none">
             <CardContent className="p-8">
-              <h2 className="text-2xl font-bold mb-2">Choose Category:</h2>
-              <p className="text-gray-600 mb-8">
+              <h2 className="text-2xl font-bold mb-2 text-center">Choose Category</h2>
+              <p className="text-gray-600 mb-8 text-justify">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
                 industry. Lorem Ipsum has been the industrys standard dummy text
                 ever since the 1500s, when an unknown printer took a galley of
@@ -59,7 +53,7 @@ const CategorySelection = ({ onSelect }: CategorySelectionProps) => {
                 electronic typesetting, remaining essentially unchanged.
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {categories.map((category) => {
                   const IconComponent = category.icon;
                   return (

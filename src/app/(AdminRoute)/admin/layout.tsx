@@ -16,6 +16,7 @@ import {
   CreditCard,
   FileChartLine,
   Settings2,
+  Megaphone,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminNavBar from "@/components/Admin/shared/AdminNavbar";
@@ -46,6 +47,11 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    title: "User Management",
+    href: "/admin/user-management",
+    icon: UserRoundCog,
+  },
+  {
     title: "Site Settings",
     href: "/admin/website-management",
     icon: Settings2,
@@ -53,12 +59,13 @@ const navItems: NavItem[] = [
       { title: "Privacy Policy", href: "/admin/privacy-policy" },
       { title: "Terms & Conditions", href: "/admin/terms" },
       { title: "FAQ Management", href: "/admin/faq" },
+      { title: "Language Setting", href: "/admin/languages" },
     ],
   },
-  {
-    title: "User Management",
-    href: "/admin/user-management",
-    icon: UserRoundCog,
+   {
+    title: "Ad Management",
+    href: "/admin/ad-management",
+    icon: Megaphone ,
   },
   {
     title: "Manage Plan",
