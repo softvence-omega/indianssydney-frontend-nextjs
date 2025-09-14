@@ -29,18 +29,23 @@ const AnalyticsDashboard: React.FC = () => {
       <PredictiveInsight />
 
       {/* Main Grid */}
-      <div>
-        <div className="grid">
-        <UserEngagement />
-        <TopRecommendedArticles />
-
+      <div className="grid gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <UserEngagement />
+          <TopRecommendedArticles />
         </div>
-        <ContentMetrics />
-        <AITranscription />
-        <AutomatedTranslations />
-        <CommunityModeration />
-        <TopPerformingTags />
-        <GrowthMetrics />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="space-y-6">
+            <ContentMetrics />
+            <TopPerformingTags />
+            <AITranscription />
+          </div>
+          <div className="space-y-6 lg:col-span-2">
+            <CommunityModeration />
+            <AutomatedTranslations />
+            <GrowthMetrics />
+          </div>
+        </div>
       </div>
     </div>
   );
