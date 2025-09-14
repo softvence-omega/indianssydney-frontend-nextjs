@@ -112,7 +112,7 @@ const Navbar: React.FC = () => {
             href="/"
             className="  flex-1 md:flex-none order-2 md:order-none cursor-pointer"
           >
-            <img src="/TAC1.png" className="h-4 sm:h-6 md:h-8" alt="" />
+            <img src="/TAC1.png" className="h-4 sm:h-6 md:h-8 lg:h-10 xl:h-12" alt="" />
           </Link>
 
           {/* Right actions */}
