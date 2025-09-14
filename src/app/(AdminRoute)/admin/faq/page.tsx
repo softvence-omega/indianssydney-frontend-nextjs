@@ -185,7 +185,7 @@ const AdminFAQ = () => {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Manage FAQs</h1>
         <Button onClick={handleAddSection} className="bg-accent-orange hover:bg-orange-600">
-          <Plus className="h-4 w-4 mr-2" /> Add Section
+         + Add Section
         </Button>
       </div>
 

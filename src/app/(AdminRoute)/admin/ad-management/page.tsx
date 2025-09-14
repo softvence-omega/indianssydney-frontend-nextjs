@@ -90,7 +90,7 @@ const AdminAdManagement = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-50 rounded-lg">
+    <div >
       <div className="flex flex-col md:flex-row justify-between mb-4">
         <div>
           <h2 className="text-lg font-semibold">Ad Management</h2>

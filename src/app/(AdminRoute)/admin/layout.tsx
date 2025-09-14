@@ -17,7 +17,9 @@ import {
   FileChartLine,
   Settings2,
   Megaphone,
+  ChartPie,
 } from "lucide-react";
+import { AiOutlineOpenAI } from "react-icons/ai";
 import { cn } from "@/lib/utils";
 import AdminNavBar from "@/components/Admin/shared/AdminNavbar";
 import { toast } from "sonner";
@@ -33,6 +35,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { title: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboardIcon },
+  { title: "Analytics", href: "/admin/analytics", icon: ChartPie },
   {
     title: "Content",
     href: "/admin/content",
@@ -62,10 +65,19 @@ const navItems: NavItem[] = [
       { title: "Language Setting", href: "/admin/languages" },
     ],
   },
-   {
+  {
     title: "Ad Management",
     href: "/admin/ad-management",
-    icon: Megaphone ,
+    icon: Megaphone,
+  },
+  {
+    title: "AI Options",
+    href: "/admin/ai-management",
+    icon: AiOutlineOpenAI,
+    subItems: [
+      { title: "LLM Management", href: "/admin/llm-option" },
+      { title: "Laws & Regulation", href: "/admin/law-regulation" },
+    ],
   },
   {
     title: "Manage Plan",
