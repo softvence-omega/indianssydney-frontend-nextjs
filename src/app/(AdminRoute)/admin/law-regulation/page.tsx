@@ -2,24 +2,39 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FileText } from "lucide-react";
 
+interface Law {
+  id: number;
+  name: string;
+  file?: File | null;
+}
+
 const Page = () => {
   const [open, setOpen] = useState(false);
-  const [laws, setLaws] = useState([
+  const [laws, setLaws] = useState<Law[]>([
     { id: 1, name: "Racial Discrimination Act 1975" },
     { id: 2, name: "Sex Discrimination Act 1984" },
     { id: 3, name: "Australian Human Rights Commission Act 1986" },
   ]);
 
-  const [newLaw, setNewLaw] = useState({ name: "", file: null });
+  const [newLaw, setNewLaw] = useState<{ name: string; file: File | null }>({
+    name: "",
+    file: null,
+  });
 
   const handleAddLaw = () => {
     if (newLaw.name) {
-      setLaws([...laws, { id: Date.now(), name: newLaw.name }]);
+      setLaws([...laws, { id: Date.now(), name: newLaw.name, file: newLaw.file }]);
       setNewLaw({ name: "", file: null });
       setOpen(false);
     }
@@ -32,7 +47,7 @@ const Page = () => {
   return (
     <div className="">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row gap-4 text-center md:text-left  items-center justify-between mb-4">
+      <div className="flex flex-col md:flex-row gap-4 text-center md:text-left items-center justify-between mb-4">
         <div>
           <h2 className="text-lg sm:text-xl font-semibold">Laws and Regulations</h2>
           <p className="text-sm text-gray-500">
@@ -51,16 +66,13 @@ const Page = () => {
           {laws.map((law) => (
             <div
               key={law.id}
-              className="flex flex-col sm:flex-row  gap-3 sm:items-center justify-between border-b pb-2 last:border-none"
+              className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between border-b pb-2 last:border-none"
             >
               <div className="flex items-center space-x-2">
                 <FileText className="h-5 w-5 text-gray-600" />
                 <span className="text-gray-800">{law.name}</span>
               </div>
-              <div className="flex space-x-2 mt-2 sm:mt-0">
-                <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
-                  Update
-                </Button>
+              <div>
                 <Button
                   size="sm"
                   variant="destructive"
@@ -105,7 +117,10 @@ const Page = () => {
             <Button variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button className="bg-orange-600 hover:bg-orange-700" onClick={handleAddLaw}>
+            <Button
+              className="bg-orange-600 hover:bg-orange-700"
+              onClick={handleAddLaw}
+            >
               Add
             </Button>
           </DialogFooter>
