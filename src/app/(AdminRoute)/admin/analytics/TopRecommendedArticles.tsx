@@ -23,7 +23,7 @@ const TopRecommendedArticles: React.FC = () => {
         {articles.map((article, index) => (
           <div
             key={index}
-            className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0"
+            className="flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between py-2 border-b border-gray-100 last:border-b-0"
           >
             <div className="flex items-center gap-3">
               <span className="text-sm text-gray-500 font-medium">

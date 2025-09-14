@@ -8,7 +8,7 @@ interface MetricData {
 const CommunityModeration: React.FC = () => {
   const stats: MetricData[] = [
     {
-      label: "Comments Scanned",
+      label: "Article Scanned",
       value: "1,452",
       color: "bg-blue-50 text-blue-600",
     },
@@ -33,7 +33,7 @@ const CommunityModeration: React.FC = () => {
         {stats.map((stat, index) => (
           <div
             key={index}
-            className={`${stat.color} rounded-lg p-3 flex items-center justify-between transition-all hover:scale-105`}
+            className={`${stat.color} rounded-lg p-3 flex items-center justify-between transition-all`}
           >
             <span className="text-sm font-medium">{stat.label}</span>
             <span className="text-lg font-bold">{stat.value}</span>
