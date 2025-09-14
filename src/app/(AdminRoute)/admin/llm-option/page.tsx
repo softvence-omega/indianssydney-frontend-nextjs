@@ -26,8 +26,8 @@ interface LLMOption {
 
 const AdminLLMOption = () => {
   const [options, setOptions] = useState<LLMOption[]>([
-    { id: 1, platform: "Open AI", model: "GPT3.5-16K", apiKey: "************" },
-    { id: 2, platform: "Open AI", model: "GPT4", apiKey: "************" },
+    { id: 1, platform: "Open AI", model: "GPT3.5-16K", apiKey: "Ajabd2121dasjdndiw" },
+    { id: 2, platform: "Open AI", model: "GPT4", apiKey: "Ajabd2121dasjdndiw" },
   ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -112,7 +112,7 @@ const AdminLLMOption = () => {
               <tr key={opt.id} className="border-t text-nowrap">
                 <td className="px-4 py-3 ">{opt.platform}</td>
                 <td className="px-4 py-3">{opt.model}</td>
-                <td className="px-4 py-3">************</td>
+                <td className="px-4 py-3">{opt.apiKey}</td>
                 <td className="px-4 py-3 flex justify-end gap-2">
                   <Button
                     variant="outline"
@@ -180,7 +180,7 @@ const AdminLLMOption = () => {
             <div>
               <label className="text-sm font-medium">API Key</label>
               <Input
-                type="password"
+                type="text"
                 placeholder="Enter API Key"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
