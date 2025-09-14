@@ -37,7 +37,7 @@ const ContentMetrics: React.FC = () => {
               fontSize: "24px",
               fontWeight: "bold",
               color: "#f97316",
-              formatter: () => "95%",
+              formatter: () => "90%",
             },
             total: {
               show: true,
@@ -51,7 +51,7 @@ const ContentMetrics: React.FC = () => {
     },
   };
 
-  const series = [95, 5];
+  const series = [90, 10];
 
   if (!mounted) {
     return (
