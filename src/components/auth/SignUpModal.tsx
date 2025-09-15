@@ -16,6 +16,7 @@ import { z } from "zod";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
+import { register as userRegister } from "@/services/auth";
 
 // ✅ Schema with password confirmation
 const signUpSchema = z
@@ -55,7 +56,9 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
     defaultValues: { remember: false },
   });
 
-  const onSubmit = (data: SignUpSchemaType) => {
+  const onSubmit = async (data: SignUpSchemaType) => {
+    const result = await userRegister(data);
+    console.log(result);
     toast.success("Registered Successfully!");
     console.log("✅ Registration Data:", data);
     reset();
