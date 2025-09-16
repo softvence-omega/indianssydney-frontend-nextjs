@@ -16,9 +16,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
-import { useDispatch } from "react-redux"; // Import useDispatch
-import { login } from "@/store/Slices/AuthSlice/authSlice"; // Adjust path to your authSlice
+
+import { loginUser } from "@/store/Slices/AuthSlice/authSlice";
 import Image from "next/image";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store/store";
 
 // ✅ Schema
 const signInSchema = z.object({
@@ -44,7 +46,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
   onSwitchToForgot,
   // onSwitchToReset,
 }) => {
-  const dispatch = useDispatch(); // Initialize useDispatch
+  const dispatch = useDispatch<AppDispatch>(); // Initialize useDispatch
   const [showPassword, setShowPassword] = React.useState(false);
 
   const {
@@ -60,14 +62,21 @@ const SignInModal: React.FC<SignInModalProps> = ({
     },
   });
 
-  const onSubmit = (data: SignInSchemaType) => {
-    // Dispatch login action with email and optional name
-    dispatch(login({ email: data.email, name: "Developer" })); // Name is optional, adjust as needed
+ const onSubmit = async (data: SignInSchemaType) => {
+  try {
+    await dispatch(
+      loginUser({ email: data.email, password: data.password })
+    ).unwrap();
     toast.success("Logged In Successfully");
-    console.log("✅ Login Data:", data);
     reset();
-    onOpenChange(false); // Close the modal after successful login
-  };
+    onOpenChange(false);
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : String(err);
+    toast.error(message || "Login failed");
+  }
+};
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -86,7 +95,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
           <div className="md:col-span-5 flex flex-col justify-between">
             <DialogHeader>
               <DialogTitle className="text-3xl lg:text-[32px] font-bold mb-2 font-cursive">
-                The Australian Canvas
+                <img src="/TAC1.png" alt="" className="max-w-sm" />
               </DialogTitle>
               <h3 className="text-xl text-accent-orange font-semibold">
                 Sign In
