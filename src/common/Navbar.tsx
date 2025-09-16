@@ -16,6 +16,7 @@ import { RootState } from "@/store/store"; // Adjust path to your store types
 import ProfileSheet from "@/components/profile/ProfileSheet";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import VerifyOtpModal from "@/components/auth/VerifyOtpModal";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,6 +27,8 @@ const Navbar: React.FC = () => {
   const [forgotOpen, setForgotOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const [otpOpen, setOtpOpen] = useState(false);
+  const [otpEmail, setOtpEmail] = useState<string | null>(null);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [openSubmenus, setOpenSubmenus] = useState<string[]>([]);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -112,7 +115,11 @@ const Navbar: React.FC = () => {
             href="/"
             className="  flex-1 md:flex-none order-2 md:order-none cursor-pointer"
           >
-            <img src="/TAC1.png" className="h-4 sm:h-6 md:h-8 lg:h-10 xl:h-12" alt="" />
+            <img
+              src="/TAC1.png"
+              className="h-4 sm:h-6 md:h-8 lg:h-10 xl:h-12"
+              alt=""
+            />
           </Link>
 
           {/* Right actions */}
@@ -147,7 +154,9 @@ const Navbar: React.FC = () => {
                   className="flex items-center space-x-2 cursor-pointer"
                   onClick={toggleProfileSheet}
                 >
-                  <span className="text-xs md:text-sm">{user.name.split(" ")[0]}</span>
+                  <span className="text-xs md:text-sm">
+                    {user?.name?.split(" ")[0] || "User"}
+                  </span>
                   <span className="text-sm">▼</span>
                 </div>
               </div>
@@ -357,10 +366,15 @@ const Navbar: React.FC = () => {
         <SignUpModal
           open={signUpOpen}
           onOpenChange={setSignUpOpen}
-          onSwitchToSignIn={openSignIn}
+          onSwitchToSignIn={() => setSignInOpen(true)}
         />
         <ResetPasswordModal open={resetOpen} onOpenChange={setResetOpen} />
         <ForgotPasswordModal open={forgotOpen} onOpenChange={setForgotOpen} />
+        <VerifyOtpModal
+          open={otpOpen}
+          onOpenChange={setOtpOpen}
+          email={otpEmail}
+        />
       </CommonWrapper>
 
       {/* Profile Sheet */}

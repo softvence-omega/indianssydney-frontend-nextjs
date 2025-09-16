@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Switch } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store/store";
+import { AppDispatch, RootState } from "@/store/store";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { logout } from "@/store/Slices/AuthSlice/authSlice";
+import { logoutUser } from "@/store/Slices/AuthSlice/authSlice";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -16,7 +16,7 @@ interface ProfileSheetProps {
 
 const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
   const user = useSelector((state: RootState) => state.auth.user);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const [aiRecommendations, setAiRecommendations] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -42,8 +42,8 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
     };
   }, [isOpen, onClose]);
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    await dispatch(logoutUser()).unwrap();
     router.push("/");
     onClose();
   };

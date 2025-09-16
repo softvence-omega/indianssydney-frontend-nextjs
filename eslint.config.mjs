@@ -27,7 +27,7 @@ const eslintConfig = [
       "@next/next/no-img-element": "off",
       
       // Disable TypeScript any type errors
-      // "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-explicit-any": "off",
       
       // Disable unused variables warning
       // "@typescript-eslint/no-unused-vars": "off",

@@ -1,82 +1,262 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import axiosInstance from "@/services/axiosInstance";
+
+// Types
+//
+interface User {
+  id?: string;
+  role: string;
+  name: string;
+  email: string;
+  isLoggedIn: boolean;
+  profileImage?: string;
+  about?: string;
+  recommendations?: string[];
+}
 
 interface AuthState {
-  user: {
-    role: string;
-    name: string;
-    email: string;
-    isLoggedIn: boolean;
-    profileImage?: string;
-    about?: string;
-    recommendations?: string[];
-  } | null;
+  user: User | null;
+  token: string | null;
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: AuthState = {
-  user: {
-    profileImage:
-      "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=300&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    role: "contributor",
-    name: "John Doe",
-    email: "s0y2K@example.com",
-    about: "I am a test user",
-    isLoggedIn: true,
-    recommendations: [], // Initialize as empty array
-  },
+  user: null,
+  token: null,
+  loading: false,
+  error: null,
 };
 
+
+// API Calls (wrapped in async thunks)
+
+// Register
+export const registerUser = createAsyncThunk(
+  "auth/register",
+  async (
+    payload: { email: string; password: string; confirmPassword: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const { data } = await axiosInstance.post("/auth/register", payload);
+      // data = { resetToken }
+      localStorage.setItem("resetToken", data.resetToken);
+      return data;
+    } catch (error: any) {
+      console.error("Register Error:", error.response?.data || error.message);
+      return rejectWithValue(
+        error.response?.data?.message || "Registration failed"
+      );
+    }
+  }
+);
+
+// Verify OTP
+export const verifyUserOtp = createAsyncThunk(
+  "auth/verifyOtp",
+  async (
+    payload: { resetToken: string; emailOtp: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const { data } = await axiosInstance.post(
+        "/auth/signup-verify-otp",
+        payload
+      );
+      // data = { success, message, data: { token, user } }
+      const { token, user } = data.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      return { token, user };
+    } catch (error: any) {
+      console.error("Verify OTP Error:", error.response?.data || error.message);
+      return rejectWithValue(
+        error.response?.data?.message || "OTP verification failed"
+      );
+    }
+  }
+);
+
+// Login
+export const loginUser = createAsyncThunk(
+  "auth/login",
+  async (payload: { email: string; password: string }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.post("/auth/login", payload);
+      const { token, user } = data?.data;
+      console.log(token, data);
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      return { token, user };
+    } catch (error: any) {
+      console.error("Login Error:", error.response?.data || error.message);
+      return rejectWithValue(error.response?.data?.message || "Login failed");
+    }
+  }
+);
+
+// Reset Verify OTP
+export const resetVerifyOtp = createAsyncThunk(
+  "auth/resetVerifyOtp",
+  async (
+    payload: { resetToken: string; emailOtp: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const { data } = await axiosInstance.post(
+        "/auth/reset-verify-otp",
+        payload
+      );
+      return data;
+    } catch (error: any) {
+      console.error(
+        "Reset Verify OTP Error:",
+        error.response?.data || error.message
+      );
+      return rejectWithValue(
+        error.response?.data?.message || "Reset verify OTP failed"
+      );
+    }
+  }
+);
+
+// Forget Password
+export const forgetPassword = createAsyncThunk(
+  "auth/forgetPassword",
+  async (payload: { email: string }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.post(
+        "/auth/forget-password",
+        payload
+      );
+      return data;
+    } catch (error: any) {
+      console.error(
+        "Forget Password Error:",
+        error.response?.data || error.message
+      );
+      return rejectWithValue(
+        error.response?.data?.message || "Forget password failed"
+      );
+    }
+  }
+);
+
+// Reset Password
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async (
+    payload: { resetToken: string; newPassword: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const { data } = await axiosInstance.post(
+        "/auth/reset-password",
+        payload
+      );
+      return data;
+    } catch (error: any) {
+      console.error(
+        "Reset Password Error:",
+        error.response?.data || error.message
+      );
+      return rejectWithValue(
+        error.response?.data?.message || "Reset password failed"
+      );
+    }
+  }
+);
+
+// Logout
+export const logoutUser = createAsyncThunk("auth/logout", async () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("resetToken");
+  return true;
+});
+
+//
+// 🔹 Slice
+//
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    login: (
-      state,
-      action: PayloadAction<{
-        email: string;
-        name?: string;
-        profileImage?: string;
-        about?: string;
-        recommendations?: string[];
-      }>
-    ) => {
-      state.user = {
-        role: "contributor",
-        name: action.payload.name || "Test User",
-        email: action.payload.email,
-        isLoggedIn: true,
-        profileImage:
-          action.payload.profileImage ||
-          "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=300&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        about: action.payload.about || "I am a test user",
-        recommendations: action.payload.recommendations || [],
-      };
+    loadUserFromStorage: (state) => {
+      try {
+        const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user");
+
+        if (token && user) {
+          state.token = token;
+          state.user = { ...JSON.parse(user), isLoggedIn: true }; // ✅ ensure isLoggedIn flag
+        }
+      } catch (err) {
+        console.error("Error loading user from storage", err);
+      }
     },
-    logout: (state) => {
-      state.user = null;
-    },
-    updateUser: (
-      state,
-      action: PayloadAction<{
-        name?: string;
-        email?: string;
-        profileImage?: string;
-        about?: string;
-        recommendations?: string[];
-      }>
-    ) => {
+    updateUser: (state, action: PayloadAction<Partial<User>>) => {
       if (state.user) {
-        state.user = {
-          ...state.user,
-          name: action.payload.name || state.user.name,
-          email: action.payload.email || state.user.email,
-          profileImage: action.payload.profileImage || state.user.profileImage,
-          about: action.payload.about || state.user.about,
-          recommendations: action.payload.recommendations || state.user.recommendations,
-        };
+        state.user = { ...state.user, ...action.payload };
+        localStorage.setItem("user", JSON.stringify(state.user));
       }
     },
   },
+  extraReducers: (builder) => {
+    builder
+      // Register
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Verify OTP
+      .addCase(verifyUserOtp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyUserOtp.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload.token;
+        state.user = { ...action.payload.user, isLoggedIn: true };
+      })
+      .addCase(verifyUserOtp.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Login
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload.token;
+        state.user = { ...action.payload.user, isLoggedIn: true };
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Logout
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null;
+        state.token = null;
+      });
+  },
 });
 
-export const { login, logout, updateUser } = authSlice.actions;
+export const { loadUserFromStorage, updateUser } = authSlice.actions;
 export default authSlice.reducer;
