@@ -9,9 +9,10 @@ import { TbLogout } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
-import { logout } from "@/store/Slices/AuthSlice/authSlice";
+import { logoutUser } from "@/store/Slices/AuthSlice/authSlice";
 import { Search, Bell, Menu } from "lucide-react";
 import profile from "@/assets/other/cap.svg";
+import { AppDispatch } from "@/store/store";
 
 type NavBarProps = {
   role: "admin" | "editor";
@@ -22,11 +23,11 @@ const AdminNavBar: React.FC<NavBarProps> = ({ role, onToggleSidebar }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logoutUser()).unwrap();
     toast.success(`Logged out successfully!`);
     router.push("/");
   };
