@@ -1,29 +1,37 @@
 "use client";
 
-import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Card, CardContent } from "@/components/ui/card";
-import { Trash2, Pencil } from "lucide-react";
+import { useDeletePrivacyPolicyMutation, useGetAllPrivacyPolicyQuery, useUpdatePrivacyPolicyMutation } from "@/store/features/site/site.api";
+import { Pencil, Trash2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface PrivacySection {
-  id: number;
+  id: string;
   title: string;
-  content: string;
+  subtext: string;
 }
 
 const AdminPrivacyPolicy = () => {
-  const [sections, setSections] = useState<PrivacySection[]>([
-    { id: 1, title: "What we need from you", content: "Lorem Ipsum..." },
-    { id: 2, title: "How we protect your data", content: "Lorem Ipsum..." },
-  ]);
+  const { data } = useGetAllPrivacyPolicyQuery(undefined);
+  const [updatePrivacyPolicy] = useUpdatePrivacyPolicyMutation();
+  const [deletePrivacyPolicy] = useDeletePrivacyPolicyMutation();
+  const [sections, setSections] = useState<PrivacySection[]>([]);
+
+  useEffect(() => {
+    if (data) {
+      setSections(data?.data)
+    }
+  }, [data])
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<PrivacySection | null>(null);
 
-  const [form, setForm] = useState({ title: "", content: "" });
+  const [form, setForm] = useState({ title: "", subtext: "" });
 
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -31,33 +39,29 @@ const AdminPrivacyPolicy = () => {
   };
 
   // Add or Update Section
-  const handleSave = () => {
+  const handleSave = async () => {
     if (editing) {
-      setSections((prev) =>
-        prev.map((sec) =>
-          sec.id === editing.id ? { ...sec, title: form.title, content: form.content } : sec
-        )
-      );
+      const res = await updatePrivacyPolicy({ data: form, id: editing.id }).unwrap()
+      console.log(res)
     } else {
-      setSections((prev) => [
-        ...prev,
-        { id: Date.now(), title: form.title, content: form.content },
-      ]);
+
     }
-    setForm({ title: "", content: "" });
+    setForm({ title: "", subtext: "" });
     setEditing(null);
     setOpen(false);
   };
 
   // Delete section
-  const handleDelete = (id: number) => {
-    setSections((prev) => prev.filter((sec) => sec.id !== id));
+  const handleDelete = async (id: string) => {
+    console.log(id)
+    const res = await deletePrivacyPolicy(id).unwrap();
+    if (res?.success) toast.success("Section deleted successfully");
   };
 
   // Open edit modal
   const handleEdit = (section: PrivacySection) => {
     setEditing(section);
-    setForm({ title: section.title, content: section.content });
+    setForm({ title: section.title, subtext: section.subtext });
     setOpen(true);
   };
 
@@ -75,7 +79,7 @@ const AdminPrivacyPolicy = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-lg font-semibold">{section.title}</h2>
-                  <p className="text-sm text-gray-600">{section.content}</p>
+                  <p className="text-sm text-gray-600">{section.subtext}</p>
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -117,7 +121,7 @@ const AdminPrivacyPolicy = () => {
             <Textarea
               name="content"
               placeholder="Section Content"
-              value={form.content}
+              value={form.subtext}
               onChange={handleChange}
               rows={5}
             />
