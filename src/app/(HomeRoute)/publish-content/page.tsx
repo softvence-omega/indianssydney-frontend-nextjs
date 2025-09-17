@@ -234,9 +234,10 @@
 
 "use client";
 
-import { useState } from "react";
-import CategorySelection from "@/components/article-input/CategorySelection";
 import ArticleDetailsForm from "@/components/article-input/ArticleDetailsForm";
+import CategorySelection from "@/components/article-input/CategorySelection";
+import { useCreateNewArticleMutation } from "@/store/features/article/article.api";
+import { useState } from "react";
 import ArticlePreview from "./ArticlePreview";
 import { ContentType, FormData } from "./types";
 
@@ -245,6 +246,7 @@ import { ContentType, FormData } from "./types";
 // Main Component
 
 export default function PublishContent() {
+  const [createNewArticle] = useCreateNewArticleMutation()
   // Initial form data
   const initialFormData: FormData = {
     contentType: "article",
@@ -290,7 +292,8 @@ export default function PublishContent() {
   // Handle publish
   const handlePublish = async () => {
     try {
-      console.log("Publishing content:", formData);
+      const result = await createNewArticle(formData).unwrap();
+      console.log(result)
       // API call could go here
       setStep("submitted");
       setFormData(initialFormData); // reset
