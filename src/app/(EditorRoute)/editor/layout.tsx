@@ -18,8 +18,9 @@ import {
 import { cn } from "@/lib/utils";
 import AdminNavBar from "@/components/Admin/shared/AdminNavbar";
 import { toast } from "sonner";
-import { logout } from "@/store/Slices/AuthSlice/authSlice";
+import { logoutUser } from "@/store/Slices/AuthSlice/authSlice";
 import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/store/store";
 
 interface NavItem {
   title: string;
@@ -138,11 +139,11 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
  const sidebarRef = useRef<HTMLDivElement | null>(null);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
   const handleLogout = () => {
-    dispatch(logout());
+   dispatch(logoutUser()).unwrap();
     toast.success("Admin Logged out successfully!");
     router.push("/");
   };
