@@ -18,12 +18,14 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         setUser: (state, action) => {
-            const { user } = action.payload || {}
+            const { user, token } = action.payload || {}
 
-            if (!user) {
+            if (!user || !token) {
                 console.error('Invalid payload received:', action.payload)
                 return
             }
+
+            state.token = token
             state.user = user
         },
         logout: state => {
@@ -35,7 +37,8 @@ const authSlice = createSlice({
 
 export const { setUser, logout } = authSlice.actions
 
-export const selectUser = (state: RootState) => state.auth
+export const selectUser = (state: RootState) => state.auth?.user
+export const selectToken = (state: RootState) => state.auth?.token
 
 const authReducer = authSlice.reducer
 export default authReducer

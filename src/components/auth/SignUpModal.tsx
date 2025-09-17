@@ -8,29 +8,21 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useRegisterMutation } from "@/store/features/auth/auth.api";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 import { Label } from "../ui/label";
 import VerifyOtpModal from "./VerifyOtpModal";
 
-const signUpSchema = z
-  .object({
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string(),
-    remember: z.boolean().optional(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
-type SignUpSchemaType = z.infer<typeof signUpSchema>;
+type SignUpSchemaType = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  remember?: boolean;
+};
 
 type SignUpModalProps = {
   open: boolean;
@@ -45,32 +37,43 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
 }) => {
   const [openVerifyOtpModal, setOpenVerifyOtpModal] = React.useState(false);
   const [email, setEmail] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState(false)
+  const [loading, setLoading] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
+  const [registerNewUser] = useRegisterMutation();
 
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<SignUpSchemaType>({
-    resolver: zodResolver(signUpSchema),
     defaultValues: { remember: false },
   });
 
   const onSubmit = async (data: SignUpSchemaType) => {
-    setLoading(true)
-    try {
-      setEmail(data?.email)
-      toast.success("Registered successfully! Please verify OTP.");
-      reset();
-      setOpenVerifyOtpModal(!openVerifyOtpModal);
+    if (data.password !== data.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
 
-      // keep modal open for OTP or close and show VerifyOtpModal
-      onOpenChange(false);
-      setLoading(false)
+    setLoading(true);
+    setEmail(data.email);
+
+    try {
+      const result = await registerNewUser(data).unwrap();
+      if (result?.resetToken) {
+        setOpenVerifyOtpModal(true);
+        toast.success("Registered successfully! Please verify OTP.");
+        reset();
+        onOpenChange(false);
+      } else {
+        toast.error(result?.data?.message || "Registration failed");
+      }
     } catch (err: any) {
-      toast.error(err || "Registration failed");
+      toast.error(err?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -105,7 +108,13 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                 <div>
                   <Label className="mb-1">Email</Label>
                   <Input
-                    {...register("email")}
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                        message: "Invalid email address",
+                      },
+                    })}
                     type="email"
                     placeholder="Email"
                     className="rounded-none mt-2 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4"
@@ -120,7 +129,13 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
-                      {...register("password")}
+                      {...register("password", {
+                        required: "Password is required",
+                        minLength: {
+                          value: 6,
+                          message: "Password must be at least 6 characters",
+                        },
+                      })}
                       placeholder="Min. 6 characters"
                       className="rounded-none mt-2 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4"
                     />
@@ -143,7 +158,11 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                   <Label className="mb-1">Re-enter Password</Label>
                   <Input
                     type={showPassword ? "text" : "password"}
-                    {...register("confirmPassword")}
+                    {...register("confirmPassword", {
+                      required: "Please re-enter password",
+                      validate: (value) =>
+                        value === watch("password") || "Passwords do not match",
+                    })}
                     placeholder="Re-enter password"
                     className="rounded-none mt-2 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4"
                   />

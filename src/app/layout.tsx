@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </PersistGate>
         </Provider>
 
-        <Toaster />
+        <Toaster richColors/>
         <div id="google_translate_element"></div>
       </body>
     </html>

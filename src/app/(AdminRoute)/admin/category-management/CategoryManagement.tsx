@@ -29,8 +29,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCreateNewCategoryMutation, useDeleteCategoryMutation, useGetAllCategoryQuery } from "@/store/features/category/category.api";
 import { ChevronDown, ChevronUp, Edit, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 // Define types for categories based on API response
 interface SubCategory {
@@ -83,6 +85,9 @@ const sampleCategories: Category[] = [
 ];
 
 const CategoryManagement = () => {
+  const [createNewCategory] = useCreateNewCategoryMutation()
+  const [deleteCategoryById] = useDeleteCategoryMutation()
+  const { data, isSuccess } = useGetAllCategoryQuery(undefined)
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -91,6 +96,8 @@ const CategoryManagement = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
+
+  useEffect(() => { setCategories(data?.data) }, [data?.data, isSuccess])
 
   const [newCategory, setNewCategory] = useState({
     name: "",
@@ -135,46 +142,50 @@ const CategoryManagement = () => {
 
   const handleSaveAdd = async () => {
     // Generate slug from name
-    const slug = newCategory.name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
+    try {
+      const slug = newCategory.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
 
-    // Generate subcategories with slugs
-    const subCategories = newCategory.subnames
-      .filter((name) => name.trim() !== "")
-      .map((subname) => ({
-        id: `sub-${Math.random().toString(36).substr(2, 9)}`,
-        subname,
-        subslug: subname
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/(^-|-$)/g, ""),
-        categoryId: `cat-${Math.random().toString(36).substr(2, 9)}`,
-      }));
+      // Generate subcategories with slugs
+      const subCategories = newCategory.subnames
+        .filter((name) => name.trim() !== "")
+        .map((subname) => ({
+          id: `sub-${Math.random().toString(36).substr(2, 9)}`,
+          subname,
+          subslug: subname
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, ""),
+          categoryId: `cat-${Math.random().toString(36).substr(2, 9)}`,
+        }));
 
-    const newCat: Category = {
-      id: `cat-${Math.random().toString(36).substr(2, 9)}`,
-      name: newCategory.name,
-      slug,
-      tamplate: newCategory.tamplate,
-      createdAt: new Date().toISOString(),
-      isDeleted: false,
-      subCategories,
-    };
-    setCategories([...categories, newCat]);
-    setOpenAddModal(false);
-    setNewCategory({
-      name: "",
-      tamplate: "",
-      subnames: [""],
-    });
+      const newCat: Category = {
+        id: `cat-${Math.random().toString(36).substr(2, 9)}`,
+        name: newCategory.name,
+        slug,
+        tamplate: newCategory.tamplate,
+        createdAt: new Date().toISOString(),
+        isDeleted: false,
+        subCategories,
+      };
+      const result = await createNewCategory(newCat)?.unwrap();
+      console.log(newCat)
+      if (result?.success) {
+        toast.success(result.message)
+        setOpenAddModal(false);
+      }
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Something went wrong");
+    }
+
   };
 
   const handleSaveEdit = () => {
     if (!selectedCategory) return;
 
-    const updatedCategories = categories.map((cat) => {
+    const updatedCategories = categories?.map((cat) => {
       if (cat.id === selectedCategory.id) {
         // Update subcategories
         const subCategories = editCategory.subnames
@@ -218,14 +229,10 @@ const CategoryManagement = () => {
     setOpenEditModal(false);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!selectedCategory) return;
-
-    const updatedCategories = categories.filter(
-      (cat) => cat.id !== selectedCategory.id
-    );
-
-    setCategories(updatedCategories);
+    const result = await deleteCategoryById(selectedCategory?.id)?.unwrap();
+    if (result?.success) toast.success("Category deleted successfully")
     setOpenDeleteModal(false);
   };
 
@@ -295,7 +302,7 @@ const CategoryManagement = () => {
 
       {/* Category List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        {categories.map((category) => {
+        {categories?.map((category) => {
           const isExpanded = expandedCards.has(category.id);
           return (
             <div
@@ -357,7 +364,7 @@ const CategoryManagement = () => {
 
                 {isExpanded && (
                   <ul className="mt-2 space-y-2">
-                    {category.subCategories.map((sub) => (
+                    {category?.subCategories?.map((sub) => (
                       <li
                         key={sub.id}
                         className="text-sm p-2 bg-gray-50 rounded-md"
