@@ -1,23 +1,23 @@
 import React, { useState, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { RootState } from "@/store/store";
-import { updateUser } from "@/store/Slices/AuthSlice/authSlice";
 import PrimaryButton from "../reusable/PrimaryButton";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/store/hook";
 
 const AccountDetails = () => {
   const dispatch = useDispatch();
-const router = useRouter();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const router = useRouter();
+  const user = useAppSelector((state) => state?.auth?.user);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Initialize state with user data or fallback values
   const [newProfileImage, setNewProfileImage] = useState<string | null>(
-    user?.profileImage || null
+    user?.fullName || null
   );
-  const [newName, setNewName] = useState(user?.name || "");
-  const [newAbout, setNewAbout] = useState(user?.about || "");
+  const [newName, setNewName] = useState(user?.fullName || "");
+  const [newAbout, setNewAbout] = useState(user?.fullName || "");
 
   // Trigger file input click when image is clicked
   const handleImageClick = () => {
@@ -35,24 +35,24 @@ const router = useRouter();
   const handleSave = () => {
     if (!user) {
       toast.error("Please log in to update your profile.");
-     router.push("/sign-in");
+      router.push("/sign-in");
       return;
     }
 
     const updatedData = {
       name: newName,
-      profileImage: newProfileImage || user.profileImage,
+      profileImage: newProfileImage || user.profilePhoto,
       about: newAbout,
-      recommendations: user.recommendations, // Preserve existing recommendations
+      recommendations: user.profilePhoto, // Preserve existing recommendations
     };
 
     console.log("Updated User Data:", updatedData);
-    dispatch(updateUser(updatedData));
+    // dispatch(updateUser(updatedData));
     toast.success("Changes saved!");
   };
 
   // If user is not logged in, show a message or redirect
-  if (!user || !user.isLoggedIn) {
+  if (!user) {
     return (
       <div className="text-center p-6">
         <p className="text-lg text-gray-700">
@@ -74,7 +74,7 @@ const router = useRouter();
         <img
           src={
             newProfileImage ||
-            user.profileImage ||
+            user?.profilePhoto ||
             "https://via.placeholder.com/150"
           }
           alt="Profile"
