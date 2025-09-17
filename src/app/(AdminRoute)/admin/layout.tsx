@@ -1,31 +1,31 @@
 "use client";
 
+import AdminNavBar from "@/components/Admin/shared/AdminNavbar";
+import { cn } from "@/lib/utils";
+import { logout } from "@/store/features/auth/auth.slice";
+import { AppDispatch } from "@/store/store";
+import { motion } from "framer-motion";
+import {
+  ChartPie,
+  ChevronDown,
+  CopyIcon,
+  CreditCard,
+  FileChartLine,
+  LayoutDashboardIcon,
+  Megaphone,
+  Settings,
+  Settings2,
+  UserRoundCog,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { TbLogout } from "react-icons/tb";
-import {
-  CopyIcon,
-  LayoutDashboardIcon,
-  Settings,
-  UserRoundCog,
-  ChevronDown,
-  X,
-  CreditCard,
-  FileChartLine,
-  Settings2,
-  Megaphone,
-  ChartPie,
-} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineOpenAI } from "react-icons/ai";
-import { cn } from "@/lib/utils";
-import AdminNavBar from "@/components/Admin/shared/AdminNavbar";
-import { toast } from "sonner";
-import { logoutUser } from "@/store/Slices/AuthSlice/authSlice";
+import { TbLogout } from "react-icons/tb";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store/store";
+import { toast } from "sonner";
 
 interface NavItem {
   title: string;
@@ -193,7 +193,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   const handleLogout = () => {
-    dispatch(logoutUser()).unwrap();
+    dispatch(logout());
     toast.success("Admin Logged out successfully!");
     router.push("/");
   };

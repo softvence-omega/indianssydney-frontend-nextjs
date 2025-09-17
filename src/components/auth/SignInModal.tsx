@@ -1,4 +1,6 @@
-import * as React from "react";
+import signInImg from "@/assets/auth/signIn.png";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -6,21 +8,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import signInImg from "@/assets/auth/signIn.png";
-import { Label } from "../ui/label";
-import { FcGoogle } from "react-icons/fc";
-import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Eye, EyeOff } from "lucide-react";
+import * as React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
+import { z } from "zod";
+import { Label } from "../ui/label";
 
-import { loginUser } from "@/store/Slices/AuthSlice/authSlice";
+import { AppDispatch } from "@/store/store";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store/store";
 
 // ✅ Schema
 const signInSchema = z.object({
@@ -62,20 +61,21 @@ const SignInModal: React.FC<SignInModalProps> = ({
     },
   });
 
- const onSubmit = async (data: SignInSchemaType) => {
-  try {
-    await dispatch(
-      loginUser({ email: data.email, password: data.password })
-    ).unwrap();
-    toast.success("Logged In Successfully");
-    reset();
-    onOpenChange(false);
-  } catch (err) {
-    const message =
-      err instanceof Error ? err.message : String(err);
-    toast.error(message || "Login failed");
-  }
-};
+  const onSubmit = async (data: SignInSchemaType) => {
+    try {
+      // await dispatch(
+      //   loginUser({ email: data?.email, password: data?.password })
+      // ).unwrap();
+      toast.success("Logged In Successfully");
+      reset();
+      onOpenChange(false);
+    } catch (err) {
+      console.log(err)
+      const message =
+        err instanceof Error ? err.message : String(err);
+      toast.error(message || "Login failed");
+    }
+  };
 
 
   return (

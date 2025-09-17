@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,11 +8,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
 import { toast } from "sonner";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/store/store";
-import { verifyUserOtp } from "@/store/Slices/AuthSlice/authSlice";
 
 type VerifyOtpModalProps = {
   open: boolean;
@@ -25,23 +22,19 @@ const VerifyOtpModal: React.FC<VerifyOtpModalProps> = ({
   onOpenChange,
   email,
 }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { loading } = useSelector((state: RootState) => state.auth);
+  const [loading, setLoading] = useState(false)
 
   const [otp, setOtp] = useState("");
 
   const handleVerify = async () => {
+    setLoading(true)
     try {
       const resetToken = localStorage.getItem("resetToken");
       if (!resetToken) throw new Error("Missing resetToken");
 
-      const res = await dispatch(
-        verifyUserOtp({ resetToken, emailOtp: otp })
-      ).unwrap();
-
       toast.success("OTP verified successfully!");
-      console.log("📌 Verify OTP Response:", res);
-      onOpenChange(false);
+      onOpenChange(!open);
+      setLoading(false)
     } catch (err: any) {
       toast.error(err || "OTP verification failed");
     }

@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Switch } from "@headlessui/react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/store/store";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { logoutUser } from "@/store/Slices/AuthSlice/authSlice";
+import { AppDispatch, RootState } from "@/store/store";
+import { Switch } from "@headlessui/react";
 import { X } from "lucide-react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import ContributorApplicationModal from "./ContributorApplicationModal";
+import { logout } from "@/store/features/auth/auth.slice";
 
 interface ProfileSheetProps {
   isOpen: boolean;
@@ -43,13 +43,13 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
   }, [isOpen, onClose]);
 
   const handleLogout = async () => {
-    await dispatch(logoutUser()).unwrap();
+    await dispatch(logout())
     router.push("/");
     onClose();
   };
 
   // Check if the user role is Contributor
-  const isContributor = user?.role === "contributor";
+  const isContributor = user?.role === "CONTIBUTOR";
   const isUser = user?.role === "USER";
 
   return (
@@ -66,9 +66,8 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
       {/* Sidebar */}
       <aside
         ref={sheetRef}
-        className={`fixed top-0 right-0 w-[300px] md:w-[400px] lg:w-[500px] h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 w-[300px] md:w-[400px] lg:w-[500px] h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
         aria-hidden={!isOpen}
       >
         <div className="flex flex-col h-full p-6">
@@ -76,12 +75,12 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
           <div className="flex justify-between items-start">
             <div className="flex flex-col mt-2 mb-6">
               <img
-                src={user?.profileImage || "https://via.placeholder.com/100"}
+                src={user?.profilePhoto || "https://via.placeholder.com/100"}
                 alt="User Avatar"
                 className="w-24 h-24 rounded-full border-2 border-gray-200 mb-3 object-cover"
               />
               <p className="text-lg font-semibold">
-                {user?.name || "Guest User"}
+                {user?.fullName || "Guest User"}
               </p>
               <p className="text-sm text-gray-500">
                 {user?.email || "No email"}
@@ -127,14 +126,12 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
               <Switch
                 checked={aiRecommendations}
                 onChange={setAiRecommendations}
-                className={`${
-                  aiRecommendations ? "bg-blue-primary" : "bg-gray-300"
-                } relative inline-flex h-6 w-11 items-center rounded-full transition-colors`}
+                className={`${aiRecommendations ? "bg-blue-primary" : "bg-gray-300"
+                  } relative inline-flex h-6 w-11 items-center rounded-full transition-colors`}
               >
                 <span
-                  className={`${
-                    aiRecommendations ? "translate-x-6" : "translate-x-1"
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                  className={`${aiRecommendations ? "translate-x-6" : "translate-x-1"
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition`}
                 />
               </Switch>
             </div>
@@ -142,7 +139,7 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
             {isUser && (
               <div
                 className="pb-2 border-b border-gray-200 text-gray-700 hover:text-accent-orange transition"
-                 onClick={() => setOpen(true)}
+                onClick={() => setOpen(true)}
               >
                 Application for Contributor
               </div>
@@ -213,6 +210,20 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
           </nav>
+          <Link
+            href="/admin"
+            className="pb-2 border-b border-gray-200 text-gray-700 hover:text-accent-orange transition"
+            onClick={onClose}
+          >
+            Admin Dashboard
+          </Link>
+          <Link
+            href="/editor"
+            className="pb-2 border-b border-gray-200 text-gray-700 hover:text-accent-orange transition"
+            onClick={onClose}
+          >
+            Editor Dashboard
+          </Link>
 
           {/* Logout Button */}
           <PrimaryButton
@@ -222,7 +233,7 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
           />
         </div>
       </aside>
-       <ContributorApplicationModal isOpen={open} onClose={() => setOpen(false)} />
+      <ContributorApplicationModal isOpen={open} onClose={() => setOpen(false)} />
     </>
   );
 };

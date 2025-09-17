@@ -1,25 +1,6 @@
 "use client";
 
 import DashboardHeader from "@/components/reusable/DashboardHeader";
-import { Button } from "@/components/ui/button";
-import { Plus, Edit, Trash2, ChevronDown, ChevronUp } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,6 +12,25 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ChevronDown, ChevronUp, Edit, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
 
 // Define types for categories based on API response
 interface SubCategory {
@@ -133,7 +133,7 @@ const CategoryManagement = () => {
     setOpenDeleteModal(true);
   };
 
-  const handleSaveAdd = () => {
+  const handleSaveAdd = async () => {
     // Generate slug from name
     const slug = newCategory.name
       .toLowerCase()
@@ -162,7 +162,6 @@ const CategoryManagement = () => {
       isDeleted: false,
       subCategories,
     };
-
     setCategories([...categories, newCat]);
     setOpenAddModal(false);
     setNewCategory({
