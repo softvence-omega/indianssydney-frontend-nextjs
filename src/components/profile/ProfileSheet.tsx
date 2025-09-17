@@ -50,7 +50,7 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
 
   // Check if the user role is Contributor
   const isContributor = user?.role === "contributor";
-  const isUser = user?.role === "user";
+  const isUser = user?.role === "USER";
 
   return (
     <>
