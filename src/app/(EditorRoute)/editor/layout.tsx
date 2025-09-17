@@ -18,7 +18,6 @@ import {
 import { cn } from "@/lib/utils";
 import AdminNavBar from "@/components/Admin/shared/AdminNavbar";
 import { toast } from "sonner";
-import { logoutUser } from "@/store/Slices/AuthSlice/authSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 
@@ -143,7 +142,6 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   const handleLogout = () => {
-   dispatch(logoutUser()).unwrap();
     toast.success("Admin Logged out successfully!");
     router.push("/");
   };

@@ -40,13 +40,13 @@ const BookmarkedArticles = () => {
           <div>
             <div className="flex gap-4 items-center justify-center mt-2 mb-6">
               <img
-                src={user?.profileImage || "https://via.placeholder.com/100"}
+                src={user?.profilePhoto || "https://via.placeholder.com/100"}
                 alt="User Avatar"
                 className="w-18 h-18 rounded-full border-2 border-gray-200 object-cover"
               />
               <div>
                 <p className="text-lg font-semibold">
-                  {user?.name || "Guest User"}
+                  {user?.fullName || "Guest User"}
                 </p>
                 <p className="text-sm text-gray-500">
                   {user?.email || "No email"}

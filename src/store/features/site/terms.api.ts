@@ -1,23 +1,14 @@
 import { baseAPI } from "@/store/api/baseApi";
 
-export const siteApi = baseAPI.injectEndpoints({
+export const termsApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
-    createPrivacyPolicy: build.mutation({
-      query: ({ data }) => ({
-        url: `/settings/privacy-policy`,
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["privacy-policy"],
-    }),
-    deletePrivacyPolicy: build.mutation({
+    deleteTerms: build.mutation({
       query: (id: string) => ({
         url: `/settings/privacy-policy/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["privacy-policy"],
     }),
-    updatePrivacyPolicy: build.mutation({
+    updateTerms: build.mutation({
       query: ({ data, id }: { data: any; id: string }) => ({
         url: `/settings/privacy-policy/${id}`,
         method: "PATCH",
@@ -25,7 +16,7 @@ export const siteApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["privacy-policy"],
     }),
-    getAllPrivacyPolicy: build.query({
+    getAllTerms: build.query({
       query: () => ({
         url: "/settings/privacy-policy",
         method: "GET",
@@ -38,8 +29,7 @@ export const siteApi = baseAPI.injectEndpoints({
 });
 
 export const {
-  useCreatePrivacyPolicyMutation,
-  useGetAllPrivacyPolicyQuery,
-  useUpdatePrivacyPolicyMutation,
-  useDeletePrivacyPolicyMutation,
-} = siteApi;
+  useGetAllTermsQuery,
+  useUpdateTermsMutation,
+  useDeleteTermsMutation,
+} = termsApi;
