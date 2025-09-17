@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const user = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state) => state?.auth?.user);
   const [signInOpen, setSignInOpen] = useState(false);
   const [signUpOpen, setSignUpOpen] = useState(false);
   const [forgotOpen, setForgotOpen] = useState(false);
@@ -86,6 +86,16 @@ const Navbar: React.FC = () => {
 
   const [selectedLang, setSelectedLang] = useState(languages[0].code);
 
+  const handleUserButtonClick = () => {
+    if (user?.role === "USER" || user?.role === "CONTRIBUTOR") {
+      toggleProfileSheet();
+    } else if (user?.role === "ADMIN") {
+      router.push("/editor");
+    } else if (user?.role === "SUPER_ADMIN") {
+      router.push("/admin");
+    }
+  };
+
   return (
     <nav className="w-full bg-bg-cream z-50 text-ink-black border-b border-slight-border">
       <CommonWrapper>
@@ -129,8 +139,9 @@ const Navbar: React.FC = () => {
                 onChange={(e) => setSelectedLang(e.target.value)}
                 className="appearance-none border-none bg-transparent text-sm cursor-pointer pl-6 pr-2 py-2 outline-none"
                 style={{
-                  backgroundImage: `url(${languages.find((l) => l.code === selectedLang)?.flag
-                    })`,
+                  backgroundImage: `url(${
+                    languages.find((l) => l.code === selectedLang)?.flag
+                  })`,
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "20px 14px",
                   backgroundPosition: "left center",
@@ -149,7 +160,7 @@ const Navbar: React.FC = () => {
               <div className="flex items-center space-x-2 md:space-x-3">
                 <div
                   className="flex items-center space-x-2 cursor-pointer"
-                  onClick={toggleProfileSheet}
+                  onClick={handleUserButtonClick}
                 >
                   <span className="text-xs md:text-sm">
                     {user?.fullName?.split(" ")[0] || "User"}
@@ -268,10 +279,11 @@ const Navbar: React.FC = () => {
                     <button
                       key={lang.code}
                       onClick={() => setSelectedLang(lang.code)}
-                      className={`flex items-center space-x-2 p-2 border rounded transition-colors ${selectedLang === lang.code
-                        ? "bg-brick-red text-white border-brick-red"
-                        : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-                        }`}
+                      className={`flex items-center space-x-2 p-2 border rounded transition-colors ${
+                        selectedLang === lang.code
+                          ? "bg-brick-red text-white border-brick-red"
+                          : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+                      }`}
                     >
                       <img
                         src={lang.flag}
@@ -307,10 +319,11 @@ const Navbar: React.FC = () => {
                             className="ml-auto"
                           >
                             <ChevronDown
-                              className={`h-4 w-4 ${openSubmenus.includes(menu.label)
-                                ? "rotate-180"
-                                : ""
-                                }`}
+                              className={`h-4 w-4 ${
+                                openSubmenus.includes(menu.label)
+                                  ? "rotate-180"
+                                  : ""
+                              }`}
                             />
                           </button>
                         ) : (
