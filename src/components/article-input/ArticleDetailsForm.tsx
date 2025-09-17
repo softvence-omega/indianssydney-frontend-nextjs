@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -13,8 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Upload, X, Plus, ArrowLeft } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { ArrowLeft, Plus, Upload, X } from "lucide-react";
+import { useRef, useState } from "react";
 import type {
   AdditionalField,
   AdditionalFieldType,
@@ -38,9 +38,7 @@ const ArticleDetailsForm = ({
   const [additionalFieldType, setAdditionalFieldType] = useState<
     AdditionalFieldType | ""
   >("");
-  const audioInputRef = useRef<HTMLInputElement>(null);
-  const imageInputRef = useRef<HTMLInputElement>(null);
-  const videoInputRef = useRef<HTMLInputElement>(null);
+
 
   const categories = [
     "Technology",
@@ -76,12 +74,7 @@ const ArticleDetailsForm = ({
     "video",
   ];
 
-  const handleFileUpload = (
-    field: "audioFile" | "image" | "video",
-    files: FileList | null
-  ) => {
-    onUpdate({ [field]: files ? files[0] : null });
-  };
+
 
   const handleAdditionalFieldFile = (
     fieldKey: string,
@@ -200,6 +193,32 @@ const ArticleDetailsForm = ({
         return "Publish Article:";
     }
   };
+
+  // for dynamic file input
+  const [uploadType, setUploadType] = useState<"image" | "audio" | "video" | "">("");
+  const [formFileData, setFormFileData] = useState<{ file?: File }>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  //   const handleFileUpload = (
+  //   field: "audioFile" | "image" | "video",
+  //   files: FileList | null
+  // ) => {
+  //   onUpdate({ [field]: files ? files[0] : null });
+  // };
+  const handleDynamicFileUpload = (files: FileList | null) => {
+    if (files && files[0]) {
+      setFormFileData({ file: files[0] });
+      onUpdate({ [uploadType]: files ? files[0] : null });
+    }
+  };
+
+  const acceptMap = {
+    image: "image/*",
+    audio: "audio/*",
+    video: "video/*",
+  };
+
+
   return (
     <div className="min-h-screen bg-white p-4">
       <div className="max-w-4xl mx-auto">
@@ -323,97 +342,53 @@ const ArticleDetailsForm = ({
                 industry
               </p>
             </div>
-
-            {/* Audio File */}
+            {/* dynamic part */}
             <div>
-              <Label className="text-sm font-medium mb-2 block">
-                3. Audio File (optional)
-              </Label>
-              <div className="border border-dashed border-gray-300 p-4 text-center">
-                <input
-                  type="file"
-                  accept="audio/*"
-                  ref={audioInputRef}
-                  className="hidden"
-                  id="audio-upload"
-                  onChange={(e) =>
-                    handleFileUpload("audioFile", e.target.files)
-                  }
-                />
-                <label
-                  htmlFor="audio-upload"
-                  className="flex flex-col items-center cursor-pointer"
-                >
-                  <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-500 mb-2">
-                    {formData.audioFile
-                      ? formData.audioFile.name
-                      : "Drag & Drop Audio"}
-                  </p>
-                  <Button variant="outline" size="sm">
-                    📎 Upload
-                  </Button>
-                </label>
-              </div>
+              {/* Dropdown for choosing type */}
+              <Label className="text-sm font-medium mb-2 block">3. Select File Type</Label>
+              <Select onValueChange={(val) => setUploadType(val as "image" | "audio" | "video")}>
+                <SelectTrigger className="w-[200px] mb-4">
+                  <SelectValue placeholder="Choose type..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="image">Image</SelectItem>
+                  <SelectItem value="audio">Audio</SelectItem>
+                  <SelectItem value="video">Video</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Dynamic file upload */}
+              {uploadType && (
+                <div>
+                  <Label className="text-sm font-medium mb-2 block">
+                    Upload {uploadType.charAt(0).toUpperCase() + uploadType.slice(1)} (optional)
+                  </Label>
+                  <div className="border border-dashed border-gray-300 p-4 text-center">
+                    <input
+                      type="file"
+                      accept={acceptMap[uploadType]}
+                      ref={fileInputRef}
+                      className="hidden"
+                      id={`${uploadType}-upload`}
+                      onChange={(e) => handleDynamicFileUpload(e.target.files)}
+                    />
+                    <label
+                      htmlFor={`${uploadType}-upload`}
+                      className="flex flex-col items-center cursor-pointer"
+                    >
+                      <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-sm text-gray-500 mb-2">
+                        {formFileData.file ? formFileData.file.name : `Drag & Drop ${uploadType}`}
+                      </p>
+                      <Button variant="outline" size="sm">
+                        📎 Upload
+                      </Button>
+                    </label>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Image Upload */}
-            <div>
-              <Label className="text-sm font-medium mb-2 block">
-                4. Upload Image (optional)
-              </Label>
-              <div className="border border-dashed border-gray-300 p-4 text-center">
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={imageInputRef}
-                  className="hidden"
-                  id="image-upload"
-                  onChange={(e) => handleFileUpload("image", e.target.files)}
-                />
-                <label
-                  htmlFor="image-upload"
-                  className="flex flex-col items-center cursor-pointer"
-                >
-                  <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-500 mb-2">
-                    {formData.image ? formData.image.name : "Drag & Drop Image"}
-                  </p>
-                  <Button variant="outline" size="sm">
-                    📎 Upload
-                  </Button>
-                </label>
-              </div>
-            </div>
-
-            {/* Video Upload */}
-            <div>
-              <Label className="text-sm font-medium mb-2 block">
-                5. Upload Video (optional)
-              </Label>
-              <div className="border border-dashed border-gray-300 p-4 text-center">
-                <input
-                  type="file"
-                  accept="video/*"
-                  ref={videoInputRef}
-                  className="hidden"
-                  id="video-upload"
-                  onChange={(e) => handleFileUpload("video", e.target.files)}
-                />
-                <label
-                  htmlFor="video-upload"
-                  className="flex flex-col items-center cursor-pointer"
-                >
-                  <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-500 mb-2">
-                    {formData.video ? formData.video.name : "Drag & Drop Video"}
-                  </p>
-                  <Button variant="outline" size="sm">
-                    📎 Upload
-                  </Button>
-                </label>
-              </div>
-            </div>
 
             {/* Image Caption */}
             <div>

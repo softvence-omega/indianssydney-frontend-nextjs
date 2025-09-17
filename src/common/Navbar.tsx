@@ -1,27 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
-import { ChevronDown, Menu, Search, X } from "lucide-react";
 import CommonWrapper from "@/common/CommonWrapper";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
+import { ChevronDown, Menu, Search, X } from "lucide-react";
+import React, { useState } from "react";
 
+import ForgotPasswordModal from "@/components/auth/ForgotPassword";
+import ResetPasswordModal from "@/components/auth/ResetPasswordModal";
 import SignInModal from "@/components/auth/SignInModal";
 import SignUpModal from "@/components/auth/SignUpModal";
-import ResetPasswordModal from "@/components/auth/ResetPasswordModal";
-import ForgotPasswordModal from "@/components/auth/ForgotPassword";
 import { allMenus } from "@/utils/demoData";
-import { useSelector } from "react-redux"; // Import useSelector and useDispatch
 
-import { RootState } from "@/store/store"; // Adjust path to your store types
-import ProfileSheet from "@/components/profile/ProfileSheet";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import VerifyOtpModal from "@/components/auth/VerifyOtpModal";
+import ProfileSheet from "@/components/profile/ProfileSheet";
+import { useAppSelector } from "@/store/hook";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-
+  const user = useAppSelector((state) => state.auth.user);
   const [signInOpen, setSignInOpen] = useState(false);
   const [signUpOpen, setSignUpOpen] = useState(false);
   const [forgotOpen, setForgotOpen] = useState(false);
@@ -36,7 +35,6 @@ const Navbar: React.FC = () => {
   const toggleProfileSheet = () => setIsSheetOpen((prev) => !prev);
 
   // Access user from Redux store
-  const user = useSelector((state: RootState) => state.auth.user);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -131,9 +129,8 @@ const Navbar: React.FC = () => {
                 onChange={(e) => setSelectedLang(e.target.value)}
                 className="appearance-none border-none bg-transparent text-sm cursor-pointer pl-6 pr-2 py-2 outline-none"
                 style={{
-                  backgroundImage: `url(${
-                    languages.find((l) => l.code === selectedLang)?.flag
-                  })`,
+                  backgroundImage: `url(${languages.find((l) => l.code === selectedLang)?.flag
+                    })`,
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "20px 14px",
                   backgroundPosition: "left center",
@@ -148,14 +145,14 @@ const Navbar: React.FC = () => {
             </div>
 
             {/* Conditional rendering: Show user name or Sign In button */}
-            {user && user.isLoggedIn ? (
+            {user ? (
               <div className="flex items-center space-x-2 md:space-x-3">
                 <div
                   className="flex items-center space-x-2 cursor-pointer"
                   onClick={toggleProfileSheet}
                 >
                   <span className="text-xs md:text-sm">
-                    {user?.name?.split(" ")[0] || "User"}
+                    {user?.fullName?.split(" ")[0] || "User"}
                   </span>
                   <span className="text-sm">▼</span>
                 </div>
@@ -271,11 +268,10 @@ const Navbar: React.FC = () => {
                     <button
                       key={lang.code}
                       onClick={() => setSelectedLang(lang.code)}
-                      className={`flex items-center space-x-2 p-2 border rounded transition-colors ${
-                        selectedLang === lang.code
-                          ? "bg-brick-red text-white border-brick-red"
-                          : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-                      }`}
+                      className={`flex items-center space-x-2 p-2 border rounded transition-colors ${selectedLang === lang.code
+                        ? "bg-brick-red text-white border-brick-red"
+                        : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+                        }`}
                     >
                       <img
                         src={lang.flag}
@@ -311,11 +307,10 @@ const Navbar: React.FC = () => {
                             className="ml-auto"
                           >
                             <ChevronDown
-                              className={`h-4 w-4 ${
-                                openSubmenus.includes(menu.label)
-                                  ? "rotate-180"
-                                  : ""
-                              }`}
+                              className={`h-4 w-4 ${openSubmenus.includes(menu.label)
+                                ? "rotate-180"
+                                : ""
+                                }`}
                             />
                           </button>
                         ) : (

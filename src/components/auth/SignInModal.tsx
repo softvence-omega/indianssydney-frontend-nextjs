@@ -1,4 +1,6 @@
-import * as React from "react";
+import signInImg from "@/assets/auth/signIn.png";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -6,30 +8,24 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import signInImg from "@/assets/auth/signIn.png";
-import { Label } from "../ui/label";
-import { FcGoogle } from "react-icons/fc";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useLoginMutation } from "@/store/features/auth/auth.api";
+import { setUser } from "@/store/features/auth/auth.slice";
+import { useAppDispatch } from "@/store/hook";
 import { Eye, EyeOff } from "lucide-react";
-import { toast } from "sonner";
-
-import { loginUser } from "@/store/Slices/AuthSlice/authSlice";
 import Image from "next/image";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store/store";
+import * as React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { FcGoogle } from "react-icons/fc";
+import { toast } from "sonner";
+import { Label } from "../ui/label";
 
-// ✅ Schema
-const signInSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  remember: z.boolean().optional(),
-});
 
-type SignInSchemaType = z.infer<typeof signInSchema>;
+
+type SignInSchemaType = {
+  email: string;
+  password: string;
+  remember: boolean;
+}
 
 type SignInModalProps = {
   open: boolean;
@@ -46,9 +42,10 @@ const SignInModal: React.FC<SignInModalProps> = ({
   onSwitchToForgot,
   // onSwitchToReset,
 }) => {
-  const dispatch = useDispatch<AppDispatch>(); // Initialize useDispatch
   const [showPassword, setShowPassword] = React.useState(false);
-
+  const [loading, setLoading] = React.useState(false);
+  const [loginUserWithEmail] = useLoginMutation()
+  const dispatch = useAppDispatch()
   const {
     register,
     handleSubmit,
@@ -56,26 +53,26 @@ const SignInModal: React.FC<SignInModalProps> = ({
     reset,
     formState: { errors },
   } = useForm<SignInSchemaType>({
-    resolver: zodResolver(signInSchema),
     defaultValues: {
       remember: false,
     },
   });
 
- const onSubmit = async (data: SignInSchemaType) => {
-  try {
-    await dispatch(
-      loginUser({ email: data.email, password: data.password })
-    ).unwrap();
-    toast.success("Logged In Successfully");
-    reset();
-    onOpenChange(false);
-  } catch (err) {
-    const message =
-      err instanceof Error ? err.message : String(err);
-    toast.error(message || "Login failed");
-  }
-};
+  const onSubmit = async (data: SignInSchemaType) => {
+    setLoading(true);
+    try {
+      const result = await loginUserWithEmail(data).unwrap();
+      if (result) {
+        toast.success("Logged In Successfully");
+        dispatch(setUser({ user: result?.result?.data?.user, token: result?.result?.data?.token }))
+        reset();
+        onOpenChange(false);
+      }
+    } catch (error: any) {
+      toast.error(error?.data?.message as string || "Something went wrong");
+    }
+    setLoading(false);
+  };
 
 
   return (
@@ -116,7 +113,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
                   type="email"
                   placeholder="Email"
                   className="rounded-none mt-2 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4"
-                  {...register("email")}
+                  {...register("email", { required: "Email is required" })}
                 />
                 {errors.email && (
                   <p className="text-xs text-red-500 mt-1">
@@ -133,7 +130,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     className="rounded-none mt-2 pr-10 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4"
-                    {...register("password")}
+                    {...register("password", { required: "Password is required" })}
                   />
                   <button
                     type="button"
@@ -185,7 +182,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
                 className="bg-brick-red hover:bg-[#7c2d22] text-white px-3 sm:px-4 md:px-6 py-2 rounded-none border text-sm border-[#62180F]"
                 type="submit"
               >
-                Sign In
+                {loading ? "Sign In...." : " Sign In"}
               </button>
             </form>
 

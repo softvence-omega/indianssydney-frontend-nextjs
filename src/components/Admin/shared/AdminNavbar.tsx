@@ -1,18 +1,18 @@
 // components/Admin/shared/AdminNavBar.tsx
 "use client";
 
-import { useState } from "react";
+import profile from "@/assets/other/cap.svg";
+import { logout } from "@/store/features/auth/auth.slice";
+import { AppDispatch } from "@/store/store";
+import { Bell, Menu, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { FaUserCheck } from "react-icons/fa6";
 import { TbLogout } from "react-icons/tb";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { useDispatch } from "react-redux";
-import { logoutUser } from "@/store/Slices/AuthSlice/authSlice";
-import { Search, Bell, Menu } from "lucide-react";
-import profile from "@/assets/other/cap.svg";
-import { AppDispatch } from "@/store/store";
+import { toast } from "sonner";
 
 type NavBarProps = {
   role: "admin" | "editor";
@@ -27,7 +27,7 @@ const AdminNavBar: React.FC<NavBarProps> = ({ role, onToggleSidebar }) => {
   const router = useRouter();
 
   const handleLogout = () => {
-    dispatch(logoutUser()).unwrap();
+    dispatch(logout())
     toast.success(`Logged out successfully!`);
     router.push("/");
   };
