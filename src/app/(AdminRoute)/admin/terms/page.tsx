@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,31 +13,43 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trash2, Pencil } from "lucide-react";
+import {
+  useGetAllTermsQuery,
+  useCreateTermsMutation,
+  useUpdateTermsMutation,
+  useDeleteTermsMutation,
+} from "@/store/features/site/terms.api"; // adjust path if needed
+import { toast } from "sonner";
 
 interface TermsSection {
-  id: number;
+  id: string;
   title: string;
   content: string;
 }
 
 const AdminTerms = () => {
-  const [sections, setSections] = useState<TermsSection[]>([
-    {
-      id: 1,
-      title: "What we need from you.",
-      content: "Lorem Ipsum is simply dummy text of the printing...",
-    },
-    {
-      id: 2,
-      title: "How we protect your data.",
-      content: "Lorem Ipsum is simply dummy text of the printing...",
-    },
-  ]);
+  const { data, refetch } = useGetAllTermsQuery(undefined);
+  const [createTerms] = useCreateTermsMutation();
+  const [updateTerms] = useUpdateTermsMutation();
+  const [deleteTerms] = useDeleteTermsMutation();
 
+  const [sections, setSections] = useState<TermsSection[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<TermsSection | null>(null);
-
   const [form, setForm] = useState({ title: "", content: "" });
+
+  // 🔹 Delete confirm modal state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [sectionToDelete, setSectionToDelete] = useState<TermsSection | null>(
+    null
+  );
+
+  // Load API data into local state
+  useEffect(() => {
+    if (data?.data) {
+      setSections(data.data);
+    }
+  }, [data]);
 
   // handle input
   const handleChange = (
@@ -47,29 +59,51 @@ const AdminTerms = () => {
   };
 
   // add or update section
-  const handleSave = () => {
-    if (editing) {
-      setSections((prev) =>
-        prev.map((sec) =>
-          sec.id === editing.id
-            ? { ...sec, title: form.title, content: form.content }
-            : sec
-        )
-      );
-    } else {
-      setSections((prev) => [
-        ...prev,
-        { id: Date.now(), title: form.title, content: form.content },
-      ]);
+  const handleSave = async () => {
+    try {
+      if (editing) {
+        const res = await updateTerms({
+          id: editing.id,
+          data: form,
+        }).unwrap();
+        if (res?.success) toast.success("Section updated successfully");
+      } else {
+        const res = await createTerms({ data: form }).unwrap();
+        if (res?.success) toast.success("Section added successfully");
+      }
+
+      setForm({ title: "", content: "" });
+      setEditing(null);
+      setOpen(false);
+      refetch();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to save section");
     }
-    setForm({ title: "", content: "" });
-    setEditing(null);
-    setOpen(false);
+  };
+
+  // confirm delete handler
+  const confirmDelete = (section: TermsSection) => {
+    setSectionToDelete(section);
+    setDeleteDialogOpen(true);
   };
 
   // delete section
-  const handleDelete = (id: number) => {
-    setSections((prev) => prev.filter((sec) => sec.id !== id));
+  const handleDelete = async () => {
+    if (!sectionToDelete) return;
+    try {
+      const res = await deleteTerms(sectionToDelete.id).unwrap();
+      if (res?.success) {
+        toast.success("Section deleted successfully");
+        refetch();
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete section");
+    } finally {
+      setDeleteDialogOpen(false);
+      setSectionToDelete(null);
+    }
   };
 
   // edit section
@@ -84,7 +118,16 @@ const AdminTerms = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Manage Terms & Conditions</h1>
-        <Button className="bg-accent-orange hover:bg-orange-600" onClick={() => setOpen(true)}>+ Add Section</Button>
+        <Button
+          className="bg-accent-orange hover:bg-orange-600"
+          onClick={() => {
+            setForm({ title: "", content: "" });
+            setEditing(null);
+            setOpen(true);
+          }}
+        >
+          + Add Section
+        </Button>
       </div>
 
       {/* Sections List */}
@@ -108,7 +151,7 @@ const AdminTerms = () => {
                   <Button
                     variant="destructive"
                     size="icon"
-                    onClick={() => handleDelete(section.id)}
+                    onClick={() => confirmDelete(section)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -119,7 +162,7 @@ const AdminTerms = () => {
         ))}
       </div>
 
-      {/* Modal for Add/Edit */}
+      {/* Add/Edit Modal */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
@@ -148,8 +191,37 @@ const AdminTerms = () => {
             <Button variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSave} className="bg-accent-orange hover:bg-orange-600">
+            <Button
+              onClick={handleSave}
+              className="bg-accent-orange hover:bg-orange-600"
+            >
               {editing ? "Update" : "Save"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirm Delete Modal */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete Section</DialogTitle>
+          </DialogHeader>
+          <p>
+            Are you sure you want to delete{" "}
+            <span className="font-semibold">{sectionToDelete?.title}</span>?
+            This action cannot be undone.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>
