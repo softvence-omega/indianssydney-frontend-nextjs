@@ -134,7 +134,7 @@ const AdminTerms = () => {
       <div className="space-y-4">
         {sections.map((section) => (
           <Card key={section.id} className="shadow-sm">
-            <CardContent className="p-4">
+            <CardContent>
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-lg font-semibold">{section.title}</h2>
