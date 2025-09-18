@@ -1,6 +1,6 @@
 import { baseAPI } from "@/store/api/baseApi";
 
-export const siteApi = baseAPI.injectEndpoints({
+export const privacyApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
     createPrivacyPolicy: build.mutation({
       query: ({ data }) => ({
@@ -42,4 +42,4 @@ export const {
   useGetAllPrivacyPolicyQuery,
   useUpdatePrivacyPolicyMutation,
   useDeletePrivacyPolicyMutation,
-} = siteApi;
+} = privacyApi;

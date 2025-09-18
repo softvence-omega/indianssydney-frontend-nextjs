@@ -50,39 +50,9 @@ interface Category {
   createdAt: string;
   isDeleted: boolean;
   subCategories: SubCategory[];
+  subnames?:string[]
 }
 
-// Sample data based on your API response
-const sampleCategories: Category[] = [
-  {
-    id: "db4ac24c-2d66-4ded-96e1-72043e22a06f",
-    tamplate: "string",
-    name: "How to Build with NestJS",
-    slug: "how-to-build-with-nestjs",
-    createdAt: "2025-09-02T06:48:19.803Z",
-    isDeleted: false,
-    subCategories: [
-      {
-        id: "9975ddfe-f076-4a1f-9cf4-d6c912ce8e11",
-        subname: "Industry & Finance",
-        subslug: "industry-finance",
-        categoryId: "db4ac24c-2d66-4ded-96e1-72043e22a06f",
-      },
-      {
-        id: "d222ac99-3046-47d3-a74b-1c1b8032de15",
-        subname: "Politics",
-        subslug: "politics",
-        categoryId: "db4ac24c-2d66-4ded-96e1-72043e22a06f",
-      },
-      {
-        id: "bbfa8550-d5bc-461f-b7ec-8f825128f431",
-        subname: "Education",
-        subslug: "education",
-        categoryId: "db4ac24c-2d66-4ded-96e1-72043e22a06f",
-      },
-    ],
-  },
-];
 
 const CategoryManagement = () => {
   const [createNewCategory] = useCreateNewCategoryMutation()
@@ -91,7 +61,7 @@ const CategoryManagement = () => {
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [categories, setCategories] = useState<Category[]>(sampleCategories);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
@@ -141,37 +111,13 @@ const CategoryManagement = () => {
   };
 
   const handleSaveAdd = async () => {
-    // Generate slug from name
     try {
-      const slug = newCategory.name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "");
-
-      // Generate subcategories with slugs
-      const subCategories = newCategory.subnames
-        .filter((name) => name.trim() !== "")
-        .map((subname) => ({
-          id: `sub-${Math.random().toString(36).substr(2, 9)}`,
-          subname,
-          subslug: subname
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/(^-|-$)/g, ""),
-          categoryId: `cat-${Math.random().toString(36).substr(2, 9)}`,
-        }));
-
-      const newCat: Category = {
-        id: `cat-${Math.random().toString(36).substr(2, 9)}`,
+      const newCat: Partial<Category> = {
         name: newCategory.name,
-        slug,
         tamplate: newCategory.tamplate,
-        createdAt: new Date().toISOString(),
-        isDeleted: false,
-        subCategories,
+        subnames:newCategory.subnames,
       };
       const result = await createNewCategory(newCat)?.unwrap();
-      console.log(newCat)
       if (result?.success) {
         toast.success(result.message)
         setOpenAddModal(false);
