@@ -65,6 +65,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
       if (result?.resetToken) {
         setOpenVerifyOtpModal(true);
         toast.success("Registered successfully! Please verify OTP.");
+        localStorage.setItem("resetToken", result.resetToken);
         reset();
         onOpenChange(false);
       } else {
@@ -104,7 +105,10 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                 </p>
               </DialogHeader>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="mt-6 space-y-4"
+              >
                 <div>
                   <Label className="mb-1">Email</Label>
                   <Input
@@ -120,7 +124,9 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                     className="rounded-none mt-2 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4"
                   />
                   {errors.email && (
-                    <p className="text-xs text-red-500">{errors.email.message}</p>
+                    <p className="text-xs text-red-500">
+                      {errors.email.message}
+                    </p>
                   )}
                 </div>
 

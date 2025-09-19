@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import { useVerifyOTPMutation } from "@/store/features/auth/auth.api"; // <-- use your API hook
 
 type VerifyOtpModalProps = {
   open: boolean;
@@ -22,21 +23,29 @@ const VerifyOtpModal: React.FC<VerifyOtpModalProps> = ({
   onOpenChange,
   email,
 }) => {
-  const [loading, setLoading] = useState(false)
-
   const [otp, setOtp] = useState("");
+  const [verifyOTP, { isLoading }] = useVerifyOTPMutation();
 
   const handleVerify = async () => {
-    setLoading(true)
     try {
       const resetToken = localStorage.getItem("resetToken");
+      console.log(resetToken);
       if (!resetToken) throw new Error("Missing resetToken");
+      if (!email) throw new Error("Missing email");
+
+      // 🔹 Call backend with resetToken + emailOtp
+      const res = await verifyOTP({
+        resetToken,
+        emailOtp: otp,
+      });
 
       toast.success("OTP verified successfully!");
-      onOpenChange(!open);
-      setLoading(false)
+      setOtp("");
+      onOpenChange(false); // close modal
     } catch (err: any) {
-      toast.error(err || "OTP verification failed");
+      toast.error(
+        err?.data?.message || err.message || "OTP verification failed"
+      );
     }
   };
 
@@ -64,10 +73,10 @@ const VerifyOtpModal: React.FC<VerifyOtpModalProps> = ({
 
           <Button
             onClick={handleVerify}
-            disabled={loading || otp.length !== 6}
+            disabled={isLoading || otp.length !== 6}
             className="w-full bg-brick-red hover:bg-[#7c2d22] text-white rounded-none border border-[#62180F]"
           >
-            {loading ? "Verifying..." : "Verify OTP"}
+            {isLoading ? "Verifying..." : "Verify OTP"}
           </Button>
         </div>
       </DialogContent>
