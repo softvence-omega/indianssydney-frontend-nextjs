@@ -1,5 +1,11 @@
-import React from "react";
+"use client"
+import { selectUser } from "@/store/features/auth/auth.slice";
+import { useCreateApplicationForContributorMutation } from "@/store/features/user/user.api";
+import { useAppSelector } from "@/store/hook";
 import { X } from "lucide-react";
+import React from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import PrimaryButton from "../reusable/PrimaryButton";
 
 type ContributorModalProps = {
@@ -11,8 +17,39 @@ const ContributorApplicationModal: React.FC<ContributorModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  if (!isOpen) return null;
+  const user = useAppSelector(selectUser)
+  const [applyOnServer] = useCreateApplicationForContributorMutation()
 
+  // setup hook-form
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      name: user?.fullName,
+      email: user?.email,
+      about: "Looking something else ..."
+    }
+  })
+
+
+  const handleFormSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const id = toast.loading("Please wait...")
+    try {
+      const payload = {
+        about: data.about,
+      }
+      console.log(payload)
+      const result = await applyOnServer(payload).unwrap()
+      if (result) {
+        toast.success("Applied Successfully", { id })
+        onClose()
+      }
+    } catch (error) {
+      toast.error((error as any)?.data?.message || "Something went wrong", { id })
+    }
+
+  }
+
+
+  if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
       <div className="bg-white w-full max-w-xl shadow-lg p-8 relative">
@@ -34,7 +71,7 @@ const ContributorApplicationModal: React.FC<ContributorModalProps> = ({
         </p>
 
         {/* Form */}
-        <form className="space-y-6">
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
           {/* User Name */}
           <div>
             <label className="block text-sm font-medium mb-1">
@@ -42,8 +79,8 @@ const ContributorApplicationModal: React.FC<ContributorModalProps> = ({
             </label>
             <input
               type="text"
-              placeholder="Your name"
-              defaultValue="Esther Howard"
+              {...register("name")}
+              disabled
               className="w-full border border-gray-300  p-2 focus:ring-1 focus:ring-gray-400"
             />
           </div>
@@ -55,7 +92,8 @@ const ContributorApplicationModal: React.FC<ContributorModalProps> = ({
             </label>
             <input
               type="email"
-              placeholder="example@email.com"
+              {...register("email")}
+              disabled
               className="w-full border border-gray-300  p-2 focus:ring-1 focus:ring-gray-400"
             />
           </div>
@@ -67,7 +105,7 @@ const ContributorApplicationModal: React.FC<ContributorModalProps> = ({
             </label>
             <textarea
               rows={4}
-              defaultValue="Lorem Ipsum is simply dummy text of the printing and typesetting industry..."
+              {...register("about")}
               className="w-full border border-gray-300  p-2 focus:ring-1 focus:ring-gray-400"
             ></textarea>
           </div>

@@ -1,4 +1,5 @@
 import PrimaryButton from "@/components/reusable/PrimaryButton";
+import { logout } from "@/store/features/auth/auth.slice";
 import { AppDispatch, RootState } from "@/store/store";
 import { Switch } from "@headlessui/react";
 import { X } from "lucide-react";
@@ -7,7 +8,6 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ContributorApplicationModal from "./ContributorApplicationModal";
-import { logout } from "@/store/features/auth/auth.slice";
 
 interface ProfileSheetProps {
   isOpen: boolean;

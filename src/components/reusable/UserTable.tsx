@@ -1,5 +1,6 @@
 "use client";
 
+import { UserProfile } from "@/app/(EditorRoute)/editor/role/ContributorRequestTable";
 import { Button } from "@/components/ui/button";
 
 type User = {
@@ -11,7 +12,7 @@ type User = {
 
 type UserTableProps = {
   title?: string;
-  users: User[];
+  users: UserProfile[];
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
 };
@@ -33,7 +34,7 @@ const UserTable = ({ title, users, onEdit, onDelete }: UserTableProps) => {
                 Email
               </th>
               <th className="p-3 text-sm font-medium text-gray-600 text-center min-w-[150px]">
-                Role
+                Status
               </th>
               <th className="p-3 text-sm font-medium text-gray-600 text-center min-w-[150px]">
                 Actions
@@ -41,18 +42,18 @@ const UserTable = ({ title, users, onEdit, onDelete }: UserTableProps) => {
             </tr>
           </thead>
           <tbody>
-            {users.map((item) => (
+            {users?.map((item) => (
               <tr
                 key={item.id}
                 className="border-b border-gray-200 hover:bg-gray-50"
               >
-                <td className="p-3 text-sm">{item.name}</td>
+                <td className="p-3 text-sm">{item?.fullName}</td>
                 <td className="p-3 text-sm text-gray-600 text-center">
                   {item.email}
                 </td>
                 <td className="p-3 text-sm text-gray-600 text-center capitalize">
                   <span className="border px-2 py-1 rounded-2xl bg-accent-orange text-white border-accent-orange">
-                    {item.role}
+                    {item?.status}
                   </span>
                 </td>
                 <td className="p-3 text-sm text-gray-600 text-center capitalize flex justify-center items-center gap-4">

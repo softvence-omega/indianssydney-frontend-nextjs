@@ -88,7 +88,7 @@ const Navbar: React.FC = () => {
   const [selectedLang, setSelectedLang] = useState(languages[0].code);
 
   const handleUserButtonClick = () => {
-    if (user?.role === "USER" || user?.role === "CONTRIBUTOR") {
+    if (user?.role === "USER" || user?.role === "CONTIBUTOR") {
       toggleProfileSheet();
     } else if (user?.role === "ADMIN") {
       router.push("/editor");
@@ -140,9 +140,8 @@ const Navbar: React.FC = () => {
                 onChange={(e) => setSelectedLang(e.target.value)}
                 className="appearance-none border-none bg-transparent text-sm cursor-pointer pl-6 pr-2 py-2 outline-none"
                 style={{
-                  backgroundImage: `url(${
-                    languages.find((l) => l.code === selectedLang)?.flag
-                  })`,
+                  backgroundImage: `url(${languages.find((l) => l.code === selectedLang)?.flag
+                    })`,
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "20px 14px",
                   backgroundPosition: "left center",
@@ -280,11 +279,10 @@ const Navbar: React.FC = () => {
                     <button
                       key={lang.code}
                       onClick={() => setSelectedLang(lang.code)}
-                      className={`flex items-center space-x-2 p-2 border rounded transition-colors ${
-                        selectedLang === lang.code
+                      className={`flex items-center space-x-2 p-2 border rounded transition-colors ${selectedLang === lang.code
                           ? "bg-brick-red text-white border-brick-red"
                           : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-                      }`}
+                        }`}
                     >
                       <img
                         src={lang.flag}
@@ -320,11 +318,10 @@ const Navbar: React.FC = () => {
                             className="ml-auto"
                           >
                             <ChevronDown
-                              className={`h-4 w-4 ${
-                                openSubmenus.includes(menu.label)
+                              className={`h-4 w-4 ${openSubmenus.includes(menu.label)
                                   ? "rotate-180"
                                   : ""
-                              }`}
+                                }`}
                             />
                           </button>
                         ) : (

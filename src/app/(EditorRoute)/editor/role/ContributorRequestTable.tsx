@@ -2,27 +2,37 @@
 
 import { Button } from "@/components/ui/button";
 
-type User = {
+
+
+export type UserProfile = {
   id: string;
-  name: string;
+  about: string;
   email: string;
-  role: string;
+  fullName: string;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  userId: string;
+  user: {
+    id: string;
+    fullName: string | null;
+    email: string;
+    profilePhoto: string | null;
+  };
 };
 
 type ContributorRequestTableProps = {
   title?: string;
-  users: User[];
-  onAccept: (id: string) => void;
-  onDecline: (id: string) => void;
-  onView: (user: User) => void;
+  users: UserProfile[];
+  changeStatus: (id: string, status: string) => void;
+  onView: (user: UserProfile) => void;
 };
 
 const ContributorRequestTable = ({
   title,
   users,
-  onAccept,
-  onDecline,
-  onView,
+  changeStatus,
+  onView
 }: ContributorRequestTableProps) => {
   return (
     <div className="mt-5">
@@ -35,28 +45,28 @@ const ContributorRequestTable = ({
             <tr>
               <th className="p-3 text-sm font-medium text-gray-600 min-w-[200px]">Name</th>
               <th className="p-3 text-sm font-medium text-gray-600 text-center min-w-[150px]">Email</th>
-              <th className="p-3 text-sm font-medium text-gray-600 text-center min-w-[150px]">Role</th>
+              <th className="p-3 text-sm font-medium text-gray-600 text-center min-w-[150px]">Status</th>
               <th className="p-3 text-sm font-medium text-gray-600 text-center min-w-[150px]">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((item) => (
+            {users?.map((item) => (
               <tr
                 key={item.id}
                 className="border-b border-gray-200 hover:bg-gray-50"
               >
-                <td className="p-3 text-sm">{item.name}</td>
+                <td className="p-3 text-sm">{item?.fullName}</td>
                 <td className="p-3 text-sm text-gray-600 text-center">{item.email}</td>
                 <td className="p-3 text-sm text-gray-600 text-center capitalize">
                   <span className="border px-2 py-1 rounded-2xl bg-accent-orange text-white border-accent-orange">
-                    {item.role}
+                    {item?.status}
                   </span>
                 </td>
                 <td className="p-3 text-sm text-gray-600 text-center flex justify-center items-center gap-4">
-                  <Button onClick={() => onAccept(item.id)} variant="outline">
+                  <Button onClick={() => changeStatus(item.id, "APPROVED")} variant="outline">
                     Accept
                   </Button>
-                  <Button onClick={() => onDecline(item.id)} variant="destructive">
+                  <Button onClick={() => changeStatus(item.id, "REJECTED")} variant="destructive">
                     Decline
                   </Button>
                   <Button onClick={() => onView(item)} variant="outline">

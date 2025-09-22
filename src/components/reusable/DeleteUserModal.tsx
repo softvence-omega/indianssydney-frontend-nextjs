@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button";
 
 type DeleteUserModalProps = {
-  open: boolean;
+  open: string;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (id: string, status: string) => void;
 };
 
 const DeleteUserModal = ({ open, onClose, onConfirm }: DeleteUserModalProps) => {
@@ -24,7 +24,7 @@ const DeleteUserModal = ({ open, onClose, onConfirm }: DeleteUserModalProps) => 
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="destructive" onClick={onConfirm}>
+          <Button variant="destructive" onClick={e => onConfirm(open, "REJECTED")}>
             Delete
           </Button>
         </div>
