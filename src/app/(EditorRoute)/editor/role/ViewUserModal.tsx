@@ -1,22 +1,18 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { UserProfile } from "./ContributorRequestTable";
 
 type ViewUserModalProps = {
   open: boolean;
   onClose: () => void;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-  } | null;
+  user: UserProfile | null;
   onAccept: (id: string) => void;
   onDecline: (id: string) => void;
 };
@@ -39,21 +35,20 @@ const ViewUserModal: React.FC<ViewUserModalProps> = ({
 
         <div className="space-y-4">
           <div>
-            <p className="font-medium ">User Name: {user.name}</p>
+            <p className="font-medium ">User Name: {user?.fullName}</p>
           </div>
           <div>
             <p className="font-medium">User Email: {user.email}</p>
           </div>
           <div>
             <p className="font-medium">
-              Role: <span className="capitalize">{user.role}</span>
+              Status: <span className="capitalize">{user?.status}</span>
             </p>
           </div>
           <div>
             <p className="font-medium">Application Details:</p>
             <p className="text-sm text-black p-3 rounded mt-2 bg-gray-100">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. This is a
-              placeholder for the applicant’s motivation statement.
+              {user?.about}
             </p>
           </div>
         </div>

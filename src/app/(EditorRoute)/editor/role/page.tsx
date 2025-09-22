@@ -5,12 +5,13 @@ import DeleteUserModal from "@/components/reusable/DeleteUserModal";
 import EditUserModal from "@/components/reusable/EditUserModal";
 import UserTable from "@/components/reusable/UserTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGetPendingContributorsRequestQuery, useUpdateContributorRequestStatusMutation } from "@/store/features/user/user.api";
+import { useState } from "react";
 import { toast } from "sonner";
-import React, { useState } from "react";
-import ContributorRequestTable from "./ContributorRequestTable";
+import ContributorRequestTable, { UserProfile } from "./ContributorRequestTable";
 import ViewUserModal from "./ViewUserModal";
 
-export const data = [
+export const userdata = [
   { id: "1", name: "John Doe", email: "a@a.com", role: "user" },
   { id: "2", name: "Jane Smith", email: "b@b.com", role: "contributor" },
   { id: "3", name: "Alice Johnson", email: "c@c.com", role: "user" },
@@ -18,15 +19,11 @@ export const data = [
   { id: "5", name: "Eve White", email: "e@e.com", role: "user" },
 ];
 
-interface UserData {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
 
 const Page = () => {
-  const [users, setUsers] = useState(data);
+  const { data } = useGetPendingContributorsRequestQuery(undefined)
+  const [updateUserStatus] = useUpdateContributorRequestStatusMutation();
+  const [users, setUsers] = useState(userdata);
 
   const [editUserId, setEditUserId] = useState<string | null>(null);
   const [newRole, setNewRole] = useState<"user" | "contributor" | "editor">(
@@ -34,7 +31,7 @@ const Page = () => {
   );
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
 
-  const [viewUser, setViewUser] = useState<UserData | null>(null);
+  const [viewUser, setViewUser] = useState<UserProfile | null>(null);
 
   // Accept request → update role to contributor
   const handleAccept = (id: string) => {
@@ -49,14 +46,23 @@ const Page = () => {
     toast.info("User request declined",);
     console.log("Declined Request", id);
   };
+  const handleStatusChange = async (id: string, status: string) => {
+    const toastId = toast.loading("Updating...");
+    try {
+      const result = await updateUserStatus({ id: id, status: status }).unwrap()
+      if (result) {
+        toast.success("Status updated successfully", { id: toastId });
+        setDeleteUserId(null)
+      }
+
+    } catch (error) {
+      toast.error((error as any)?.data?.message || "Something went wrong", { id: toastId });
+    }
+  }
 
   // Open delete modal
   const openDeleteModal = (id: string) => setDeleteUserId(id);
-  const confirmDelete = () => {
-    setUsers((prev) => prev.filter((u) => u.id !== deleteUserId));
-    toast.error("Deleted Successfully");
-    setDeleteUserId(null);
-  };
+
 
   return (
     <div>
@@ -73,18 +79,18 @@ const Page = () => {
         <TabsContent value="all">
           <UserTable
             title="All Contributors"
-            users={users.filter((u) => u.role === "contributor")}
+            users={data?.filter((u: UserProfile) => u?.status === "APPROVED")}
             onEdit={(id) => setEditUserId(id)}
             onDelete={openDeleteModal}
+
           />
         </TabsContent>
 
         <TabsContent value="requests">
           <ContributorRequestTable
             title="All Requests"
-            users={users.filter((u) => u.role === "user")}
-            onAccept={handleAccept}
-            onDecline={handleDecline}
+            users={data?.filter((u: UserProfile) => u.status === "PENDING")}
+            changeStatus={handleStatusChange}
             onView={(user) => setViewUser(user)} // pass user object directly
           />
         </TabsContent>
@@ -100,9 +106,9 @@ const Page = () => {
       />
 
       <DeleteUserModal
-        open={!!deleteUserId}
+        open={deleteUserId as string}
         onClose={() => setDeleteUserId(null)}
-        onConfirm={confirmDelete}
+        onConfirm={handleStatusChange}
       />
 
       <ViewUserModal
