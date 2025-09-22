@@ -122,7 +122,7 @@ const AccountDetails = () => {
           <input
             id="email"
             disabled
-            value={user.email}
+            value={user?.email}
             className="w-full p-2 mt-2 border border-gray-300  disabled:text-gray-400"
           />
         </div>
@@ -147,10 +147,6 @@ const AccountDetails = () => {
           className="px-4 py-2 text-white w-full text-sm md:text-base"
           title="Save Changes"
         />
-
-        <div className="">
-          <h2>Notifications</h2>
-        </div>
       </div>
     </div>
   );
