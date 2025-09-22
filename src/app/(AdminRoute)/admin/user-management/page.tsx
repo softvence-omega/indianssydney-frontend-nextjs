@@ -74,7 +74,7 @@ const UserManagement = () => {
         <TabsContent value="contributors">
           <UserTable
             title="Contributor Management"
-            users={users.filter((u) => u.role === "contributor")}
+            users={(users as any)?.filter((u: any) => u.role === "contributor")}
             onEdit={openEditModal}
             onDelete={openDeleteModal}
           />
@@ -83,7 +83,7 @@ const UserManagement = () => {
         <TabsContent value="editors">
           <UserTable
             title="Editor Management"
-            users={users.filter((u) => u.role === "editor")}
+            users={(users as any)?.filter((u: any) => u.role === "editor")}
             onEdit={openEditModal}
             onDelete={openDeleteModal}
           />
@@ -100,7 +100,7 @@ const UserManagement = () => {
       />
 
       <DeleteUserModal
-        open={!!deleteUserId}
+        open={deleteUserId as string}
         onClose={() => setDeleteUserId(null)}
         onConfirm={confirmDelete}
       />
