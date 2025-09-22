@@ -3,12 +3,7 @@
 import { UserProfile } from "@/app/(EditorRoute)/editor/role/ContributorRequestTable";
 import { Button } from "@/components/ui/button";
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-};
+
 
 type UserTableProps = {
   title?: string;
@@ -34,7 +29,7 @@ const UserTable = ({ title, users, onEdit, onDelete }: UserTableProps) => {
                 Email
               </th>
               <th className="p-3 text-sm font-medium text-gray-600 text-center min-w-[150px]">
-                Status
+                Status / Role
               </th>
               <th className="p-3 text-sm font-medium text-gray-600 text-center min-w-[150px]">
                 Actions
@@ -53,7 +48,7 @@ const UserTable = ({ title, users, onEdit, onDelete }: UserTableProps) => {
                 </td>
                 <td className="p-3 text-sm text-gray-600 text-center capitalize">
                   <span className="border px-2 py-1 rounded-2xl bg-accent-orange text-white border-accent-orange">
-                    {item?.status}
+                    {item?.status || item?.role}
                   </span>
                 </td>
                 <td className="p-3 text-sm text-gray-600 text-center capitalize flex justify-center items-center gap-4">
