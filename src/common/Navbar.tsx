@@ -13,11 +13,32 @@ import { allMenus } from "@/utils/demoData";
 
 import VerifyOtpModal from "@/components/auth/VerifyOtpModal";
 import ProfileSheet from "@/components/profile/ProfileSheet";
+import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
 import { useAppSelector } from "@/store/hook";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+
+
+type SubCategory = {
+  id: string;
+  subname: string;
+  subslug: string;
+  categoryId: string;
+};
+
+type Category = {
+  createdAt: string; // or Date if you want to parse it
+  id: string;
+  isDeleted: boolean;
+  name: string;
+  slug: string;
+  subCategories: SubCategory[];
+};
+
+
 const Navbar: React.FC = () => {
+  const { data } = useGetAllCategoryQuery(undefined)
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const user = useAppSelector((state) => state?.auth?.user);
@@ -206,30 +227,30 @@ const Navbar: React.FC = () => {
 
           {/* Menu */}
           <div className="flex justify-center gap-4 xl:gap-6 py-6 flex-wrap">
-            {allMenus.slice(0, showMore ? allMenus.length : 7).map((menu) => (
+            {data?.data?.slice(0, showMore ? allMenus.length : 7)?.map((menu: Category) => (
               <div
-                key={menu.label}
+                key={menu?.id}
                 className="relative"
-                onMouseEnter={() => setActiveMenu(menu.label)}
+                onMouseEnter={() => setActiveMenu(menu?.name)}
                 onMouseLeave={() => setActiveMenu(null)}
               >
                 <button
-                  onClick={() => router.push(menu.href)}
+                  onClick={() => router.push(`/${menu?.slug}`)}
                   className="flex items-center text-sm hover:text-brick-red transition-colors duration-200 cursor-pointer"
                 >
-                  {menu.label}
+                  {menu?.name}
                   <ChevronDown className="ml-1 h-4 w-4" />
                 </button>
-                {activeMenu === menu.label && menu.submenus?.length > 0 && (
+                {activeMenu === menu?.name && menu?.subCategories?.length > 0 && (
                   <div className="absolute top-full left-0 bg-white shadow-md py-2 min-w-max z-50">
-                    {menu.submenus.map((sub) => (
+                    {menu?.subCategories?.map((sub) => (
                       <Link
-                        key={sub.label}
-                        href={sub.href}
+                        key={sub?.subname}
+                        href={`/${menu?.slug}/${sub?.subslug}`}
                         className="block px-4 py-2 hover:bg-gray-100 text-sm"
                         onClick={() => setActiveMenu(null)}
                       >
-                        {sub.label}
+                        {sub?.subname}
                       </Link>
                     ))}
                   </div>
@@ -280,8 +301,8 @@ const Navbar: React.FC = () => {
                       key={lang.code}
                       onClick={() => setSelectedLang(lang.code)}
                       className={`flex items-center space-x-2 p-2 border rounded transition-colors ${selectedLang === lang.code
-                          ? "bg-brick-red text-white border-brick-red"
-                          : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+                        ? "bg-brick-red text-white border-brick-red"
+                        : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
                         }`}
                     >
                       <img
@@ -297,56 +318,54 @@ const Navbar: React.FC = () => {
 
               {/* Menu items */}
               <div className="space-y-1">
-                {allMenus
-                  .slice(0, showMore ? allMenus.length : 7)
-                  .map((menu) => (
-                    <div key={menu.label}>
-                      <button
-                        className="flex items-center justify-between w-full text-left p-3 text-sm font-medium text-gray-700 hover:text-brick-red hover:bg-gray-50 transition-colors rounded"
-                        onClick={() => {
-                          router.push(menu.href);
-                          setIsOpen(false);
-                        }}
-                      >
-                        {menu.label}
-                        {menu.submenus?.length > 0 ? (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleSubmenu(menu.label);
-                            }}
-                            className="ml-auto"
-                          >
-                            <ChevronDown
-                              className={`h-4 w-4 ${openSubmenus.includes(menu.label)
-                                  ? "rotate-180"
-                                  : ""
-                                }`}
-                            />
-                          </button>
-                        ) : (
-                          <ChevronDown className="h-4 w-4" />
-                        )}
-                      </button>
-                      {openSubmenus.includes(menu.label) &&
-                        menu.submenus?.length > 0 && (
-                          <div className="ml-4 space-y-1">
-                            {menu.submenus.map((sub) => (
-                              <button
-                                key={sub.label}
-                                onClick={() => {
-                                  router.push(sub.href);
-                                  setIsOpen(false);
-                                }}
-                                className="w-full text-left p-3 text-sm text-gray-600 hover:text-brick-red hover:bg-gray-50 rounded"
-                              >
-                                {sub.label}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                    </div>
-                  ))}
+                {data?.data?.slice(0, showMore ? allMenus.length : 7).map((menu: Category) => (
+                  <div key={menu?.id}>
+                    <button
+                      className="flex items-center justify-between w-full text-left p-3 text-sm font-medium text-gray-700 hover:text-brick-red hover:bg-gray-50 transition-colors rounded"
+                      onClick={() => {
+                        router.push(menu?.slug);
+                        setIsOpen(false);
+                      }}
+                    >
+                      {menu?.name}
+                      {menu?.subCategories?.length > 0 ? (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleSubmenu(menu?.name);
+                          }}
+                          className="ml-auto"
+                        >
+                          <ChevronDown
+                            className={`h-4 w-4 ${openSubmenus?.includes(menu?.name)
+                              ? "rotate-180"
+                              : ""
+                              }`}
+                          />
+                        </button>
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </button>
+                    {openSubmenus?.includes(menu?.name) &&
+                      menu?.subCategories?.length > 0 && (
+                        <div className="ml-4 space-y-1">
+                          {menu?.subCategories?.map((sub) => (
+                            <button
+                              key={sub?.id}
+                              onClick={() => {
+                                router.push(sub?.subslug);
+                                setIsOpen(false);
+                              }}
+                              className="w-full text-left p-3 text-sm text-gray-600 hover:text-brick-red hover:bg-gray-50 rounded"
+                            >
+                              {sub?.subname}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                  </div>
+                ))}
                 {!showMore && (
                   <button
                     onClick={() => setShowMore(true)}
