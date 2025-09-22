@@ -19,6 +19,7 @@ export type UserProfile = {
     email: string;
     profilePhoto: string | null;
   };
+  role: "USER" | "ADMIN" | "CONTIBUTOR" | "SUPER_ADMIN";
 };
 
 type ContributorRequestTableProps = {

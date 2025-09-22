@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 
 type EditUserModalProps = {
   open: boolean;
-  newRole: "user" | "contributor" | "editor";
-  setNewRole: (role: "user" | "contributor" | "editor") => void;
+  newRole: "USER" | "ADMIN" | "CONTIBUTOR";
+  setNewRole: (role: "USER" | "ADMIN" | "CONTIBUTOR") => void;
   onClose: () => void;
   onSave: () => void;
 };
@@ -29,12 +29,12 @@ const EditUserModal = ({
             className="w-full border border-gray-300 rounded p-2"
             value={newRole}
             onChange={(e) =>
-              setNewRole(e.target.value as "user" | "contributor" | "editor")
+              setNewRole(e.target.value as "USER" | "ADMIN" | "CONTIBUTOR")
             }
           >
-            <option value="user">User</option>
-            <option value="contributor">Contributor</option>
-            <option value="editor">Editor</option>
+            <option value="USER">User</option>
+            <option value="CONTIBUTOR">Contributor</option>
+            <option value="ADMIN">Editor</option>
           </select>
         </div>
         <div className="flex justify-end gap-4">

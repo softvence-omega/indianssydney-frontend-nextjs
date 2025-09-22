@@ -70,7 +70,6 @@ const Navbar: React.FC = () => {
     setSignUpOpen(true);
   };
 
-  console.log(user, "user");
   const openSignIn = () => {
     setSignUpOpen(false);
     setSignInOpen(true);
