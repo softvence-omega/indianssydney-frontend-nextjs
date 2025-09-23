@@ -10,6 +10,7 @@ export const articleApi = baseAPI.injectEndpoints({
             }),
             invalidatesTags: ['content']
         }),
+        
 
 
 
@@ -18,6 +19,6 @@ export const articleApi = baseAPI.injectEndpoints({
 })
 
 export const {
-    useCreateNewArticleMutation
+    useCreateNewArticleMutation,
 
 } = articleApi
