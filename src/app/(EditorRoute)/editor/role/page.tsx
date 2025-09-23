@@ -5,10 +5,15 @@ import DeleteUserModal from "@/components/reusable/DeleteUserModal";
 import EditUserModal from "@/components/reusable/EditUserModal";
 import UserTable from "@/components/reusable/UserTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useGetPendingContributorsRequestQuery, useUpdateContributorRequestStatusMutation } from "@/store/features/user/user.api";
+import {
+  useGetPendingContributorsRequestQuery,
+  useUpdateContributorRequestStatusMutation,
+} from "@/store/features/user/user.api";
 import { useState } from "react";
 import { toast } from "sonner";
-import ContributorRequestTable, { UserProfile } from "./ContributorRequestTable";
+import ContributorRequestTable, {
+  UserProfile,
+} from "./ContributorRequestTable";
 import ViewUserModal from "./ViewUserModal";
 
 export const userdata = [
@@ -19,9 +24,8 @@ export const userdata = [
   { id: "5", name: "Eve White", email: "e@e.com", role: "user" },
 ];
 
-
 const Page = () => {
-  const { data } = useGetPendingContributorsRequestQuery(undefined)
+  const { data } = useGetPendingContributorsRequestQuery(undefined);
   const [updateUserStatus] = useUpdateContributorRequestStatusMutation();
   const [users, setUsers] = useState(userdata);
 
@@ -43,26 +47,29 @@ const Page = () => {
 
   // Decline request → keep role as user
   const handleDecline = (id: string) => {
-    toast.info("User request declined",);
+    toast.info("User request declined");
     console.log("Declined Request", id);
   };
   const handleStatusChange = async (id: string, status: string) => {
     const toastId = toast.loading("Updating...");
     try {
-      const result = await updateUserStatus({ id: id, status: status }).unwrap()
+      const result = await updateUserStatus({
+        id: id,
+        status: status,
+      }).unwrap();
       if (result) {
         toast.success("Status updated successfully", { id: toastId });
-        setDeleteUserId(null)
+        setDeleteUserId(null);
       }
-
     } catch (error) {
-      toast.error((error as any)?.data?.message || "Something went wrong", { id: toastId });
+      toast.error((error as any)?.data?.message || "Something went wrong", {
+        id: toastId,
+      });
     }
-  }
+  };
 
   // Open delete modal
   const openDeleteModal = (id: string) => setDeleteUserId(id);
-
 
   return (
     <div>
@@ -82,7 +89,6 @@ const Page = () => {
             users={data?.filter((u: UserProfile) => u?.status === "APPROVED")}
             onEdit={(id) => setEditUserId(id)}
             onDelete={openDeleteModal}
-
           />
         </TabsContent>
 
@@ -99,8 +105,8 @@ const Page = () => {
       {/* Modals */}
       <EditUserModal
         open={!!editUserId}
-        newRole={newRole}
-        setNewRole={setNewRole}
+        newRole={newRole as any}
+        setNewRole={setNewRole as any}
         onClose={() => setEditUserId(null)}
         onSave={() => setEditUserId(null)}
       />

@@ -1,4 +1,4 @@
-"use client"; // This makes the component a Client Component
+"use client";
 
 import React, { useState, useEffect } from "react";
 import {
@@ -6,6 +6,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogFooter,
+  DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Trash, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,13 +22,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
 
-// Zod schema for form validation
 const subscriptionSchema = z.object({
   price: z
     .string()
     .min(1, { message: "Price is required" })
     .regex(/^\d+(\.\d{1,2})?$/, { message: "Invalid price format" }),
-  time: z.enum(["Monthly", "Yearly"], {
+  time: z.enum(["MONTHLY", "YEARLY"], {
     message: "Please select a valid time",
   }),
   shortBio: z.string().min(1, { message: "Short bio is required" }),
@@ -39,7 +40,7 @@ type FormData = z.infer<typeof subscriptionSchema>;
 
 interface SubscriptionFormProps {
   onClose: () => void;
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: FormData) => void; // Updated to use FormData type
   initialData?: FormData;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -53,9 +54,9 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
   setOpen,
 }) => {
   const [price, setPrice] = useState<string>(initialData?.price || "");
-  const [time, setTime] = useState<"Monthly" | "Yearly">(
-    initialData?.time || "Monthly"
-  );
+  const [time, setTime] = useState<"MONTHLY" | "YEARLY">(
+    initialData?.time || "MONTHLY"
+  ); // Updated to match Zod schema
   const [shortBio, setShortBio] = useState<string>(initialData?.shortBio || "");
   const [facilities, setFacilities] = useState<string[]>(
     initialData?.facilities || [""]
@@ -65,42 +66,32 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
   useEffect(() => {
     if (initialData) {
       setPrice(initialData.price);
-      setTime(initialData.time);
+      setTime(initialData.time); // Expects "Monthly" or "Yearly"
       setShortBio(initialData.shortBio);
       setFacilities(
-        initialData.facilities.length > 0 ? initialData.facilities : [""]
+        initialData.facilities.length ? initialData.facilities : [""]
       );
     } else {
       setPrice("");
-      setTime("Monthly");
+      setTime("MONTHLY");
       setShortBio("");
       setFacilities([""]);
     }
   }, [initialData]);
 
-  // Handle adding new facility input
-  const addFacility = () => {
-    setFacilities([...facilities, ""]);
-  };
-
-  // Handle removing facility input
+  const addFacility = () => setFacilities([...facilities, ""]);
   const removeFacility = (index: number) => {
-    const updatedFacilities = facilities.filter((_, i) => i !== index);
-    setFacilities(updatedFacilities.length > 0 ? updatedFacilities : [""]);
+    const updated = facilities.filter((_, i) => i !== index);
+    setFacilities(updated.length ? updated : [""]);
   };
-
-  // Handle field changes
   const handleFacilityChange = (index: number, value: string) => {
-    const updatedFacilities = [...facilities];
-    updatedFacilities[index] = value;
-    setFacilities(updatedFacilities);
+    const updated = [...facilities];
+    updated[index] = value;
+    setFacilities(updated);
   };
 
-  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validate the form using Zod
     const result = subscriptionSchema.safeParse({
       price,
       time,
@@ -109,7 +100,6 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
     });
 
     if (!result.success) {
-      // Set errors if validation fails
       const errorMessages: { [key: string]: string } = {};
       result.error.issues.forEach((issue) => {
         const path = issue.path.join(".");
@@ -117,8 +107,8 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
       });
       setErrors(errorMessages);
     } else {
-      const data: FormData = result.data;
-      onSubmit(data);
+      const data: FormData = result.data; // Use validated data
+      onSubmit(data); // Pass validated data directly
       setErrors({});
     }
   };
@@ -127,25 +117,25 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <h3 className="text-2xl font-semibold">
+          <DialogTitle>
             {initialData ? "Edit Subscription" : "Add New Subscription"}
-          </h3>
+          </DialogTitle>
+          <DialogDescription>
+            {initialData
+              ? "Update the subscription plan details below."
+              : "Create a new subscription plan by filling out the details below."}
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
+          {/* Price + Time */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <div>
-              <label
-                htmlFor="price"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Price
-              </label>
+              <label className="block text-sm font-medium">Price</label>
               <Input
-                id="price"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                placeholder="$100"
+                placeholder="100"
                 required
                 className={errors.price ? "border-red-500" : ""}
               />
@@ -155,23 +145,20 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
             </div>
 
             <div>
-              <label
-                htmlFor="time"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Time
-              </label>
+              <label className="block text-sm font-medium">Time</label>
               <Select
                 value={time}
-                onValueChange={(value) => setTime(value as "Monthly" | "Yearly")}
+                onValueChange={(value) =>
+                  setTime(value as "MONTHLY" | "YEARLY")
+                }
                 required
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select Time" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Monthly">Monthly</SelectItem>
-                  <SelectItem value="Yearly">Yearly</SelectItem>
+                  <SelectItem value="MONTHLY">Monthly</SelectItem>
+                  <SelectItem value="YEARLY">Yearly</SelectItem>
                 </SelectContent>
               </Select>
               {errors.time && (
@@ -180,15 +167,10 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
             </div>
           </div>
 
+          {/* Short Bio */}
           <div className="mb-6">
-            <label
-              htmlFor="shortBio"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Short Bio
-            </label>
+            <label className="block text-sm font-medium">Short Bio</label>
             <Textarea
-              id="shortBio"
               value={shortBio}
               onChange={(e) => setShortBio(e.target.value)}
               placeholder="Enter short bio"
@@ -200,10 +182,9 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
             )}
           </div>
 
+          {/* Facilities */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">
-              Facilities
-            </label>
+            <label className="block text-sm font-medium">Facilities</label>
             {facilities.map((facility, index) => (
               <div key={index} className="flex items-center space-x-4 mb-3">
                 <Input
@@ -211,14 +192,15 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
                   onChange={(e) => handleFacilityChange(index, e.target.value)}
                   placeholder={`Facility ${index + 1}`}
                   required
-                  className={errors[`facilities.${index}`] ? "border-red-500" : ""}
+                  className={
+                    errors[`facilities.${index}`] ? "border-red-500" : ""
+                  }
                 />
                 <Button
                   type="button"
                   onClick={() => removeFacility(index)}
                   variant="outline"
                   size="icon"
-                  className="text-red-500 hover:text-red-700"
                   disabled={facilities.length === 1}
                 >
                   <Trash size={16} />
@@ -233,7 +215,6 @@ const SubscriptionForm: React.FC<SubscriptionFormProps> = ({
               onClick={addFacility}
               variant="secondary"
               size="sm"
-              className="flex items-center"
             >
               <PlusCircle size={16} className="mr-2" /> Add Facility
             </Button>
