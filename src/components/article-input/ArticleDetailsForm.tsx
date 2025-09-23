@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import uploadFileInAws from "@/utils/fileUploader";
 import { ArrowLeft, Plus, Upload, X } from "lucide-react";
 import { useRef, useState } from "react";
 import type {
@@ -76,16 +77,24 @@ const ArticleDetailsForm = ({
 
 
 
-  const handleAdditionalFieldFile = (
+
+  const handleAdditionalFieldFile = async (
     fieldKey: string,
     files: FileList | null
   ) => {
+    const file = files ? files[0] : null
+    if (!file) return
+
+    const res = await uploadFileInAws(file)
+    console.log(res)
+
+
     onUpdate({
       additionalFields: {
         ...formData.additionalFields,
         [fieldKey]: {
           ...formData.additionalFields[fieldKey],
-          value: files ? files[0] : null,
+          value: res as string,
         },
       },
     });
