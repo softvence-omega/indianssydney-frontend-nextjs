@@ -239,34 +239,53 @@ import CategorySelection from "@/components/article-input/CategorySelection";
 import { useCreateNewArticleMutation } from "@/store/features/article/article.api";
 import { useState } from "react";
 import ArticlePreview from "./ArticlePreview";
-import { ContentType, FormData } from "./types";
+import { ContentType, UploadFormData } from "./types";
 
 // Types
 
 // Main Component
 
 export default function PublishContent() {
-  const [createNewArticle] = useCreateNewArticleMutation()
+  const [createNewArticle] = useCreateNewArticleMutation();
   // Initial form data
-  const initialFormData: FormData = {
-    contentType: "article",
-    category: "",
-    subCategory: "",
+  // const initialFormData: FormData = {
+  //   contentType: "ARTICLE",
+  //   category: "",
+  //   subCategory: "",
+  //   title: "",
+  //   subTitle: "",
+  //   audioFile: null,
+  //   image: null,
+  //   video: null,
+  //   imageCaption: "",
+  //   shortQuote: "",
+  //   paragraph: "",
+  //   tags: [],
+  //   additionalFields: {},
+  // };
+
+  const initialFormData: UploadFormData = {
+    contentType: "ARTICLE",
     title: "",
     subTitle: "",
-    audioFile: null,
+    categoryId: "",
+    subCategoryId: "",
+    categorysslug: "",
+    subcategorysslug: "",
+    paragraph: "",
     image: null,
     video: null,
+    audio: null,
     imageCaption: "",
+    youtubeVideoUrl: "",
+    videoThumbnail: null,
     shortQuote: "",
-    paragraph: "",
     tags: [],
-    dateTimeSlot: new Date().toISOString(),
-    additionalFields: {},
+    additionalContents: [],
   };
 
   // State
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [formData, setFormData] = useState<UploadFormData>(initialFormData);
   const [step, setStep] = useState<
     "category" | "form" | "preview" | "submitted"
   >("category");
@@ -279,7 +298,7 @@ export default function PublishContent() {
   };
 
   // Handle form updates
-  const handleUpdate = (updates: Partial<FormData>) => {
+  const handleUpdate = (updates: Partial<UploadFormData>) => {
     setFormData((prev) => ({ ...prev, ...updates }));
     console.log("Form updated:", updates);
   };
@@ -292,8 +311,8 @@ export default function PublishContent() {
   // Handle publish
   const handlePublish = async () => {
     try {
-      const result = await createNewArticle(formData).unwrap();
-      console.log(result)
+      const result = await createNewArticle(formData);
+      console.log(result);
       // API call could go here
       setStep("submitted");
       setFormData(initialFormData); // reset

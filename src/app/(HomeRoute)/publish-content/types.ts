@@ -1,36 +1,65 @@
 // types.ts
-export type AdditionalFieldType = "paragraph" | "quote" | "image" | "video" |"audio";
+
+// for upload
+export type AdditionalFieldType =
+  | "paragraph"
+  | "shortQuote"
+  | "image"
+  | "video"
+  | "audio";
 
 export interface AdditionalField {
   type: AdditionalFieldType;
-  value: string | File | null | string[];
+  value: string | null;
+  order: number;
 }
 
-export type ContentType = "article" | "video" | "podcast" | "live-event";
+export type ContentType = "ARTICLE" | "VIDEO" | "PODCAST";
 
-export interface FormData {
+// export interface FormData {
+//   contentType: ContentType;
+//   category: string;
+//   subCategory: string;
+//   title: string;
+//   subTitle: string;
+//   audioFile: File | null;
+//   image: File | null;
+//   video: File | null;
+//   imageCaption: string;
+//   shortQuote: string;
+//   paragraph: string;
+//   dateTimeSlot: string;
+//   tags: string[];
+//   additionalFields: { [key: string]: AdditionalField };
+//   publishedAt?: string;
+//   views?: number;
+//   likes?: number;
+//   comments?: number;
+// }
+
+export interface UploadFormData {
   contentType: ContentType;
-  category: string;
-  subCategory: string;
   title: string;
   subTitle: string;
-  audioFile: File | null;
-  image: File | null;
-  video: File | null;
-  imageCaption: string;
-  shortQuote: string;
+  categoryId: string;
+  subCategoryId: string;
+  categorysslug: string;
+  subcategorysslug: string;
   paragraph: string;
-  dateTimeSlot: string;
+  image?: File | null;
+  video?: File | null;
+  audio?: File | null;
+  imageCaption?: string;
+  videoThumbnail?: File | null;
+  youtubeVideoUrl?: "";
+  shortQuote: string;
   tags: string[];
-  additionalFields: { [key: string]: AdditionalField };
+  additionalContents: AdditionalField[];
   publishedAt?: string;
-  views?: number;
-  likes?: number;
-  comments?: number;
+  contentviews?: number;
+  likeCount?: number;
+  commentCount?: number;
 }
-
-
-
 
 // export interface DetailsData {
 //   id?: string;
@@ -63,7 +92,7 @@ export interface AdditionalFields {
   id: string;
   contentId: string;
   type: "paragraph" | "image" | "quote" | "audio" | "video";
-  value: string | File | null;  // Value can be a string or file for image/audio/video
+  value: string | File | null; // Value can be a string or file for image/audio/video
   order: number;
 }
 
@@ -116,4 +145,3 @@ export interface DetailsData {
   dateTimeSlot?: string;
   views?: number;
 }
-
