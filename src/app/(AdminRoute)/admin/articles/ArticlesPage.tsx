@@ -1,143 +1,102 @@
 "use client";
 
 import React, { useState } from "react";
-import ArticleCard, { Article } from "./ArticleCard";
+import ArticleCard from "./ArticleCard";
 import DashboardHeader from "@/components/reusable/DashboardHeader";
+import {
+  useGetRecentArticleQuery,
+  useGetPendingArticleQuery,
+  useGetApprovedArticleQuery,
+  useGetDeclinedArticleQuery,
+  useUpdateArticleStatusMutation,
+} from "@/store/features/article/article.api";
+import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 
-type ArticleStatus = "recent" | "pending" | "approved" | "declined";
-
-const initialArticles: Article[] = [
-  {
-    id: "1",
-    title: "Volkswagen Profits Tumble as Tariffs Weigh on Auto Industry",
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
-    author: "John",
-    date: "23 June 2025",
-    status: "recent",
-    negativity: {
-      score: 95,
-      positives: [],
-      negatives: [
-        "Lorem ipsum is simply dummy text",
-        "Lorem ipsum is simply dummy text",
-        "Lorem ipsum is simply dummy text",
-      ],
-    },
-  },
-  {
-    id: "2",
-    title: "Volkswagen Profits Tumble as Tariffs Weigh on Auto Industry",
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
-    author: "John",
-    date: "23 June 2025",
-    status: "recent",
-    negativity: {
-      score: 95,
-      positives: [],
-      negatives: [
-        "Lorem ipsum is simply dummy text",
-        "Lorem ipsum is simply dummy text",
-        "Lorem ipsum is simply dummy text",
-      ],
-    },
-  },
-  {
-    id: "3",
-    title: "The Rise of Remote Work",
-    description:
-      "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s...",
-    author: "John",
-    date: "23 June 2025",
-    status: "pending",
-    negativity: {
-      score: 20,
-      positives: [
-        "Lorem ipsum is simply dummy text",
-        "Lorem ipsum is simply dummy text",
-      ],
-      negatives: [],
-    },
-  },
-  {
-    id: "4",
-    title: "Volkswagen Profits Tumble as Tariffs Weigh on Auto Industry",
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
-    author: "John",
-    date: "23 June 2025",
-    status: "approved",
-    negativity: {
-      score: 95,
-      positives: [],
-      negatives: [
-        "Lorem ipsum is simply dummy text",
-        "Lorem ipsum is simply dummy text",
-        "Lorem ipsum is simply dummy text",
-      ],
-    },
-  },
-  {
-    id: "5",
-    title: "Volkswagen Profits Tumble as Tariffs Weigh on Auto Industry",
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
-    author: "John",
-    date: "23 June 2025",
-    status: "declined",
-    negativity: {
-      score: 95,
-      positives: [],
-      negatives: [
-        "Lorem ipsum is simply dummy text",
-        "Lorem ipsum is simply dummy text",
-        "Lorem ipsum is simply dummy text",
-      ],
-    },
-  },
-];
+type ArticleStatus = "recent" | "PENDING" | "APPROVE" | "DECLINE";
 
 const ArticlesPage = () => {
-  const [articles, setArticles] = useState<Article[]>(initialArticles);
-  const [filter, setFilter] = useState<
-    ArticleStatus
-  >("recent");
+  const [activeTab, setActiveTab] = useState<ArticleStatus>("recent");
 
-  const handleStatusChange = (id: string, status: "approved" | "declined") => {
-    setArticles((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, status: status } : a))
-    );
+  const { data: recentArticles = [], isLoading: loadingRecent } =
+    useGetRecentArticleQuery(undefined);
+
+  const { data: pendingArticles = [], isLoading: loadingPending } =
+    useGetPendingArticleQuery(undefined);
+
+  const { data: approvedArticles = [], isLoading: loadingApproved } =
+    useGetApprovedArticleQuery(undefined);
+
+  const { data: declinedArticles = [], isLoading: loadingDeclined } =
+    useGetDeclinedArticleQuery(undefined);
+
+  const [updateStatus] = useUpdateArticleStatusMutation();
+
+  const handleStatusChange = async (
+    id: string,
+    status: "APPROVE" | "Declined"
+  ) => {
+    try {
+      await updateStatus({ id, status });
+    } catch (err) {
+      console.error("Failed to update status", err);
+    }
   };
 
-  const filteredArticles = articles.filter((a) => a.status === filter);
+  const renderArticles = (articles: any[], isLoading: boolean) => {
+    if (isLoading) return <SkeletonLoader />;
+    if (!articles?.length) return <p>No articles found.</p>;
+
+    return articles.map((article) => (
+      <ArticleCard
+        key={article.id}
+        article={{
+          id: article.id,
+          title: article.title,
+          description: article.paragraph,
+          author: article.user?.fullName || "Unknown",
+          date: new Date(article.createdAt).toLocaleDateString(),
+          status: article.status,
+          negativity: {
+            score: 0,
+            positives: [],
+            negatives: [],
+          },
+        }}
+        onStatusChange={handleStatusChange}
+      />
+    ));
+  };
 
   return (
     <div>
-      <DashboardHeader title="Videos" />
+      <DashboardHeader title="Articles" />
+
       {/* Tabs */}
       <div className="flex gap-4 mb-6">
-        {["recent", "pending", "approved", "declined"].map((tab) => (
+        {["recent", "PENDING", "APPROVE", "DECLINE"].map((tab) => (
           <button
             key={tab}
             className={`cursor-pointer ${
-              filter === tab ? "text-accent-orange" : ""
+              activeTab === tab ? "text-accent-orange" : ""
             }`}
-            onClick={() => setFilter(tab as ArticleStatus)}
+            onClick={() => setActiveTab(tab as ArticleStatus)}
           >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            {tab.charAt(0).toUpperCase() + tab.slice(1).toLowerCase()}
           </button>
         ))}
       </div>
 
-      {/* Articles */}
-      {filteredArticles.map((article) => (
-        <ArticleCard
-          key={article.id}
-          article={article}
-          onStatusChange={handleStatusChange}
-        />
-      ))}
+      {/* Render each tab's data */}
+      {activeTab === "recent" && renderArticles(recentArticles, loadingRecent)}
+
+      {activeTab === "PENDING" &&
+        renderArticles(pendingArticles, loadingPending)}
+
+      {activeTab === "APPROVE" &&
+        renderArticles(approvedArticles, loadingApproved)}
+
+      {activeTab === "DECLINE" &&
+        renderArticles(declinedArticles, loadingDeclined)}
     </div>
   );
 };

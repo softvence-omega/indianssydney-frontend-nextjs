@@ -3,7 +3,7 @@ import { DetailsData } from "./types";
 export const demoDetailsData: {
   success: boolean;
   message: string;
-  data: DetailsData;
+  data: any;
 } = {
   success: true,
   message: "Content created successfully",

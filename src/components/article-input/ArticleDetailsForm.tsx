@@ -19,12 +19,13 @@ import { useRef, useState } from "react";
 import type {
   AdditionalField,
   AdditionalFieldType,
-  FormData,
+  UploadFormData,
 } from "../../app/(HomeRoute)/publish-content/types";
+import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
 
 interface ArticleDetailsFormProps {
-  formData: FormData;
-  onUpdate: (updates: Partial<FormData>) => void;
+  formData: UploadFormData;
+  onUpdate: (updates: Partial<UploadFormData>) => void;
   onSubmit: () => void;
   onBack: () => void;
 }
@@ -35,29 +36,21 @@ const ArticleDetailsForm = ({
   onSubmit,
   onBack,
 }: ArticleDetailsFormProps) => {
+  const { data, isLoading, isError } = useGetAllCategoryQuery({});
   const [newTag, setNewTag] = useState("");
   const [additionalFieldType, setAdditionalFieldType] = useState<
     AdditionalFieldType | ""
   >("");
+  const [uploadType, setUploadType] = useState<
+    "image" | "audio" | "video" | ""
+  >("");
+  const [formFileData, setFormFileData] = useState<{ file?: File }>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-
-  const categories = [
-    "Technology",
-    "Business",
-    "Health",
-    "Education",
-    "Entertainment",
-    "Sports",
-  ];
-
-  const subCategories = {
-    Technology: ["AI/ML", "Web Development", "Mobile Apps", "Cybersecurity"],
-    Business: ["Startups", "Marketing", "Finance", "Management"],
-    Health: ["Fitness", "Nutrition", "Mental Health", "Medical"],
-    Education: ["Online Learning", "Skills", "Academic", "Training"],
-    Entertainment: ["Movies", "Music", "Gaming", "Books"],
-    Sports: ["Football", "Basketball", "Tennis", "Olympics"],
-  };
+  const categories = data?.data || [];
+  const selectedCategory = categories.find(
+    (cat: any) => cat.id === formData.categoryId
+  );
 
   const predefinedTags = [
     "React",
@@ -70,37 +63,14 @@ const ArticleDetailsForm = ({
 
   const additionalFieldTypes: AdditionalFieldType[] = [
     "paragraph",
-    "quote",
+    "shortQuote",
     "image",
     "video",
+    "audio",
   ];
 
-
-
-
-  const handleAdditionalFieldFile = async (
-    fieldKey: string,
-    files: FileList | null
-  ) => {
-    const file = files ? files[0] : null
-    if (!file) return
-
-    const res = await uploadFileInAws(file)
-    console.log(res)
-
-
-    onUpdate({
-      additionalFields: {
-        ...formData.additionalFields,
-        [fieldKey]: {
-          ...formData.additionalFields[fieldKey],
-          value: res as string,
-        },
-      },
-    });
-  };
   const handleTagAdd = (tag: string) => {
-    if (tag && !formData.tags.includes(tag)) {
+    if (tag && !formData?.tags?.includes(tag)) {
       onUpdate({ tags: [...formData.tags, tag] });
     }
     setNewTag("");
@@ -112,65 +82,86 @@ const ArticleDetailsForm = ({
 
   const handleAddAdditionalField = () => {
     if (additionalFieldType) {
-      const fieldKey = `additional_${Date.now()}`;
+      const newField: AdditionalField = {
+        type: additionalFieldType,
+        value:
+          additionalFieldType === "image" ||
+          additionalFieldType === "video" ||
+          additionalFieldType === "audio"
+            ? null
+            : "",
+        // order: formData.additionalContents.length,
+      };
       onUpdate({
-        additionalFields: {
-          ...formData.additionalFields,
-          [fieldKey]: {
-            type: additionalFieldType,
-            value:
-              additionalFieldType === "image" || additionalFieldType === "video"
-                ? null
-                : "",
-          },
-        },
+        additionalContents: [...formData.additionalContents, newField],
       });
       setAdditionalFieldType("");
     }
   };
 
   const handleAdditionalFieldUpdate = (
-    fieldKey: string,
-    value: string | File | string[]
+    index: number,
+    value: string | File | null
   ) => {
-    onUpdate({
-      additionalFields: {
-        ...formData.additionalFields,
-        [fieldKey]: { ...formData.additionalFields[fieldKey], value },
-      },
-    });
+    const updatedFields = [...formData.additionalContents];
+    updatedFields[index] = { ...updatedFields[index], value };
+    onUpdate({ additionalContents: updatedFields });
   };
 
-  const handleRemoveAdditionalField = (fieldKey: string) => {
-    const { [fieldKey]: removed, ...rest } = formData.additionalFields;
-    onUpdate({ additionalFields: rest });
+  const handleAdditionalFieldFile = async (
+    index: number,
+    files: FileList | null
+  ) => {
+    const file = files ? files[0] : null;
+    if (!file) return;
+
+    try {
+      const res = await uploadFileInAws(file);
+      console.log("File uploaded:", res);
+      handleAdditionalFieldUpdate(index, res as string);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  const handleRemoveAdditionalField = (index: number) => {
+    const updatedFields = formData.additionalContents.filter(
+      (_, i) => i !== index
+    );
+    onUpdate({ additionalContents: updatedFields });
   };
 
   const renderAdditionalFieldInput = (
-    fieldKey: string,
-    field: AdditionalField
+    field: AdditionalField,
+    index: number
   ) => {
-    if (field.type === "image" || field.type === "video") {
+    if (
+      field.type === "image" ||
+      field.type === "video" ||
+      field.type === "audio"
+    ) {
       return (
         <div className="border border-dashed border-gray-300 p-4">
           <input
             type="file"
-            accept={field.type === "image" ? "image/*" : "video/*"}
-            onChange={(e) =>
-              handleAdditionalFieldFile(fieldKey, e.target.files)
+            accept={
+              field.type === "image"
+                ? "image/*"
+                : field.type === "video"
+                ? "video/*"
+                : "audio/*"
             }
+            onChange={(e) => handleAdditionalFieldFile(index, e.target.files)}
             className="hidden"
-            id={`file-input-${fieldKey}`}
+            id={`file-input-${index}`}
           />
           <label
-            htmlFor={`file-input-${fieldKey}`}
+            htmlFor={`file-input-${index}`}
             className="flex flex-col items-center cursor-pointer"
           >
             <Upload className="w-8 h-8 text-gray-400 mb-2" />
             <p className="text-sm text-gray-500 mb-2">
-              {field.value instanceof File
-                ? field.value.name
-                : `Upload ${field.type}`}
+              {field.value ? `Uploaded ${field.type}` : `Upload ${field.type}`}
             </p>
             <Button variant="outline" size="sm">
               📎 Upload
@@ -185,39 +176,26 @@ const ArticleDetailsForm = ({
         placeholder={`Enter ${field.type.toLowerCase()}`}
         value={typeof field.value === "string" ? field.value : ""}
         className="w-full rounded-none shadow-none"
-        onChange={(e) => handleAdditionalFieldUpdate(fieldKey, e.target.value)}
+        onChange={(e) => handleAdditionalFieldUpdate(index, e.target.value)}
       />
     );
   };
-  // Dynamic header based on content type
+
   const getHeaderText = () => {
     switch (formData.contentType) {
-      case "video":
+      case "VIDEO":
         return "Publish Video:";
-      case "podcast":
+      case "PODCAST":
         return "Publish Podcast:";
-      case "live-event":
-        return "Publish Live Event:";
       default:
         return "Publish Article:";
     }
   };
 
-  // for dynamic file input
-  const [uploadType, setUploadType] = useState<"image" | "audio" | "video" | "">("");
-  const [formFileData, setFormFileData] = useState<{ file?: File }>({});
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  //   const handleFileUpload = (
-  //   field: "audioFile" | "image" | "video",
-  //   files: FileList | null
-  // ) => {
-  //   onUpdate({ [field]: files ? files[0] : null });
-  // };
   const handleDynamicFileUpload = (files: FileList | null) => {
     if (files && files[0]) {
       setFormFileData({ file: files[0] });
-      onUpdate({ [uploadType]: files ? files[0] : null });
+      onUpdate({ [uploadType]: files[0] });
     }
   };
 
@@ -226,7 +204,6 @@ const ArticleDetailsForm = ({
     audio: "audio/*",
     video: "video/*",
   };
-
 
   return (
     <div className="min-h-screen bg-white p-4">
@@ -251,6 +228,7 @@ const ArticleDetailsForm = ({
         <Card className="mb-4 rounded-none shadow-none">
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {/* Category Selection */}
               <div>
                 <Label
                   htmlFor="category"
@@ -259,24 +237,37 @@ const ArticleDetailsForm = ({
                   Choose Category *
                 </Label>
                 <Select
-                  value={formData.category}
-                  onValueChange={(value) =>
-                    onUpdate({ category: value, subCategory: "" })
-                  }
+                  value={formData.categoryId}
+                  onValueChange={(value) => {
+                    const selectedCat = categories.find(
+                      (c: any) => c.id === value
+                    );
+                    onUpdate({
+                      categoryId: value,
+                      categorysslug: selectedCat?.slug || "",
+                      subCategoryId: "",
+                      subcategorysslug: "",
+                    });
+                  }}
                 >
                   <SelectTrigger className="w-full rounded-none shadow-none">
                     <SelectValue placeholder="Choose Category" />
                   </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat} value={cat}>
-                        {cat}
+                  <SelectContent className="rounded-none">
+                    {categories?.map((cat: any) => (
+                      <SelectItem
+                        key={cat.id}
+                        value={cat.id}
+                        className="rounded-none"
+                      >
+                        {cat.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
+              {/* Sub Category Selection */}
               <div>
                 <Label
                   htmlFor="subCategory"
@@ -285,22 +276,38 @@ const ArticleDetailsForm = ({
                   Choose Sub-Category *
                 </Label>
                 <Select
-                  value={formData.subCategory}
-                  onValueChange={(value) => onUpdate({ subCategory: value })}
-                  disabled={!formData.category}
+                  value={formData.subCategoryId}
+                  onValueChange={(value) => {
+                    const selectedSubCat =
+                      selectedCategory?.subCategories?.find(
+                        (s: any) => s.id === value
+                      );
+                    onUpdate({
+                      subCategoryId: value,
+                      subcategorysslug: selectedSubCat?.subslug || "",
+                    });
+                  }}
+                  disabled={!formData.categoryId}
                 >
                   <SelectTrigger className="w-full rounded-none shadow-none">
                     <SelectValue placeholder="Choose Sub-Category" />
                   </SelectTrigger>
-                  <SelectContent>
-                    {formData.category &&
-                      subCategories[
-                        formData.category as keyof typeof subCategories
-                      ]?.map((subCat) => (
-                        <SelectItem key={subCat} value={subCat}>
-                          {subCat}
+                  <SelectContent className="rounded-none">
+                    {selectedCategory?.subCategories?.length ? (
+                      selectedCategory.subCategories?.map((subCat: any) => (
+                        <SelectItem
+                          key={subCat.id}
+                          value={subCat.id}
+                          className="rounded-none"
+                        >
+                          {subCat.subname}
                         </SelectItem>
-                      ))}
+                      ))
+                    ) : (
+                      <SelectItem value="not-found" disabled>
+                        🚫 Subcategory not found
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -351,26 +358,39 @@ const ArticleDetailsForm = ({
                 industry
               </p>
             </div>
-            {/* dynamic part */}
+
+            {/* Dynamic File Upload */}
             <div>
-              {/* Dropdown for choosing type */}
-              <Label className="text-sm font-medium mb-2 block">3. Select File Type</Label>
-              <Select onValueChange={(val) => setUploadType(val as "image" | "audio" | "video")}>
-                <SelectTrigger className="w-[200px] mb-4">
+              <Label className="text-sm font-medium mb-2 block">
+                3. Select a file type
+              </Label>
+              <Select
+                onValueChange={(val) =>
+                  setUploadType(val as "image" | "audio" | "video")
+                }
+              >
+                <SelectTrigger className="max-w-[200px] mb-4 rounded-none shadow-none">
                   <SelectValue placeholder="Choose type..." />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="image">Image</SelectItem>
-                  <SelectItem value="audio">Audio</SelectItem>
-                  <SelectItem value="video">Video</SelectItem>
+                <SelectContent className="rounded-none">
+                  <SelectItem value="image" className="rounded-none">
+                    Image
+                  </SelectItem>
+                  <SelectItem value="audio" className="rounded-none">
+                    Audio
+                  </SelectItem>
+                  <SelectItem value="video" className="rounded-none">
+                    Video
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
-              {/* Dynamic file upload */}
               {uploadType && (
                 <div>
                   <Label className="text-sm font-medium mb-2 block">
-                    Upload {uploadType.charAt(0).toUpperCase() + uploadType.slice(1)} (optional)
+                    Upload{" "}
+                    {uploadType.charAt(0).toUpperCase() + uploadType.slice(1)}{" "}
+                    (optional)
                   </Label>
                   <div className="border border-dashed border-gray-300 p-4 text-center">
                     <input
@@ -387,7 +407,9 @@ const ArticleDetailsForm = ({
                     >
                       <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                       <p className="text-sm text-gray-500 mb-2">
-                        {formFileData.file ? formFileData.file.name : `Drag & Drop ${uploadType}`}
+                        {formFileData.file
+                          ? formFileData.file.name
+                          : `Drag & Drop ${uploadType}`}
                       </p>
                       <Button variant="outline" size="sm">
                         📎 Upload
@@ -398,20 +420,19 @@ const ArticleDetailsForm = ({
               )}
             </div>
 
-
             {/* Image Caption */}
             <div>
               <Label
                 htmlFor="imageCaption"
                 className="text-sm font-medium mb-2 block"
               >
-                6. Type a cation for image
+                4. File Caption
               </Label>
               <Input
                 id="imageCaption"
                 className="w-full rounded-none shadow-none"
-                placeholder="Lorem ipsum is simply dummy text of the printing and typesetting industry"
-                value={formData.imageCaption}
+                placeholder="Write a caption for your selected file"
+                value={formData.imageCaption || ""}
                 onChange={(e) => onUpdate({ imageCaption: e.target.value })}
               />
             </div>
@@ -422,12 +443,12 @@ const ArticleDetailsForm = ({
                 htmlFor="shortQuote"
                 className="text-sm font-medium mb-2 block"
               >
-                7. Short Quote
+                5. Short Quote
               </Label>
               <Input
                 id="shortQuote"
                 className="w-full rounded-none shadow-none"
-                placeholder="Lorem ipsum is simply dummy text of the printing and typesetting industry"
+                placeholder="Write a quote for your article"
                 value={formData.shortQuote}
                 onChange={(e) => onUpdate({ shortQuote: e.target.value })}
               />
@@ -439,11 +460,11 @@ const ArticleDetailsForm = ({
                 htmlFor="paragraph"
                 className="text-sm font-medium mb-2 block"
               >
-                8. Paragraph <span className="text-red-500">*</span>
+                6. Paragraph <span className="text-red-500">*</span>
               </Label>
               <Textarea
                 id="paragraph"
-                placeholder="Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+                placeholder="Write your paragraph here"
                 className="min-h-[120px] w-full rounded-none shadow-none"
                 value={formData.paragraph}
                 onChange={(e) => onUpdate({ paragraph: e.target.value })}
@@ -453,42 +474,24 @@ const ArticleDetailsForm = ({
                   size="sm"
                   className="bg-gray-800 text-white text-sm rounded-none"
                 >
-                  🤖 Generate by AI
+                  🤖 Generate tags by AI
                 </Button>
               </div>
             </div>
-
-            {formData.contentType === "live-event" && (
-              <div>
-                <Label
-                  htmlFor="liveEventDate"
-                  className="text-sm font-medium mb-2 block"
-                >
-                  Live Event Date <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="liveEventDate"
-                  type="dateTime-local"
-                  className="w-full rounded-none shadow-none"
-                  value={formData.dateTimeSlot}
-                  onChange={(e) => onUpdate({ dateTimeSlot: e.target.value })}
-                />
-              </div>
-            )}
 
             {/* Tags */}
             <div>
               <Label className="text-sm font-medium mb-2 block">
                 8. Tags{" "}
                 <span className="text-gray-400">
-                  (Choose a suggestion tags)
+                  {" "}
+                  (Choose from AI suggestion tags)
                 </span>{" "}
                 <span className="text-red-500">*</span>
               </Label>
-
               {/* Selected Tags */}
               <div className="flex flex-wrap gap-2 mb-4">
-                {formData.tags.map((tag) => (
+                {formData?.tags?.map((tag) => (
                   <Badge
                     key={tag}
                     variant="secondary"
@@ -539,31 +542,30 @@ const ArticleDetailsForm = ({
             </div>
 
             {/* Additional Fields */}
-            {Object.keys(formData.additionalFields).length > 0 && (
+            {formData.additionalContents.length > 0 && (
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Additional Fields:</h3>
-                {Object.entries(formData.additionalFields).map(
-                  ([fieldKey, field]) => (
-                    <div
-                      key={fieldKey}
-                      className="flex items-center gap-4 p-4 border rounded-lg"
-                    >
-                      <div className="flex-1">
-                        <Label className="text-sm font-medium mb-2 block">
-                          {field.type}
-                        </Label>
-                        {renderAdditionalFieldInput(fieldKey, field)}
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleRemoveAdditionalField(fieldKey)}
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
+                {formData.additionalContents?.map((field, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-4 p-4 border rounded-lg"
+                  >
+                    <div className="flex-1">
+                      <Label className="text-sm font-medium mb-2 block">
+                        {field.type.charAt(0).toUpperCase() +
+                          field.type.slice(1)}
+                      </Label>
+                      {renderAdditionalFieldInput(field, index)}
                     </div>
-                  )
-                )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleRemoveAdditionalField(index)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
               </div>
             )}
 
@@ -579,9 +581,9 @@ const ArticleDetailsForm = ({
                   <SelectValue placeholder="Select field type to add" />
                 </SelectTrigger>
                 <SelectContent>
-                  {additionalFieldTypes.map((type) => (
+                  {additionalFieldTypes?.map((type) => (
                     <SelectItem key={type} value={type}>
-                      {type}
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
                     </SelectItem>
                   ))}
                 </SelectContent>

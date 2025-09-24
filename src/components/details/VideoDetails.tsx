@@ -72,7 +72,7 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                         </p>
                         <div className="flex items-center text-sm text-gray-500">
                           <Calendar className="w-4 h-4 mr-1" />
-                          {formData.dateTimeSlot || currentDate}
+                          {currentDate}
                         </div>
                       </div>
                     </div>
@@ -104,12 +104,12 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                 </div>
 
                 {/* Hero Video */}
-                {formData.videoFile && (
+                {formData.video && (
                   <div className="mb-6">
                     <video
                       controls
                       className="w-full h-64 md:h-96 object-cover"
-                      src={formData.videoFile}
+                      src={formData.video}
                     />
                   </div>
                 )}
@@ -131,7 +131,7 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                 {/* Additional Fields */}
                 {sortedAdditionalFields.map(({ type, value, id }) => {
                   switch (type) {
-                    case "quote":
+                    case "shortQuote":
                       return (
                         <blockquote
                           key={id}
@@ -174,7 +174,7 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                   }
                 })}
 
-                  {/* Report Button */}
+                {/* Report Button */}
                 <div className="my-4">
                   <PrimaryButton
                     title="Report"
@@ -183,7 +183,7 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                     }}
                   />
                 </div>
-                 {/* Related Topics */}
+                {/* Related Topics */}
 
                 <div>
                   <h2 className="mb-4 text-xl font-semibold">Related Topics</h2>

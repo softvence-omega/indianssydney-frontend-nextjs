@@ -1,6 +1,6 @@
 export type ContentType = "article" | "podcast" | "video";
 export type ContentStatus = "approved" | "pending" | "rejected";
-
+export type ContentTypeNew = "ARTICLE" | "PODCAST" | "VIDEO";
 export interface ContentItem {
   id: string;
   type: ContentType;

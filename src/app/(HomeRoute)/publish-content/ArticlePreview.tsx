@@ -1,4 +1,3 @@
-// ArticleDetails.tsx
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,27 +5,25 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeft, Share2, Eye, Calendar, User } from "lucide-react";
-import { FormData } from "./types";
-
+import { UploadFormData, AdditionalField } from "./types";
 
 interface ArticlePreviewProps {
-  formData: FormData;
+  formData: UploadFormData;
   onBack: () => void;
-  onPublish: () => void; // New prop for final submission
+  onPublish: () => void;
 }
 
-const ArticlePreview = ({
-  formData,
-  onBack,
-  onPublish,
-}: ArticlePreviewProps) => {
+const ArticlePreview = ({ formData, onBack, onPublish }: ArticlePreviewProps) => {
   const currentDate = new Date().toLocaleDateString();
 
-  // Helper to resolve File | string -> string (for src attributes)
+  // Helper to resolve File | string | null -> string (for src attributes)
   const resolveSrc = (value: File | string | null): string => {
     if (!value) return "";
     return typeof value === "string" ? value : URL.createObjectURL(value);
   };
+
+  // Debugging: Log formData.tags to check its value
+  console.log("formData.tags in ArticlePreview:", formData.tags);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -73,7 +70,7 @@ const ArticlePreview = ({
                     </p>
                     <div className="flex items-center text-sm text-gray-500">
                       <Calendar className="w-4 h-4 mr-1" />
-                      {formData.dateTimeSlot || currentDate}
+                      {formData.publishedAt || currentDate}
                     </div>
                   </div>
                 </div>
@@ -81,7 +78,7 @@ const ArticlePreview = ({
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center text-sm text-gray-500">
                     <Eye className="w-4 h-4 mr-1" />
-                    1,234 views
+                    {formData.contentviews || 1234} views
                   </div>
                   <Button variant="outline" size="sm">
                     <Share2 className="w-4 h-4 mr-1" />
@@ -92,28 +89,32 @@ const ArticlePreview = ({
 
               {/* Tags */}
               <div className="flex flex-wrap gap-2 mb-6">
-                {formData.tags.map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant="secondary"
-                    className="bg-orange-100 text-orange-800"
-                  >
-                    {tag}
-                  </Badge>
-                ))}
+                {Array.isArray(formData.tags) && formData.tags.length > 0 ? (
+                  formData.tags.map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant="secondary"
+                      className="bg-orange-100 text-orange-800"
+                    >
+                      {tag}
+                    </Badge>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">No tags added.</p>
+                )}
               </div>
             </div>
 
             {/* Hero Image */}
             {formData.image && (
-              <div className="mb-6">
+              <div className="mb-6 h-48 md:h-64 lg:h-80">
                 <img
                   src={resolveSrc(formData.image)}
                   alt="Article hero image"
                   className="w-full h-64 md:h-80 lg:h-full object-cover"
                 />
                 {formData.imageCaption && (
-                  <p className="text-sm text-gray-600 mt-2 italic">
+                  <p className="text-sm text-gray-600 my-2 italic">
                     {formData.imageCaption}
                   </p>
                 )}
@@ -121,12 +122,12 @@ const ArticlePreview = ({
             )}
 
             {/* Audio */}
-            {formData.audioFile && (
+            {formData.audio && (
               <div className="mb-6">
                 <audio
                   controls
                   className="w-full"
-                  src={resolveSrc(formData.audioFile)}
+                  src={resolveSrc(formData.audio)}
                 />
               </div>
             )}
@@ -138,6 +139,20 @@ const ArticlePreview = ({
                   controls
                   className="w-full rounded-lg"
                   src={resolveSrc(formData.video)}
+                />
+              </div>
+            )}
+
+            {/* YouTube Video */}
+            {formData.youtubeVideoUrl && (
+              <div className="mb-6">
+                <iframe
+                  className="w-full h-64 md:h-80 lg:h-96 rounded-lg"
+                  src={formData.youtubeVideoUrl}
+                  title="YouTube video"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
                 />
               </div>
             )}
@@ -158,34 +173,45 @@ const ArticlePreview = ({
               </div>
 
               {/* Additional Fields */}
-              {Object.entries(formData.additionalFields).map(([key, field]) => (
-                <div key={key} className="my-6">
-                  {field.type === "quote" && (
-                    <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-700">
-                      {field.value as string}
-                    </blockquote>
-                  )}
-                  {field.type === "paragraph" && (
-                    <p className="text-gray-700 leading-relaxed">
-                      {field.value as string}
-                    </p>
-                  )}
-                  {field.type === "image" && field.value && (
-                    <img
-                      src={resolveSrc(field.value as File | string)}
-                      alt="Additional content"
-                      className="w-full h-64 md:h-80 lg:h-full object-cover"
-                    />
-                  )}
-                  {field.type === "video" && field.value && (
-                    <video
-                      controls
-                      className="w-full rounded-lg"
-                      src={resolveSrc(field.value as File | string)}
-                    />
-                  )}
+              {formData.additionalContents.length > 0 && (
+                <div className="space-y-6">
+                  {formData.additionalContents.map((field: AdditionalField, index: number) => (
+                    <div key={index} className="my-6">
+                      {field.type === "shortQuote" && field.value && (
+                        <blockquote className="border-l-4 border-orange-500 pl-4 italic text-gray-700">
+                          {field.value as string}
+                        </blockquote>
+                      )}
+                      {field.type === "paragraph" && field.value && (
+                        <p className="text-gray-700 leading-relaxed">
+                          {field.value as string}
+                        </p>
+                      )}
+                      {field.type === "image" && field.value && (
+                        <img
+                          src={resolveSrc(field.value as File | string)}
+                          alt="Additional content"
+                          className="w-full h-48 md:h-64 lg:h-80 object-cover"
+                        />
+                      )}
+                      {field.type === "video" && field.value && (
+                        <video
+                          controls
+                          className="w-full rounded-lg"
+                          src={resolveSrc(field.value as File | string)}
+                        />
+                      )}
+                      {field.type === "audio" && field.value && (
+                        <audio
+                          controls
+                          className="w-full"
+                          src={resolveSrc(field.value as File | string)}
+                        />
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>
