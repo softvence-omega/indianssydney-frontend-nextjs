@@ -107,14 +107,14 @@ const ArticlePreview = ({ formData, onBack, onPublish }: ArticlePreviewProps) =>
 
             {/* Hero Image */}
             {formData.image && (
-              <div className="mb-6">
+              <div className="mb-6 h-48 md:h-64 lg:h-80">
                 <img
                   src={resolveSrc(formData.image)}
                   alt="Article hero image"
                   className="w-full h-64 md:h-80 lg:h-full object-cover"
                 />
                 {formData.imageCaption && (
-                  <p className="text-sm text-gray-600 mt-2 italic">
+                  <p className="text-sm text-gray-600 my-2 italic">
                     {formData.imageCaption}
                   </p>
                 )}
@@ -191,7 +191,7 @@ const ArticlePreview = ({ formData, onBack, onPublish }: ArticlePreviewProps) =>
                         <img
                           src={resolveSrc(field.value as File | string)}
                           alt="Additional content"
-                          className="w-full h-64 md:h-80 lg:h-full object-cover"
+                          className="w-full h-48 md:h-64 lg:h-80 object-cover"
                         />
                       )}
                       {field.type === "video" && field.value && (
