@@ -1,7 +1,6 @@
 export type TUser = {
   id: string;
   email: string;
-  profilePhoto: string;
   fullName: string;
   role: "USER" | "ADMIN" | string; // adjust if more roles exist
   isVerified: boolean;
