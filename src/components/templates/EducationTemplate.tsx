@@ -11,7 +11,7 @@ import NewsCard3 from "../reusable/NewsCard3";
 import { MenuItem } from '../../types/index';
 
 const normalizeString = (str: string) =>
-  str.toLowerCase().replace(/[&\s]+/g, "-");
+  str?.toLowerCase().replace(/[&\s]+/g, "-");
 
 const EducationTemplate = ({ category }: { category: MenuItem }) => {
   // filter main category

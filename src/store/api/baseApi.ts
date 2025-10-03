@@ -27,7 +27,8 @@ export const baseAPI = createApi({
     "users",
     "ad-management",
     "plan",
-    "profile"
+    "profile",
+    "language",
   ],
   endpoints: () => ({}),
 });

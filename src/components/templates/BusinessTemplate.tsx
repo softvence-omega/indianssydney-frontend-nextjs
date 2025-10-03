@@ -11,7 +11,7 @@ import NewsSlider from "../home/NewsCurrent/NewsSlider";
 import { MenuItem } from "@/types";
 
 const normalizeString = (str: string) =>
-  str.toLowerCase().replace(/[&\s]+/g, "-");
+  str?.toLowerCase().replace(/[&\s]+/g, "-");
 
 const BusinessTemplate = ({ category, subcategorySlug }: { category: MenuItem; subcategorySlug: string }) => {
   // filter main category

@@ -173,7 +173,7 @@ const ArticleDetailsForm = ({
 
     return (
       <Input
-        placeholder={`Enter ${field.type.toLowerCase()}`}
+        placeholder={`Enter ${field.type?.toLowerCase()}`}
         value={typeof field.value === "string" ? field.value : ""}
         className="w-full rounded-none shadow-none"
         onChange={(e) => handleAdditionalFieldUpdate(index, e.target.value)}
@@ -510,7 +510,7 @@ const ArticleDetailsForm = ({
 
               {/* Predefined Tags */}
               <div className="flex flex-wrap gap-2 mb-4">
-                {predefinedTags.map((tag) => (
+                {predefinedTags?.map((tag) => (
                   <Badge
                     key={tag}
                     variant="outline"

@@ -82,7 +82,7 @@ const ArticlesPage = () => {
             }`}
             onClick={() => setActiveTab(tab as ArticleStatus)}
           >
-            {tab.charAt(0).toUpperCase() + tab.slice(1).toLowerCase()}
+            {tab.charAt(0).toUpperCase() + tab.slice(1)?.toLowerCase()}
           </button>
         ))}
       </div>

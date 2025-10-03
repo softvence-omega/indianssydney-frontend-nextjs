@@ -10,7 +10,7 @@ import NewsCard4 from "../reusable/NewsCard4";
 import { MenuItem } from "@/types";
 
 const normalizeString = (str: string) =>
-  str.toLowerCase().replace(/[&\s]+/g, "-");
+  str?.toLowerCase().replace(/[&\s]+/g, "-");
 
 const FoodTemplate = ({ category }: { category: MenuItem;}) => {
   // filter main category

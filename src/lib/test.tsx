@@ -181,7 +181,7 @@ const ArticleDetailsForm = ({
 
     return (
       <Input
-        placeholder={`Enter ${field.type.toLowerCase()}`}
+        placeholder={`Enter ${field.type?.toLowerCase()}`}
         value={typeof field.value === "string" ? field.value : ""}
         className="w-full rounded-none shadow-none"
         onChange={(e) => handleAdditionalFieldUpdate(fieldKey, e.target.value)}

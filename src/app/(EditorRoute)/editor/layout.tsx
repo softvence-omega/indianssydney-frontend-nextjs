@@ -20,6 +20,7 @@ import AdminNavBar from "@/components/Admin/shared/AdminNavbar";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
+import { useAppSelector } from "@/store/hook";
 
 interface NavItem {
   title: string;
@@ -133,11 +134,12 @@ const NavMenu = ({
 );
 
 const EditorLayout = ({ children }: { children: React.ReactNode }) => {
+  const userRole = useAppSelector((state) => state?.auth?.user?.role);
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
- const sidebarRef = useRef<HTMLDivElement | null>(null);
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
@@ -151,7 +153,6 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const hideNavBar = pathname === "/admin/active-user-details";
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -169,6 +170,27 @@ const EditorLayout = ({ children }: { children: React.ReactNode }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // ✅ Protect route
+  useEffect(() => {
+    if (userRole && userRole !== "ADMIN") {
+      toast.error("You are not authorized to access this page.");
+      router.push("/unauthorized"); // redirect non-admin users
+    }
+  }, [userRole, router]);
+
+  // ✅ Optional: show loading until we know the role
+  if (!userRole) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-500">Checking permissions...</p>
+      </div>
+    );
+  }
+
+  if (userRole !== "ADMIN") {
+    return null; // prevent UI flicker during redirect
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-[#ECF4F8] font-Robot">
