@@ -45,6 +45,7 @@ const ArticlesPage = () => {
   const renderArticles = (articles: any[], isLoading: boolean) => {
     if (isLoading) return <SkeletonLoader />;
     if (!articles?.length) return <p>No articles found.</p>;
+    console.log(articles);
 
     return articles.map((article) => (
       <ArticleCard

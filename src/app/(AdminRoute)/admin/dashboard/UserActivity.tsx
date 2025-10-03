@@ -3,25 +3,40 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import DashboardHeader from "@/components/reusable/DashboardHeader";
-// import styles from '.';
+import { useGetTotalUserActivityCountQuery } from "@/store/features/admin/admin.api";
+import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const DonutChart: React.FC = () => {
+  const {
+    data: userActivityCount,
+    isLoading: userActivityLoading,
+    isFetching: userActivityFetching,
+  } = useGetTotalUserActivityCountQuery({});
+
+  // Extract series dynamically from API response
+  const series = [
+    userActivityCount?.data?.adminCount ?? 0,
+    userActivityCount?.data?.superAdminCount ?? 0,
+    userActivityCount?.data?.contributorCount ?? 0,
+    userActivityCount?.data?.memberCount ?? 0,
+    userActivityCount?.data?.visitorCount ?? 0,
+  ];
+
   const options: ApexCharts.ApexOptions = {
-    series: [50, 30, 20],
     chart: {
       type: "donut",
       width: "100%",
     },
-    labels: ["User", "Contributor", "Editor"],
-    colors: ["#A43C2F", "#F9A03F", "#2B77A0"],
+    labels: ["Editor", "Admin", "Contributor", "Member", "User"],
+    colors: ["#A43C2F", "#7C3AED", "#F9A03F", "#2B77A0", "#10B981"],
     legend: {
       position: "bottom",
       horizontalAlign: "center",
       fontSize: "14px",
       labels: {
-        colors: "#374151", // Tailwind gray-700 for text color
+        colors: "#374151", // Tailwind gray-700
       },
     },
     responsive: [
@@ -42,12 +57,11 @@ const DonutChart: React.FC = () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <DashboardHeader title="User Activity" />
-      <Chart
-        options={options}
-        series={options.series}
-        type="donut"
-        width="100%"
-      />
+      {userActivityLoading || userActivityFetching ? (
+        <SkeletonLoader />
+      ) : (
+        <Chart options={options} series={series} type="donut" width="100%" />
+      )}
     </div>
   );
 };

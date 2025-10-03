@@ -11,36 +11,41 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useGetTrafficEngagementQuery } from "@/store/features/admin/admin.api";
+import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 
 const AdminEngagementChart = () => {
-  const chartRef = useRef(null);
+  const { data, isLoading, isFetching } = useGetTrafficEngagementQuery({});
+  const chartRef = useRef<HTMLDivElement>(null);
+
+  // Generate years dynamically
+  const years = Array.from({ length: 11 }, (_, i) => 2023 + i);
+  const [selectedYear, setSelectedYear] = useState("2025");
 
   useEffect(() => {
-    const dataSet = [
-      [120, 150, 180, 130, 170, 160, 200, 210, 130, 170, 160, 200], // PRODUCT A
-    ];
+    if (!data?.data?.monthly?.posts) return;
 
-    const options = {
+    // Extract months and values from API
+    const postsData = data?.data?.monthly?.posts;
+    console.log(postsData, "postsData");
+    const categories = Object.keys(postsData); // ["September 2025", "October 2025", ...]
+    const values = Object.values(postsData); // [11, 20, 15, ...]
+
+    const options: ApexCharts.ApexOptions = {
       series: [
         {
-          name: "PRODUCT A",
-          data: dataSet[0],
+          name: "Posts",
+          data: values,
         },
       ],
       chart: {
         type: "area",
         stacked: false,
         height: 350,
-        zoom: {
-          enabled: false,
-        },
+        zoom: { enabled: false },
       },
-      dataLabels: {
-        enabled: false,
-      },
-      markers: {
-        size: 0,
-      },
+      dataLabels: { enabled: false },
+      markers: { size: 0 },
       stroke: {
         curve: "smooth",
         width: 3,
@@ -56,40 +61,18 @@ const AdminEngagementChart = () => {
           opacityTo: 0.05,
           stops: [20, 100, 100, 100],
         },
-        colors: ["#D96B3B66", "#D96B3B0D"], // Gradient colors relevant to orange
+        colors: ["#D96B3B66", "#D96B3B0D"],
       },
       yaxis: {
         labels: {
-          style: {
-            fontSize: "14px",
-          },
-          offsetX: 0,
-          formatter: function (val: number) {
-            return val; // No need for transformation since it's already in the count of articles
-          },
+          style: { fontSize: "14px" },
+          formatter: (val: number) => val,
         },
-        axisBorder: {
-          show: false,
-        },
-        axisTicks: {
-          show: false,
-        },
+        axisBorder: { show: false },
+        axisTicks: { show: false },
       },
       xaxis: {
-        categories: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ],
+        categories,
         labels: {
           rotate: -45,
           rotateAlways: true,
@@ -99,9 +82,7 @@ const AdminEngagementChart = () => {
           },
         },
       },
-      tooltip: {
-        shared: true,
-      },
+      tooltip: { shared: true },
       legend: {
         position: "top",
         horizontalAlign: "right",
@@ -113,15 +94,9 @@ const AdminEngagementChart = () => {
     chart.render();
 
     return () => {
-      chart.destroy(); // Cleanup when the component is unmounted
+      chart.destroy();
     };
-  }, []);
-
-  // Generate years dynamically
-  const years = Array.from({ length: 11 }, (_, i) => 2023 + i);
-
-  // Default year
-  const [selectedYear, setSelectedYear] = useState("2025");
+  }, [data, selectedYear]);
 
   return (
     <div className="bg-white px-2 py-4 rounded-xl shadow">
@@ -142,7 +117,11 @@ const AdminEngagementChart = () => {
         </Select>
       </div>
 
-      <div id="chart" ref={chartRef}></div>
+      {isLoading || isFetching ? (
+        <SkeletonLoader />
+      ) : (
+        <div id="chart" ref={chartRef}></div>
+      )}
     </div>
   );
 };
