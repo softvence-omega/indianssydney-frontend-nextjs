@@ -1,7 +1,7 @@
 "use client";
 
 import CommonWrapper from "@/common/CommonWrapper";
-import PrimaryButton from "@/components/reusable/PrimaryButton";
+import Link from "next/link";
 // import { useRouter } from "next/navigation";
 
 const page = () => {
@@ -10,11 +10,7 @@ const page = () => {
     <CommonWrapper>
       <div className="h-[60vh] flex flex-col items-center justify-center">
         <h3>You are not authorized to access this page</h3>
-        <PrimaryButton
-          // onClick={() => router.push("/login")}
-          title="Login"
-          className="mt-4"
-        />
+        <Link href="/" className="px-4 py-2 bg-brick-red text-white mt-3">Go Home</Link>
       </div>
     </CommonWrapper>
   );

@@ -1,16 +1,15 @@
 import Link from "next/link";
-import React from "react";
+import React, { useMemo } from "react";
 
 // Updated props to match Article interface
 type NewsCardProps = {
   id: string;
   title: string;
-  description?: string;
-  content?: string;
+  subTitle?: string;
+  paragraph?: string;
   image: string;
   category?: string;
   subcategory?: string;
-  readTime?: string;
   author?: string;
   publishedAt?: string;
   views?: number;
@@ -23,19 +22,25 @@ type NewsCardProps = {
 };
 
 const NewsCardSecondary: React.FC<NewsCardProps> = ({
+  id,
   image,
   tag,
+  subTitle,
   title,
-  description,
+  paragraph,
   author = "Unknown",
-  readTime = "0 min read",
   layout = "left", // default to left
   imageHeight = "lg:h-[190px]", // default large screen height
   category,
   publishedAt,
 }) => {
+  const readTime = useMemo(() => {
+    const randomMinutes = Math.floor(Math.random() * 8) + 5; // 5 to 12
+    return `${randomMinutes} min read`;
+  }, []);
   return (
-    <Link href="/details/article/1"
+    <Link
+      href={`/details/article/${id}`}
       className={`grid md:grid-cols-2 gap-6 ${
         layout === "right" ? "md:flex-row-reverse" : "md:flex-row"
       }`}
@@ -56,10 +61,8 @@ const NewsCardSecondary: React.FC<NewsCardProps> = ({
           {title}
         </h2>
 
-        {description && (
-          <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-            {description}
-          </p>
+        {paragraph && (
+          <p className="text-sm text-gray-600 mb-2 line-clamp-2">{paragraph}</p>
         )}
 
         <div className="text-xs lg:text-sm text-accent-orange font-medium">

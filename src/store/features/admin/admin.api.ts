@@ -31,6 +31,20 @@ export const adminApi = baseAPI.injectEndpoints({
       }),
     }),
 
+    getRecentUserActivity: build.query({
+      query: () => ({
+        url: "/overview-dashboard/recent-activity",
+        method: "GET",
+      }),
+    }),
+
+    getEditorActivity: build.query({
+      query: () => ({
+        url: "/overview-dashboard/editor-content-activity",
+        method: "GET",
+      }),
+    }),
+
     // Admin dashboard user management
     getAllUser: build.query({
       query: () => ({
@@ -60,4 +74,6 @@ export const {
   useGetTotalUserActivityCountQuery,
   useGetTrafficEngagementQuery,
   useGetPageViewCountQuery,
+  useGetRecentUserActivityQuery,
+  useGetEditorActivityQuery,
 } = adminApi;

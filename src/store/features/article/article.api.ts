@@ -1,8 +1,17 @@
 import { baseAPI } from "@/store/api/baseApi";
 
-
 export const articleApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
+    // for all user home page data
+
+    getHomePageData: build.query({
+      query: () => ({
+        url: "/content/home-page-content",
+        method: "GET",
+      }),
+      providesTags: ["content"],
+    }),
+
     // for contributor get my articles
 
     getMyArticles: build.query({
@@ -106,4 +115,5 @@ export const {
   useUpdateArticleStatusMutation,
   useGetArticleDetailsQuery,
   useGetMyArticlesQuery,
+  useGetHomePageDataQuery,
 } = articleApi;

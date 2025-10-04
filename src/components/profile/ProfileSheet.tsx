@@ -17,8 +17,6 @@ interface ProfileSheetProps {
 
 const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
   const user = useAppSelector((state: RootState) => state?.auth?.user);
-
-  console.log("user details in profile",user)
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const [aiRecommendations, setAiRecommendations] = useState(false);
