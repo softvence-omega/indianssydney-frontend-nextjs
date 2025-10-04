@@ -16,7 +16,6 @@ import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 
 const AdminEngagementChart = () => {
   const { data, isLoading, isFetching } = useGetTrafficEngagementQuery({});
-  console.log(data, "AdminEngagementChart Data");
   const chartRef = useRef<HTMLDivElement>(null);
 
   // Generate years dynamically
@@ -28,11 +27,8 @@ const AdminEngagementChart = () => {
 
     // Extract months and values from API
     const postsData = data?.data?.monthly?.posts;
-    console.log(postsData, "postsData");
     const categories = Object.keys(postsData); // ["September 2025", "October 2025", ...]
     const values = Object.values(postsData); // [11, 20, 15, ...]
-
-    console.log(categories, values);
 
     const options: ApexCharts.ApexOptions = {
       series: [
