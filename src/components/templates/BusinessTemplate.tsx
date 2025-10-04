@@ -7,8 +7,8 @@ import NewsCardSecondary from "@/components/reusable/NewsCardSecondary";
 import NewsTabs from "@/components/reusable/NewsTabs";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
 import { newsItems } from "@/utils/demoData";
-import NewsSlider from "../home/NewsCurrent/NewsSlider";
-import { MenuItem } from "@/types";
+// import NewsSlider from "../home/NewsCurrent/NewsSlider";
+// import { MenuItem } from "@/types";
 
 const normalizeString = (str: string) =>
   str?.toLowerCase().replace(/[&\s]+/g, "-");
@@ -76,7 +76,7 @@ const BusinessTemplate = ({
             <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-1 xl:grid-cols-3 gap-4 xl:divide-x xl:divide-slight-border">
               {/* Main slider section */}
               <div className="xl:col-span-2 xl:pr-4">
-                <NewsSlider items={categoryArticles.slice(0, 4)} />
+                {/* <NewsSlider items={categoryArticles.slice(0, 4)} /> */}
               </div>
 
               {/* Secondary cards */}

@@ -2,7 +2,7 @@ import CommonPadding from "@/common/CommonPadding";
 import PrimaryHeading from "../reusable/PrimaryHeading";
 import { newsItems } from "@/utils/demoData";
 import NewsCard3 from "../reusable/NewsCard3";
-import NewsSlider from "./NewsCurrent/NewsSlider";
+// import NewsSlider from "./NewsCurrent/NewsSlider";
 import NewsCardSecondary from "../reusable/NewsCardSecondary";
 
 const EnvironmentPlanet = () => {
@@ -17,7 +17,7 @@ const EnvironmentPlanet = () => {
           <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-1 lg:grid-cols-4 gap-4 xl:divide-x xl:divide-slight-border">
             {/* Main slider section */}
             <div className="lg:col-span-3 xl:pr-4">
-              <NewsSlider items={newsItems} />
+              {/* <NewsSlider items={newsItems} /> */}
 
               <div className="mt-4 grid grid-cols-2 gap-4">
                 {newsItems.slice(2, 4).map((item) => (
