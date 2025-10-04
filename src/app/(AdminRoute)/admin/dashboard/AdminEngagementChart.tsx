@@ -16,6 +16,7 @@ import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 
 const AdminEngagementChart = () => {
   const { data, isLoading, isFetching } = useGetTrafficEngagementQuery({});
+  console.log(data, "AdminEngagementChart Data");
   const chartRef = useRef<HTMLDivElement>(null);
 
   // Generate years dynamically

@@ -12,28 +12,57 @@ import { MenuItem } from "@/types";
 const normalizeString = (str: string) =>
   str?.toLowerCase().replace(/[&\s]+/g, "-");
 
-const FoodTemplate = ({ category }: { category: MenuItem;}) => {
-  // filter main category
+interface SubCategory {
+  id: string;
+  subname: string;
+  subslug: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  tamplate: string;
+  subCategories?: SubCategory[];
+}
+
+const FoodTemplate = ({
+  category,
+  subcategorySlug,
+}: {
+  category: Category;
+  subcategorySlug: string;
+}) => {
+  // ✅ Filter main category
   const categoryArticles = newsItems.filter(
-    (item) => normalizeString(item.category) === normalizeString(category.label)
+    (item) => normalizeString(item.category) === normalizeString(category.name)
   );
 
-  // group by subcategory
-  const articlesBySubcategory = (category?.submenus || []).map((submenu) => {
-    const subArticles = newsItems.filter(
-      (item) =>
-        normalizeString(item.category) === normalizeString(category.label) &&
-        normalizeString(item.subcategory || "") ===
-          normalizeString(submenu.label)
-    );
-    return { submenu, subArticles };
-  });
+  // ✅ Group by subcategory + construct href
+  const articlesBySubcategory =
+    (category?.subCategories || []).map((submenu) => {
+      const subArticles = newsItems.filter(
+        (item) =>
+          normalizeString(item.category) === normalizeString(category.name) &&
+          normalizeString(item.subcategory || "") ===
+            normalizeString(submenu.subname)
+      );
+
+      return {
+        submenu: {
+          ...submenu,
+          href: `/${category.slug}/${submenu.subslug}`, // 👈 ensure href is set
+          label: submenu.subname,
+        },
+        subArticles,
+      };
+    }) || [];
 
   return (
     <CommonWrapper>
       <CommonPadding>
         {/* Main Category Title */}
-        <PrimaryHeading title={category.label} icon={false} />
+        <PrimaryHeading title={category.name} icon={false} />
 
         {/* Empty state */}
         {categoryArticles.length === 0 && (
