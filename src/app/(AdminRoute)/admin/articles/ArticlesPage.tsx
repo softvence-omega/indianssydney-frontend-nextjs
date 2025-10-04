@@ -45,6 +45,7 @@ const ArticlesPage = () => {
   const renderArticles = (articles: any[], isLoading: boolean) => {
     if (isLoading) return <SkeletonLoader />;
     if (!articles?.length) return <p>No articles found.</p>;
+    console.log(articles);
 
     return articles.map((article) => (
       <ArticleCard
@@ -81,7 +82,7 @@ const ArticlesPage = () => {
             }`}
             onClick={() => setActiveTab(tab as ArticleStatus)}
           >
-            {tab.charAt(0).toUpperCase() + tab.slice(1).toLowerCase()}
+            {tab.charAt(0).toUpperCase() + tab.slice(1)?.toLowerCase()}
           </button>
         ))}
       </div>

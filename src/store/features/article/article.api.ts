@@ -6,7 +6,7 @@ export const articleApi = baseAPI.injectEndpoints({
     // for all user article get
     getAllArticle: build.query({
       query: () => ({
-        url: "/content",
+        url: "/content/contents-all",
         method: "GET",
       }),
       providesTags: ["content"],
@@ -87,11 +87,12 @@ export const articleApi = baseAPI.injectEndpoints({
 });
 
 export const {
+  useGetAllArticleQuery,
   useCreateNewArticleMutation,
   useGetRecentArticleQuery,
   useGetPendingArticleQuery,
   useGetApprovedArticleQuery,
   useGetDeclinedArticleQuery,
   useUpdateArticleStatusMutation,
-  useGetArticleDetailsQuery
+  useGetArticleDetailsQuery,
 } = articleApi;

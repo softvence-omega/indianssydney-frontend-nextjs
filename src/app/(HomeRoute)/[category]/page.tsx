@@ -3,14 +3,13 @@
 import { useParams, usePathname } from "next/navigation";
 import CommonWrapper from "@/common/CommonWrapper";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
-import { allMenus } from "@/utils/demoData";
 
 import NewsTemplate from "@/components/templates/NewsTemplate";
 import BusinessTemplate from "@/components/templates/BusinessTemplate";
 import EducationTemplate from "@/components/templates/EducationTemplate";
 import PodcastTemplate from "@/components/templates/PodcastTemplate";
 import FoodTemplate from "@/components/templates/FoodTemplate";
-import { MenuItem } from "@/types";
+import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
 
 type TemplateKeys =
   | "NewsTemplate"
@@ -18,8 +17,9 @@ type TemplateKeys =
   | "EducationTemplate"
   | "PodcastTemplate"
   | "FoodTemplate";
+
 type TemplateProps = {
-  category: MenuItem;
+  category: any;
   subcategorySlug: string;
 };
 
@@ -29,11 +29,6 @@ const templateMap: Record<TemplateKeys, React.FC<TemplateProps>> = {
   EducationTemplate,
   PodcastTemplate,
   FoodTemplate,
-};
-
-const getCategoryByHref = (path: string) => {
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  return allMenus.find((menu) => menu.href === normalizedPath);
 };
 
 const extractCategoryFromPath = (pathname: string) => {
@@ -50,13 +45,34 @@ const CategoryPage = () => {
   const params = useParams<{ category?: string; subcategory?: string }>();
   const pathname = usePathname();
 
+  // fetch all categories from API
+  const { data, isLoading, isError } = useGetAllCategoryQuery({});
+
   const categorySlug =
     params?.category || extractCategoryFromPath(pathname || "");
   const subcategorySlug =
     params?.subcategory || extractSubcategoryFromPath(pathname || "");
 
-  const categoryHref = categorySlug ? `/${categorySlug}` : "";
-  const category = getCategoryByHref(categoryHref);
+  if (isLoading) {
+    return (
+      <CommonWrapper>
+        <PrimaryHeading title="Loading Categories..." icon={false} />
+      </CommonWrapper>
+    );
+  }
+
+  if (isError || !data?.data) {
+    return (
+      <CommonWrapper>
+        <PrimaryHeading title="Error Loading Categories" icon={false} />
+        <p className="text-gray-500">Something went wrong.</p>
+      </CommonWrapper>
+    );
+  }
+
+  // ✅ Find category dynamically from API
+  const categories = data.data;
+  const category = categories.find((c: any) => c.slug === categorySlug);
 
   if (!category) {
     return (
@@ -69,30 +85,18 @@ const CategoryPage = () => {
     );
   }
 
+  // ✅ Check if subcategory exists
+  const subcategory =
+    category.subCategories?.find(
+      (sub: any) => sub.subslug === subcategorySlug
+    ) || null;
 
-  // choose template (default to NewsTemplate if none specified)
-  const templateKey = (category.template ?? "NewsTemplate") as string;
+  // ✅ Choose template (fallback to NewsTemplate if missing)
+  const templateKey = (category.tamplate ?? "NewsTemplate") as TemplateKeys;
+  const Template =
+    templateMap[templateKey as TemplateKeys] || templateMap["NewsTemplate"];
 
-  let Template: React.FC<TemplateProps>;
-  if (templateKey in templateMap) {
-    Template = templateMap[templateKey as TemplateKeys];
-  } else {
-    console.warn(
-      `Template '${category.template}' not found. Falling back to NewsTemplate.`
-    );
-    Template = templateMap["NewsTemplate"];
-  }
-
-  return Template ? (
-    <Template category={category} subcategorySlug={subcategorySlug} />
-  ) : (
-    <CommonWrapper>
-      <PrimaryHeading title="Template Not Found" icon={false} />
-      <p className="text-gray-500">
-        No valid template found for this category.
-      </p>
-    </CommonWrapper>
-  );
+  return <Template category={category} subcategorySlug={subcategorySlug} />;
 };
 
 export default CategoryPage;

@@ -8,11 +8,11 @@ import health from "@/assets/icons/health.png";
 import influencer from "@/assets/icons/influencer.png";
 import laptop from "@/assets/icons/laptop.png";
 import map from "@/assets/icons/map.png";
-import mental from "@/assets/icons/mental-health.png";
+// import mental from "@/assets/icons/mental-health.png";
 import microphone from "@/assets/icons/microphone.png";
 import mic from "@/assets/icons/mic.png";
 import people from "@/assets/icons/people.png";
-import woman from "@/assets/icons/woman.png";
+// import woman from "@/assets/icons/woman.png";
 
 export const recommendationsData = [
   {

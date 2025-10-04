@@ -1,8 +1,48 @@
 "use client";
 
 import DashboardHeader from "@/components/reusable/DashboardHeader";
+import {
+  useGetPageViewCountQuery,
+  useGetTotalUserCountQuery,
+} from "@/store/features/admin/admin.api";
 
 const AdminOverviewCard = () => {
+  const {
+    data: userCount,
+    isLoading: userCountLoading,
+    isFetching: userCountFetching,
+  } = useGetTotalUserCountQuery({});
+
+  const {
+    data: pageViewCount,
+    isLoading: pageViewLoading,
+    isFetching: pageViewFetching,
+  } = useGetPageViewCountQuery({});
+
+
+  // Users
+  const totalUsers = userCount?.data?.totalCurrentMonth ?? 0;
+  const userGrowth =
+    userCount?.data?.totalLastMonth && userCount?.data?.totalLastMonth !== 0
+      ? (
+          ((totalUsers - userCount?.data?.totalLastMonth) /
+            userCount?.data?.totalLastMonth) *
+          100
+        ).toFixed(1) + "%"
+      : `${userCount?.data?.userGrowth ?? 0}%`;
+
+  // Page Views
+  const totalPageViews = pageViewCount?.data?.currentMonthCount ?? 0;
+  const pageGrowth =
+    pageViewCount?.data?.lastMonthCount &&
+    pageViewCount?.data?.lastMonthCount !== 0
+      ? (
+          ((totalPageViews - pageViewCount?.data?.lastMonthCount) /
+            pageViewCount?.data?.lastMonthCount) *
+          100
+        ).toFixed(1) + "%"
+      : `${pageViewCount?.data?.pageGroth ?? 0}%`;
+
   const statusData = [
     {
       title: "Total Posts",
@@ -12,8 +52,9 @@ const AdminOverviewCard = () => {
     },
     {
       title: "Total Users",
-      amount: "9938",
-      percentage: "+12.1%",
+      amount:
+        userCountLoading || userCountFetching ? "..." : String(totalUsers),
+      percentage: userGrowth,
       tag: "from last month",
     },
     {
@@ -23,8 +64,9 @@ const AdminOverviewCard = () => {
     },
     {
       title: "Page Views",
-      amount: "1.4M",
-      percentage: "2.1%",
+      amount:
+        pageViewLoading || pageViewFetching ? "..." : String(totalPageViews),
+      percentage: pageGrowth,
       tag: "from last month",
     },
   ];
@@ -60,4 +102,5 @@ const AdminOverviewCard = () => {
     </div>
   );
 };
+
 export default AdminOverviewCard;
