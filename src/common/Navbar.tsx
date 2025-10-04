@@ -1,31 +1,54 @@
-"use client"
+"use client";
 
-import React, { useState } from "react";
-import { ChevronDown, Menu, Search, X } from "lucide-react";
 import CommonWrapper from "@/common/CommonWrapper";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
+import { ChevronDown, Menu, Search, X } from "lucide-react";
+import React, { useState } from "react";
 
+import ForgotPasswordModal from "@/components/auth/ForgotPassword";
+import ResetPasswordModal from "@/components/auth/ResetPasswordModal";
 import SignInModal from "@/components/auth/SignInModal";
 import SignUpModal from "@/components/auth/SignUpModal";
-import ResetPasswordModal from "@/components/auth/ResetPasswordModal";
-import ForgotPasswordModal from "@/components/auth/ForgotPassword";
 import { allMenus } from "@/utils/demoData";
-import { useSelector } from "react-redux"; // Import useSelector and useDispatch
 
-import { RootState } from "@/store/store"; // Adjust path to your store types
+import VerifyOtpModal from "@/components/auth/VerifyOtpModal";
 import ProfileSheet from "@/components/profile/ProfileSheet";
-import { useRouter } from "next/navigation";
+import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
+import { useAppSelector } from "@/store/hook";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+
+
+type SubCategory = {
+  id: string;
+  subname: string;
+  subslug: string;
+  categoryId: string;
+};
+
+type Category = {
+  createdAt: string; // or Date if you want to parse it
+  id: string;
+  isDeleted: boolean;
+  name: string;
+  slug: string;
+  subCategories: SubCategory[];
+};
+
 
 const Navbar: React.FC = () => {
+  const { data } = useGetAllCategoryQuery(undefined)
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-
+  const user = useAppSelector((state) => state?.auth?.user);
   const [signInOpen, setSignInOpen] = useState(false);
   const [signUpOpen, setSignUpOpen] = useState(false);
   const [forgotOpen, setForgotOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const [otpOpen, setOtpOpen] = useState(false);
+  const [otpEmail, setOtpEmail] = useState<string | null>(null);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [openSubmenus, setOpenSubmenus] = useState<string[]>([]);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -33,7 +56,6 @@ const Navbar: React.FC = () => {
   const toggleProfileSheet = () => setIsSheetOpen((prev) => !prev);
 
   // Access user from Redux store
-  const user = useSelector((state: RootState) => state.auth.user);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -85,11 +107,21 @@ const Navbar: React.FC = () => {
 
   const [selectedLang, setSelectedLang] = useState(languages[0].code);
 
+  const handleUserButtonClick = () => {
+    if (user?.role === "USER" || user?.role === "CONTIBUTOR") {
+      toggleProfileSheet();
+    } else if (user?.role === "ADMIN") {
+      router.push("/editor");
+    } else if (user?.role === "SUPER_ADMIN") {
+      router.push("/admin");
+    }
+  };
+
   return (
     <nav className="w-full bg-bg-cream z-50 text-ink-black border-b border-slight-border">
       <CommonWrapper>
         {/* Top bar */}
-        <div className="flex items-center justify-between py-2 lg:py-0">
+        <div className="flex items-center justify-between py-2 md:py-4 lg:py-3">
           {/* Date - Hidden on small screens */}
           <div className="hidden lg:block text-xs lg:text-sm text-gray-600 flex-shrink-0">
             {today}
@@ -98,17 +130,25 @@ const Navbar: React.FC = () => {
           {/* Mobile hamburger - Left side on mobile */}
           <button
             onClick={toggleMenu}
-            className="lg:hidden text-gray-700 focus:outline-none order-1 md:order-none"
+            className="lg:hidden text-gray-700 focus:outline-none order-1 md:order-none  mr-2"
           >
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {isOpen ? (
+              <X className="h-4 w-4 md:h-6 md:w-6" />
+            ) : (
+              <Menu className="h-4 w-4 md:h-6 md:w-6" />
+            )}
           </button>
 
           {/* Logo/Title - Centered on mobile, normal on desktop */}
           <Link
             href="/"
-            className="text-center font-cursive text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[72px] font-bold py-3 flex-1 md:flex-none order-2 md:order-none cursor-pointer"
+            className="  flex-1 md:flex-none order-2 md:order-none cursor-pointer"
           >
-            The Australian Canvas
+            <img
+              src="/TAC1.png"
+              className="h-4 sm:h-6 md:h-8 lg:h-10 xl:h-12"
+              alt=""
+            />
           </Link>
 
           {/* Right actions */}
@@ -118,11 +158,10 @@ const Navbar: React.FC = () => {
               <select
                 value={selectedLang}
                 onChange={(e) => setSelectedLang(e.target.value)}
-                className="appearance-none border-none bg-transparent text-sm cursor-pointer pl-6 pr-6 py-2 outline-none"
+                className="appearance-none border-none bg-transparent text-sm cursor-pointer pl-6 pr-2 py-2 outline-none"
                 style={{
-                  backgroundImage: `url(${
-                    languages.find((l) => l.code === selectedLang)?.flag
-                  })`,
+                  backgroundImage: `url(${languages.find((l) => l.code === selectedLang)?.flag
+                    })`,
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "20px 14px",
                   backgroundPosition: "left center",
@@ -137,13 +176,15 @@ const Navbar: React.FC = () => {
             </div>
 
             {/* Conditional rendering: Show user name or Sign In button */}
-            {user && user.isLoggedIn ? (
+            {user ? (
               <div className="flex items-center space-x-2 md:space-x-3">
                 <div
                   className="flex items-center space-x-2 cursor-pointer"
-                  onClick={toggleProfileSheet}
+                  onClick={handleUserButtonClick}
                 >
-                  <span className="text-xs md:text-sm">{user.name}</span>
+                  <span className="text-xs md:text-sm">
+                    {user?.fullName?.split(" ")[0] || "User"}
+                  </span>
                   <span className="text-sm">▼</span>
                 </div>
               </div>
@@ -166,7 +207,7 @@ const Navbar: React.FC = () => {
         {/* Search + menu (desktop only) */}
         <div className="hidden lg:block">
           {/* Searchbar */}
-          <div className="flex items-center justify-center py-6">
+          <div className="flex items-center justify-center py-4">
             <div className="flex gap-3 w-full max-w-xl relative items-center">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
                 <Search className="h-4 w-4" />
@@ -185,30 +226,30 @@ const Navbar: React.FC = () => {
 
           {/* Menu */}
           <div className="flex justify-center gap-4 xl:gap-6 py-6 flex-wrap">
-            {allMenus.slice(0, showMore ? allMenus.length : 7).map((menu) => (
+            {data?.data?.slice(0, showMore ? allMenus.length : 7)?.map((menu: Category) => (
               <div
-                key={menu.label}
+                key={menu?.id}
                 className="relative"
-                onMouseEnter={() => setActiveMenu(menu.label)}
+                onMouseEnter={() => setActiveMenu(menu?.name)}
                 onMouseLeave={() => setActiveMenu(null)}
               >
                 <button
-                  onClick={() => router.push(menu.href)}
+                  onClick={() => router.push(`/${menu?.slug}`)}
                   className="flex items-center text-sm hover:text-brick-red transition-colors duration-200 cursor-pointer"
                 >
-                  {menu.label}
+                  {menu?.name}
                   <ChevronDown className="ml-1 h-4 w-4" />
                 </button>
-                {activeMenu === menu.label && menu.submenus?.length > 0 && (
+                {activeMenu === menu?.name && menu?.subCategories?.length > 0 && (
                   <div className="absolute top-full left-0 bg-white shadow-md py-2 min-w-max z-50">
-                    {menu.submenus.map((sub) => (
+                    {menu?.subCategories?.map((sub) => (
                       <Link
-                        key={sub.label}
-                        href={sub.href}
+                        key={sub?.subname}
+                        href={`/${menu?.slug}/${sub?.subslug}`}
                         className="block px-4 py-2 hover:bg-gray-100 text-sm"
                         onClick={() => setActiveMenu(null)}
                       >
-                        {sub.label}
+                        {sub?.subname}
                       </Link>
                     ))}
                   </div>
@@ -258,11 +299,10 @@ const Navbar: React.FC = () => {
                     <button
                       key={lang.code}
                       onClick={() => setSelectedLang(lang.code)}
-                      className={`flex items-center space-x-2 p-2 border rounded transition-colors ${
-                        selectedLang === lang.code
-                          ? "bg-brick-red text-white border-brick-red"
-                          : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-                      }`}
+                      className={`flex items-center space-x-2 p-2 border rounded transition-colors ${selectedLang === lang.code
+                        ? "bg-brick-red text-white border-brick-red"
+                        : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+                        }`}
                     >
                       <img
                         src={lang.flag}
@@ -277,57 +317,54 @@ const Navbar: React.FC = () => {
 
               {/* Menu items */}
               <div className="space-y-1">
-                {allMenus
-                  .slice(0, showMore ? allMenus.length : 7)
-                  .map((menu) => (
-                    <div key={menu.label}>
-                      <button
-                        className="flex items-center justify-between w-full text-left p-3 text-sm font-medium text-gray-700 hover:text-brick-red hover:bg-gray-50 transition-colors rounded"
-                        onClick={() => {
-                          router.push(menu.href);
-                          setIsOpen(false);
-                        }}
-                      >
-                        {menu.label}
-                        {menu.submenus?.length > 0 ? (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleSubmenu(menu.label);
-                            }}
-                            className="ml-auto"
-                          >
-                            <ChevronDown
-                              className={`h-4 w-4 ${
-                                openSubmenus.includes(menu.label)
-                                  ? "rotate-180"
-                                  : ""
+                {data?.data?.slice(0, showMore ? allMenus.length : 7).map((menu: Category) => (
+                  <div key={menu?.id}>
+                    <button
+                      className="flex items-center justify-between w-full text-left p-3 text-sm font-medium text-gray-700 hover:text-brick-red hover:bg-gray-50 transition-colors rounded"
+                      onClick={() => {
+                        router.push(menu?.slug);
+                        setIsOpen(false);
+                      }}
+                    >
+                      {menu?.name}
+                      {menu?.subCategories?.length > 0 ? (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleSubmenu(menu?.name);
+                          }}
+                          className="ml-auto"
+                        >
+                          <ChevronDown
+                            className={`h-4 w-4 ${openSubmenus?.includes(menu?.name)
+                              ? "rotate-180"
+                              : ""
                               }`}
-                            />
-                          </button>
-                        ) : (
-                          <ChevronDown className="h-4 w-4" />
-                        )}
-                      </button>
-                      {openSubmenus.includes(menu.label) &&
-                        menu.submenus?.length > 0 && (
-                          <div className="ml-4 space-y-1">
-                            {menu.submenus.map((sub) => (
-                              <button
-                                key={sub.label}
-                                onClick={() => {
-                                  router.push(sub.href);
-                                  setIsOpen(false);
-                                }}
-                                className="w-full text-left p-3 text-sm text-gray-600 hover:text-brick-red hover:bg-gray-50 rounded"
-                              >
-                                {sub.label}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                    </div>
-                  ))}
+                          />
+                        </button>
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </button>
+                    {openSubmenus?.includes(menu?.name) &&
+                      menu?.subCategories?.length > 0 && (
+                        <div className="ml-4 space-y-1">
+                          {menu?.subCategories?.map((sub) => (
+                            <button
+                              key={sub?.id}
+                              onClick={() => {
+                                router.push(sub?.subslug);
+                                setIsOpen(false);
+                              }}
+                              className="w-full text-left p-3 text-sm text-gray-600 hover:text-brick-red hover:bg-gray-50 rounded"
+                            >
+                              {sub?.subname}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                  </div>
+                ))}
                 {!showMore && (
                   <button
                     onClick={() => setShowMore(true)}
@@ -353,10 +390,15 @@ const Navbar: React.FC = () => {
         <SignUpModal
           open={signUpOpen}
           onOpenChange={setSignUpOpen}
-          onSwitchToSignIn={openSignIn}
+          onSwitchToSignIn={() => setSignInOpen(true)}
         />
         <ResetPasswordModal open={resetOpen} onOpenChange={setResetOpen} />
         <ForgotPasswordModal open={forgotOpen} onOpenChange={setForgotOpen} />
+        <VerifyOtpModal
+          open={otpOpen}
+          onOpenChange={setOtpOpen}
+          email={otpEmail}
+        />
       </CommonWrapper>
 
       {/* Profile Sheet */}

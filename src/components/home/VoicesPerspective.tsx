@@ -7,9 +7,8 @@ const VoicesPerspective = () => {
     <div>
       <div className="border-b border-slight-border">
         <PrimaryHeading
-          title="Voices & Perspectives
-"
-          seeAllRoute="/voices"
+          title="Voices & Perspectives"
+          seeAllRoute="/voices-perspectives"
         />
         <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-1">
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:border-b border-slight-border lg:pb-4">

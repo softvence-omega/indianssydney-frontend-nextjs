@@ -9,7 +9,10 @@ const EducationCareer = () => {
     <div>
       <CommonPadding>
         <div className="border-b border-slight-border">
-          <PrimaryHeading title="Education & Career" seeAllRoute="/education" />
+          <PrimaryHeading
+            title="Education & Career"
+            seeAllRoute="/education-career"
+          />
           <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="lg:col-span-2 ">
               <div className="grid grid-cols-2 lg:grid-cols-2 gap-4 lg:border-b border-slight-border lg:pb-4">
@@ -29,7 +32,7 @@ const EducationCareer = () => {
             </div>
 
             <div className="hidden lg:grid grid-cols-2 lg:grid-cols-1 gap-4">
-              {newsItems.slice(0,5).map((item) => (
+              {newsItems.slice(0, 4).map((item) => (
                 <NewsCardSecondary
                   key={item.id}
                   {...item}

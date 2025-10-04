@@ -12,7 +12,7 @@ const EnvironmentPlanet = () => {
         <div className="border-b border-slight-border">
           <PrimaryHeading
             title="Environment & Planet"
-            seeAllRoute="/culture"
+            seeAllRoute="/environment-planet"
           />
           <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-1 lg:grid-cols-4 gap-4 xl:divide-x xl:divide-slight-border">
             {/* Main slider section */}

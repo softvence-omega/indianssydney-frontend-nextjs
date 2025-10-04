@@ -1,62 +1,90 @@
-import React, { useState, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/store/store";
-import { updateUser } from "@/store/Slices/AuthSlice/authSlice";
+"use client";
+
+import React, { useState, useRef, useEffect } from "react";
 import PrimaryButton from "../reusable/PrimaryButton";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import {
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+} from "@/store/features/profile/profile.api";
 
 const AccountDetails = () => {
-  const dispatch = useDispatch();
-const router = useRouter();
-  const user = useSelector((state: RootState) => state.auth.user);
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Initialize state with user data or fallback values
-  const [newProfileImage, setNewProfileImage] = useState<string | null>(
-    user?.profileImage || null
-  );
-  const [newName, setNewName] = useState(user?.name || "");
-  const [newAbout, setNewAbout] = useState(user?.about || "");
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    isError,
+  } = useGetProfileQuery(undefined, { refetchOnMountOrArgChange: true });
 
-  // Trigger file input click when image is clicked
+  const [updateProfile, { isLoading: updating }] = useUpdateProfileMutation();
+
+  // State
+  const [newProfileImage, setNewProfileImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [newName, setNewName] = useState("");
+  const [newAbout, setNewAbout] = useState("");
+  console.log(profile);
+
+  // Populate from API
+  useEffect(() => {
+    if (profile?.data) {
+      setPreviewImage(profile?.data?.profilePhoto || null);
+      setNewName(profile.data.fullName || "");
+      setNewAbout(profile.data.bio || "");
+    }
+  }, [profile]);
+
+  // Open file picker
   const handleImageClick = () => {
     fileInputRef.current?.click();
   };
 
-  // Handle profile image change
+  // Handle file change
   const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setNewProfileImage(URL.createObjectURL(e.target.files[0]));
+      const file = e.target.files[0];
+      setNewProfileImage(file);
+      setPreviewImage(URL.createObjectURL(file)); // 👈 Show preview
     }
   };
 
-  // Handle save action
-  const handleSave = () => {
-    if (!user) {
+  // Save profile
+  const handleSave = async () => {
+    if (!profile) {
       toast.error("Please log in to update your profile.");
-     router.push("/sign-in");
+      router.push("/sign-in");
       return;
     }
 
-    const updatedData = {
-      name: newName,
-      profileImage: newProfileImage || user.profileImage,
-      about: newAbout,
-      recommendations: user.recommendations, // Preserve existing recommendations
-    };
+    try {
+      // 👇 Create FormData
+      const formData = new FormData();
+      formData.append("fullName", newName);
+      formData.append("bio", newAbout);
+      if (newProfileImage) {
+        formData.append("file", newProfileImage); // backend should expect "profilePhoto"
+      }
 
-    console.log("Updated User Data:", updatedData);
-    dispatch(updateUser(updatedData));
-    toast.success("Changes saved!");
+      await updateProfile(formData).unwrap();
+      toast.success("Profile updated successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to update profile.");
+      console.error("Update Error:", err);
+    }
   };
 
-  // If user is not logged in, show a message or redirect
-  if (!user || !user.isLoggedIn) {
+  if (profileLoading) {
+    return <p className="text-center p-6">Loading profile...</p>;
+  }
+
+  if (isError || !profile) {
     return (
       <div className="text-center p-6">
         <p className="text-lg text-gray-700">
-          Please log in to view your account details.
+          Failed to load profile. Please log in.
         </p>
         <PrimaryButton
           onClick={() => router.push("/sign-in")}
@@ -72,11 +100,7 @@ const router = useRouter();
       {/* Profile Image */}
       <div className="flex flex-col items-center mb-6">
         <img
-          src={
-            newProfileImage ||
-            user.profileImage ||
-            "https://via.placeholder.com/150"
-          }
+          src={previewImage || "https://via.placeholder.com/150"}
           alt="Profile"
           className="w-24 h-24 rounded-full object-cover mb-4 border-2 border-gray-300 cursor-pointer hover:opacity-80 transition-opacity"
           onClick={handleImageClick}
@@ -122,8 +146,8 @@ const router = useRouter();
           <input
             id="email"
             disabled
-            value={user.email}
-            className="w-full p-2 mt-2 border border-gray-300  disabled:text-gray-400"
+            value={profile?.data?.email}
+            className="w-full p-2 mt-2 border border-gray-300 disabled:text-gray-400"
           />
         </div>
 
@@ -144,8 +168,9 @@ const router = useRouter();
 
         <PrimaryButton
           onClick={handleSave}
+          disabled={updating}
           className="px-4 py-2 text-white w-full text-sm md:text-base"
-          title="Save Changes"
+          title={updating ? "Saving..." : "Save Changes"}
         />
       </div>
     </div>

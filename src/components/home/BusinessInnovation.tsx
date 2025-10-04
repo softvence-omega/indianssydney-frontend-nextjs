@@ -7,7 +7,10 @@ const BusinessInnovation = () => {
   return (
     <div>
       <div className="border-b border-slight-border">
-        <PrimaryHeading title="Business & Innovation" seeAllRoute="/business" />
+        <PrimaryHeading
+          title="Business & Innovation"
+          seeAllRoute="/business-innovation"
+        />
 
         {/* Responsive Grid Layout */}
         <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-4">

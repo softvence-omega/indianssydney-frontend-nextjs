@@ -1,27 +1,30 @@
-import  { useState } from "react";
-import { Eye, EyeOff } from "lucide-react"; // Import Eye and EyeOff from Lucide React
+"use client";
+
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import PrimaryButton from "../reusable/PrimaryButton";
 import { toast } from "sonner";
+import { useUpdatePasswordMutation } from "@/store/features/profile/profile.api";
 
-// Zod schema for validation
+// ✅ Zod schema for validation
 const passwordSchema = z
   .object({
     oldPassword: z
       .string()
-      .min(8, "Old Password must have at least 8 characters"),
+      .min(6, "Old Password must have at least 6 characters"),
     newPassword: z
       .string()
-      .min(8, "New Password must have at least 8 characters")
+      .min(6, "New Password must have at least 6 characters")
       .regex(
         /(?=.*[A-Za-z])(?=.*\d)/,
         "New Password must contain letters and numbers"
       ),
     confirmPassword: z
       .string()
-      .min(8, "Confirm Password must have at least 8 characters")
+      .min(6, "Confirm Password must have at least 6 characters"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match",
@@ -35,10 +38,14 @@ const ChangePassword = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // ✅ API mutation hook
+  const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
+
   // React Hook Form
   const {
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(passwordSchema),
@@ -51,11 +58,20 @@ const ChangePassword = () => {
     if (field === "confirm") setShowConfirmPassword(!showConfirmPassword);
   };
 
-  // Handle form submission
-  const onSubmit = (data: FormData) => {
-    // Log the form data or make an API call
-    console.log("Form Submitted with data:", data);
-    toast.success("Password changed successfully!");
+  // ✅ Handle form submission with API
+  const onSubmit = async (data: FormData) => {
+    try {
+      await updatePassword({
+        currentPassword: data.oldPassword,
+        newPassword: data.newPassword,
+      }).unwrap();
+
+      toast.success("Password changed successfully!");
+      reset(); // clear form
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to change password.");
+      console.error("Update Password Error:", err);
+    }
   };
 
   return (
@@ -83,8 +99,8 @@ const ChangePassword = () => {
                   <input
                     {...field}
                     type={showOldPassword ? "text" : "password"}
-                    className="w-full p-2  border border-gray-300 "
-                    placeholder="Min. 8 characters"
+                    className="w-full p-2 border border-gray-300"
+                    placeholder="Min. 6 characters"
                   />
                   <span
                     onClick={() => togglePasswordVisibility("old")}
@@ -99,7 +115,6 @@ const ChangePassword = () => {
                 </div>
               )}
             />
-
             {errors.oldPassword && (
               <p className="text-xs text-red-500 mt-1">
                 {errors.oldPassword.message}
@@ -125,8 +140,8 @@ const ChangePassword = () => {
                   <input
                     {...field}
                     type={showNewPassword ? "text" : "password"}
-                    className="w-full p-2  border border-gray-300 "
-                    placeholder="Min. 8 characters"
+                    className="w-full p-2 border border-gray-300"
+                    placeholder="Min. 6 characters"
                   />
                   <span
                     onClick={() => togglePasswordVisibility("new")}
@@ -141,7 +156,6 @@ const ChangePassword = () => {
                 </div>
               )}
             />
-
             {errors.newPassword && (
               <p className="text-xs text-red-500 mt-1">
                 {errors.newPassword.message}
@@ -167,8 +181,8 @@ const ChangePassword = () => {
                   <input
                     {...field}
                     type={showConfirmPassword ? "text" : "password"}
-                    className="w-full p-2  border border-gray-300 "
-                    placeholder="Min. 8 characters"
+                    className="w-full p-2 border border-gray-300"
+                    placeholder="Min. 6 characters"
                   />
                   <span
                     onClick={() => togglePasswordVisibility("confirm")}
@@ -183,7 +197,6 @@ const ChangePassword = () => {
                 </div>
               )}
             />
-
             {errors.confirmPassword && (
               <p className="text-xs text-red-500 mt-1">
                 {errors.confirmPassword.message}
@@ -195,8 +208,9 @@ const ChangePassword = () => {
         {/* Save Button */}
         <PrimaryButton
           type="submit"
+          disabled={isLoading}
           className="px-4 py-2 text-white w-full text-sm md:text-base"
-          title="Save Changes"
+          title={isLoading ? "Saving..." : "Save Changes"}
         />
       </form>
     </div>

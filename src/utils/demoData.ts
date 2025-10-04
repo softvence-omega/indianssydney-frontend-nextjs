@@ -36,7 +36,7 @@ export const newsItems = [
   {
     id: "3",
     image:
-      "https://images.unsplash.com/photo-1527169402691-a0973fb750bf?q=80&w=400&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1508519829430-40f7d3d161b4?q=80&w=700&auto=format&fit=crop",
     tag: "CULTURE",
     category: "culture-identity",
     subcategory: "festivals-traditions",
@@ -191,7 +191,7 @@ export const newsItems = [
   {
     id: "12",
     image:
-      "https://images.unsplash.com/photo-1603052875619-08a239f95b3f?q=80&w=400",
+      "https://images.unsplash.com/photo-1576078361289-d7c4da40e7cd?q=80&w=870&auto=format&fit=crop",
     tag: "POLITICS",
     category: "news-current-affairs",
     subcategory: "politics-policy",
@@ -226,7 +226,7 @@ export const newsItems = [
   {
     id: "14",
     image:
-      "https://images.unsplash.com/photo-1605902711622-cfb43c4437d5?q=80&w=400",
+      "https://images.unsplash.com/photo-1537511446984-935f663eb1f4?q=80&w=870&auto=format&fit=crop",
     tag: "FINANCE",
     category: "business-innovation",
     subcategory: "investing-finance",
@@ -245,7 +245,7 @@ export const newsItems = [
   {
     id: "15",
     image:
-      "https://images.unsplash.com/photo-1527169402691-a0973fb750bf?q=80&w=400",
+      "https://images.unsplash.com/photo-1508519829430-40f7d3d161b4?q=80&w=770&auto=format&fit=crop",
     tag: "CULTURE",
     category: "culture-identity",
     subcategory: "festivals-traditions",
@@ -261,7 +261,7 @@ export const newsItems = [
   {
     id: "16",
     image:
-      "https://images.unsplash.com/photo-1602313180549-1ef1a3c3ba34?q=80&w=400",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=970&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     tag: "HERITAGE",
     category: "culture-identity",
     subcategory: "language-heritage",
@@ -296,7 +296,7 @@ export const newsItems = [
   {
     id: "18",
     image:
-      "https://images.unsplash.com/photo-1543353071-087092ec393f?q=80&w=400",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     tag: "CUISINE",
     category: "food-flavours",
     subcategory: "recipes-from-home",
@@ -330,10 +330,10 @@ export const newsItems = [
   {
     id: "20",
     image:
-      "https://images.unsplash.com/photo-1536548664027-5d5cd6b3f9b3?q=80&w=400",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     tag: "MEDITATION",
-    category: "/mind-wellbeing",
-    subcategory: "/mind-wellbeing/mindfulness-meditation",
+    category: "mind-wellbeing",
+    subcategory: "mindfulness-meditation",
     title: "Mindfulness Practices Growing Among Migrant Youth",
     description:
       "Workshops are helping students balance cultural expectations...",
@@ -369,8 +369,8 @@ export const newsItems = [
     image:
       "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=400",
     tag: "EDUCATION",
-    category: "/education-career",
-    subcategory: "/education-career/migrant-success-stories",
+    category: "education-career",
+    subcategory: "migrant-success-stories",
     title: "Bangladeshi Student Wins Prestigious Scholarship",
     description:
       "The young scholar will pursue advanced studies in climate change research...",
@@ -388,8 +388,8 @@ export const newsItems = [
     image:
       "https://images.unsplash.com/photo-1508780709619-79562169bc64?q=80&w=400",
     tag: "PROFILE",
-    category: "/people-profiles",
-    subcategory: "/people-profiles/everyday-heroes",
+    category: "people-profiles",
+    subcategory: "everyday-heroes",
     title: "Meet the Migrant Nurse Who Helped Hundreds During the Bushfires",
     description: "Her courage and commitment have made her a local hero...",
     content:
@@ -406,8 +406,8 @@ export const newsItems = [
     image:
       "https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=400",
     tag: "SPORTS",
-    category: "/sports-play",
-    subcategory: "/sports-play/afl-cricket-football",
+    category: "sports-play",
+    subcategory: "afl-cricket-football",
     title: "Indian-Australian Cricketer Shines in Big Bash League",
     description:
       "The young player is being hailed as the next big name in Australian cricket...",
@@ -424,8 +424,8 @@ export const newsItems = [
     image:
       "https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=400",
     tag: "COMMUNITY",
-    category: "/community-belonging",
-    subcategory: "/community-belonging/local-community-events",
+    category: "community-belonging",
+    subcategory: "local-community-events",
     title: "Multicultural Fair Attracts Thousands in Sydney",
     description:
       "The event showcased music, food, and dance from more than 20 groups...",
@@ -440,10 +440,10 @@ export const newsItems = [
   {
     id: "26",
     image:
-      "https://images.unsplash.com/photo-1516382799247-86b58b48e1f9?q=80&w=400",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     tag: "OPINION",
-    category: "/voices-perspectives",
-    subcategory: "/voices-perspectives/opinion-editorial",
+    category: "voices-perspectives",
+    subcategory: "opinion-editorial",
     title: "Why Migrant Voices Matter in Australian Politics",
     description: "Community leaders argue for stronger representation...",
     content:
@@ -460,8 +460,8 @@ export const newsItems = [
     image:
       "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?q=80&w=400",
     tag: "LIFESTYLE",
-    category: "/life-living",
-    subcategory: "/life-living/housing-renting",
+    category: "life-living",
+    subcategory: "housing-renting",
     title: "Migrant Families Share Housing Challenges",
     description:
       "Rising rents and limited housing availability continue to impact communities...",
@@ -478,6 +478,7 @@ export const allMenus = [
   {
     label: "News & Current Affairs",
     href: "/news-current-affairs",
+    template: "NewsTemplate",
     submenus: [
       {
         label: "National Headlines",
@@ -508,6 +509,7 @@ export const allMenus = [
   {
     label: "Business & Innovation",
     href: "/business-innovation",
+    template: "BusinessTemplate",
     submenus: [
       {
         label: "Migrant Entrepreneurs",
@@ -539,6 +541,7 @@ export const allMenus = [
   {
     label: "Culture & Identity",
     href: "/culture-identity",
+    template: "NewsTemplate",
     submenus: [
       {
         label: "Multicultural Life in Australia",
@@ -573,6 +576,7 @@ export const allMenus = [
   {
     label: "Food & Flavours",
     href: "/food-flavours",
+    template: "FoodTemplate",
     submenus: [
       { label: "Recipes from Home", href: "/food-flavours/recipes-from-home" },
       {
@@ -601,6 +605,7 @@ export const allMenus = [
   {
     label: "Mind & Wellbeing",
     href: "/mind-wellbeing",
+    template: "NewsTemplate",
     submenus: [
       {
         label: "Mental Health in Diverse Communities",
@@ -635,6 +640,7 @@ export const allMenus = [
   {
     label: "Arts, Media & Expression",
     href: "/arts-media-expression",
+    template: "NewsTemplate",
     submenus: [
       {
         label: "Film, TV & Documentaries",
@@ -669,6 +675,7 @@ export const allMenus = [
   {
     label: "Education & Career",
     href: "/education-career",
+    template: "EducationTemplate",
     submenus: [
       {
         label: "International Students",
@@ -700,6 +707,7 @@ export const allMenus = [
   {
     label: "People & Profiles",
     href: "/people-profiles",
+    template: "NewsTemplate",
     submenus: [
       { label: "Everyday Heroes", href: "/people-profiles/everyday-heroes" },
       {
@@ -723,6 +731,7 @@ export const allMenus = [
   {
     label: "Sports & Play",
     href: "/sports-play",
+    template: "NewsTemplate",
     submenus: [
       {
         label: "Local & Community Sports",
@@ -746,7 +755,8 @@ export const allMenus = [
   },
   {
     label: "Podcasts & Video",
-    href: "/podcasts-video",
+    href: "/podcast-video",
+    template: "NewsTemplate",
     submenus: [
       {
         label: "Weekly Audio Magazine",
@@ -775,6 +785,7 @@ export const allMenus = [
   {
     label: "Community & Belonging",
     href: "/community-belonging",
+    template: "NewsTemplate",
     submenus: [
       {
         label: "Local Community Events",
@@ -805,6 +816,7 @@ export const allMenus = [
   {
     label: "Voices & Perspectives",
     href: "/voices-perspectives",
+    template: "NewsTemplate",
     submenus: [
       {
         label: "First-Person Narratives",
@@ -836,6 +848,7 @@ export const allMenus = [
   {
     label: "Life & Living",
     href: "/life-living",
+    template: "NewsTemplate",
     submenus: [
       { label: "Housing & Renting", href: "/life-living/housing-renting" },
       {

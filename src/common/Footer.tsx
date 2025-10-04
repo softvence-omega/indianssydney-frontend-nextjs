@@ -17,42 +17,37 @@ const footerSections: FooterSection[] = [
     title: "News",
     links: [
       { label: "Home Page", href: "/" },
-      { label: "Business", href: "/business" },
-      { label: "Technology", href: "/technology" },
-      { label: "Cultural", href: "/cultural" },
-      { label: "Entertainment", href: "/entertainment" },
-      { label: "Sports", href: "/sports" },
+      { label: "Business", href: "/business-innovation" },
+      { label: "Culture", href: "/culture-identity" },
+      { label: "Entertainment", href: "/arts-media-expression" },
     ],
   },
   {
     title: "Lifestyle",
     links: [
-      { label: "Health", href: "/health" },
-      { label: "Movies", href: "/movies" },
-      { label: "Travel", href: "/travel" },
-      { label: "City", href: "/city" },
-      { label: "Food", href: "/food" },
+      { label: "People", href: "/people-profiles" },
+      { label: "Sports", href: "/sports-play" },
+      { label: "Food", href: "/food-flavours" },
+      { label: "Culture", href: "/culture-identity" },
+
     ],
   },
   {
     title: "Opinion",
     links: [
-      { label: "Columnists", href: "/columnists" },
-      { label: "Guest Essays", href: "/essays" },
-      { label: "Climate", href: "/climate" },
-      { label: "Business", href: "/opinion-business" },
-      { label: "Tech", href: "/opinion-tech" },
-      { label: "World", href: "/world" },
+      { label: "Community", href: "/community" },
+      { label: "Perspective", href: "/voices-perspectives" },
+      { label: "Business", href: "/business-innovation" },
+      { label: "Contact Us", href: "/contact-us" },
     ],
   },
   {
     title: "Overview",
     links: [
       { label: "Manage account", href: "/account-settings" },
-      { label: "Contact Us", href: "/contact" },
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms of Service", href: "/terms" },
-      { label: "Write an article", href: "/write" },
+      { label: "Write an article", href: "/publish-content" },
     ],
   },
 ];
@@ -61,12 +56,10 @@ const Footer = () => {
   return (
     <footer className="bg-[#1D1D1F] text-white  py-10">
       <CommonWrapper>
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-8">
           {/* Logo + Newsletter (larger column) */}
-          <div className="md:col-span-2">
-            <h2 className="font-bold text-2xl sm:text-3xl  md:text-4xl mb-4 font-cursive">
-              The Australian Canvas
-            </h2>
+          <div className="sm:col-span-2">
+            <img src="/TAC2.png" className="h-5 sm:h-8 mb-4" alt="" />
             <div className="flex flex-col gap-3">
               <input
                 type="email"
