@@ -6,7 +6,7 @@ import { Article, MenuItem } from "@/types";
 import NewsCardSecondary from "@/components/reusable/NewsCardSecondary";
 
 interface NewsTabsProps {
-  category: MenuItem & { href: string };
+  category: any;
   activeSubcategory?: string;
   articlesBySubcategory: {
     submenu: { href: string; label: string };

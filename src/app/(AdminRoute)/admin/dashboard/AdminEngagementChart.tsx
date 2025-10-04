@@ -32,11 +32,13 @@ const AdminEngagementChart = () => {
     const categories = Object.keys(postsData); // ["September 2025", "October 2025", ...]
     const values = Object.values(postsData); // [11, 20, 15, ...]
 
+    console.log(categories, values);
+
     const options: ApexCharts.ApexOptions = {
       series: [
         {
           name: "Posts",
-          data: values,
+          data: values as number[],
         },
       ],
       chart: {
@@ -67,7 +69,7 @@ const AdminEngagementChart = () => {
       yaxis: {
         labels: {
           style: { fontSize: "14px" },
-          formatter: (val: number) => val,
+          formatter: (val: number) => val.toString(),
         },
         axisBorder: { show: false },
         axisTicks: { show: false },
