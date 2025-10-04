@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ContributorApplicationModal from "./ContributorApplicationModal";
+import { useAppSelector } from "@/store/hook";
 
 interface ProfileSheetProps {
   isOpen: boolean;
@@ -15,7 +16,9 @@ interface ProfileSheetProps {
 }
 
 const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useAppSelector((state: RootState) => state?.auth?.user);
+
+  console.log("user details in profile",user)
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const [aiRecommendations, setAiRecommendations] = useState(false);
@@ -43,7 +46,7 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
   }, [isOpen, onClose]);
 
   const handleLogout = async () => {
-    await dispatch(logout())
+    await dispatch(logout());
     router.push("/");
     onClose();
   };
@@ -66,8 +69,9 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
       {/* Sidebar */}
       <aside
         ref={sheetRef}
-        className={`fixed top-0 right-0 w-[300px] md:w-[400px] lg:w-[500px] h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${isOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+        className={`fixed top-0 right-0 w-[300px] md:w-[400px] lg:w-[500px] h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
         aria-hidden={!isOpen}
       >
         <div className="flex flex-col h-full p-6">
@@ -126,12 +130,14 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
               <Switch
                 checked={aiRecommendations}
                 onChange={setAiRecommendations}
-                className={`${aiRecommendations ? "bg-blue-primary" : "bg-gray-300"
-                  } relative inline-flex h-6 w-11 items-center rounded-full transition-colors`}
+                className={`${
+                  aiRecommendations ? "bg-blue-primary" : "bg-gray-300"
+                } relative inline-flex h-6 w-11 items-center rounded-full transition-colors`}
               >
                 <span
-                  className={`${aiRecommendations ? "translate-x-6" : "translate-x-1"
-                    } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                  className={`${
+                    aiRecommendations ? "translate-x-6" : "translate-x-1"
+                  } inline-block h-4 w-4 transform rounded-full bg-white transition`}
                 />
               </Switch>
             </div>
@@ -233,7 +239,10 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
           />
         </div>
       </aside>
-      <ContributorApplicationModal isOpen={open} onClose={() => setOpen(false)} />
+      <ContributorApplicationModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+      />
     </>
   );
 };

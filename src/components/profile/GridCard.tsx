@@ -2,7 +2,6 @@
 import { ContentItem } from "@/utils/myContentData";
 import React from "react";
 
-
 type GridCardProps = {
   item: ContentItem;
 };
@@ -11,7 +10,7 @@ const GridCard: React.FC<GridCardProps> = ({ item }) => {
   return (
     <div className="relative w-full overflow-hidden h-[300px]">
       <img
-        src={item.image}
+        src={item?.image}
         alt={item.title}
         className="absolute inset-0 w-full h-full object-cover"
       />
@@ -21,16 +20,14 @@ const GridCard: React.FC<GridCardProps> = ({ item }) => {
       <div className="absolute bottom-0 left-0 right-0 z-10">
         <div className="p-4 text-white">
           <div className="flex justify-start items-center gap-2">
-            <span
-              className="text-xs py-1 px-2 capitalize border border-accent-orange text-accent-orange font-semibold bg-white"
-            >
-              {item.type}
+            <span className="text-xs py-1 px-2 capitalize border border-accent-orange text-accent-orange font-semibold bg-white">
+              {item.contentType}
             </span>
             <span
               className={`text-xs py-1 px-2 capitalize text-white border ${
-                item.status === "approved"
+                item.status === "APPROVE"
                   ? "bg-blue-primary border-blue-primary"
-                  : item.status === "pending"
+                  : item.status === "PENDING"
                   ? "bg-[#8D9B90] border-[#8D9B90]"
                   : "bg-brick-red border-brick-red"
               }`}

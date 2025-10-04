@@ -29,20 +29,20 @@ const ListCard: React.FC<ListCardProps> = ({ item }) => {
       {/* Left: Image + Details */}
       <div className="flex flex-col sm:flex-row gap-4 w-full">
         <img
-          src={item.image || "https://via.placeholder.com/160x110"}
+          src={item?.image}
           alt="News Image"
           className="w-full sm:w-28 sm:h-28 md:w-40 md:h-40 object-cover"
         />
         <div className="flex flex-col justify-center">
           <div className="flex justify-start items-center gap-2">
             <p className="text-xs capitalize border px-2 py-1 border-accent-orange text-accent-orange font-semibold">
-              {item.type}
+              {item.contentType}
             </p>
             <p
               className={`text-xs py-1 px-2 capitalize text-white ${
-                item.status === "approved"
+                item.status === "APPROVE"
                   ? "bg-blue-primary"
-                  : item.status === "pending"
+                  : item.status === "PENDING"
                   ? "bg-[#8D9B90] "
                   : "bg-brick-red "
               }`}
