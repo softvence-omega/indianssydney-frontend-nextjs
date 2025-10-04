@@ -6,9 +6,9 @@ import Ad from "@/components/reusable/Ad";
 import NewsCardSecondary from "@/components/reusable/NewsCardSecondary";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
 import { newsItems } from "@/utils/demoData";
-import NewsSlider from "../home/NewsCurrent/NewsSlider";
+// import NewsSlider from "../home/NewsCurrent/NewsSlider";
 import NewsCard3 from "../reusable/NewsCard3";
-import { MenuItem } from "../../types/index";
+// import { MenuItem } from "../../types/index";
 
 const normalizeString = (str: string) =>
   str?.toLowerCase().replace(/[&\s]+/g, "-");
@@ -34,12 +34,12 @@ const EducationTemplate = ({
   category: Category;
   subcategorySlug: string;
 }) => {
-  // ✅ Filter main category
+  // Filter main category
   const categoryArticles = newsItems.filter(
     (item) => normalizeString(item.category) === normalizeString(category.name)
   );
 
-  // ✅ Group by subcategory + construct href
+  // Group by subcategory + construct href
   const articlesBySubcategory =
     (category?.subCategories || []).map((submenu) => {
       const subArticles = newsItems.filter(
@@ -77,7 +77,7 @@ const EducationTemplate = ({
           <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-1 lg:grid-cols-4 gap-4 xl:divide-x xl:divide-slight-border">
             {/* Main slider section */}
             <div className="lg:col-span-3 xl:pr-4">
-              <NewsSlider items={categoryArticles.slice(0, 4)} />
+              {/* <NewsSlider items={categoryArticles.slice(0, 4)} /> */}
 
               <div className="mt-4 grid grid-cols-2 gap-4">
                 {categoryArticles.slice(0, 2).map((item) => (

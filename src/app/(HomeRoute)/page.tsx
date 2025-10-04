@@ -15,10 +15,10 @@ import FoodFlavours from "@/components/home/FoodFlavours";
 import CultureIdentity from "@/components/home/CultureIdentity";
 import VoicesPerspective from "@/components/home/VoicesPerspective";
 import Chatbot from "@/components/chatbot/Chatbot";
-import { useGetAllArticleQuery } from "@/store/features/article/article.api";
+import { useGetHomePageDataQuery } from "@/store/features/article/article.api";
 
 const Page = () => {
-  const { data, isLoading, isError } = useGetAllArticleQuery({});
+  const { data, isLoading, isError } = useGetHomePageDataQuery({});
 
   if (isLoading) return <div className="p-10 text-xl">Loading...</div>;
   if (isError)
@@ -26,14 +26,14 @@ const Page = () => {
       <div className="p-10 text-xl text-red-500">Error loading articles</div>
     );
 
-  console.log(data);
+  console.log("home page data", data);
 
   return (
     <div>
       <CommonWrapper>
-        <NewsCurrent />
-        <BusinessInnovation />
-        <EducationCareer />
+        <NewsCurrent data={data?.data?.[0]} />
+        <BusinessInnovation data={data?.data?.[1]} />
+        <EducationCareer data={data?.data?.[2]} />
         <Ad />
         <SportsPlay />
         <LifeLiving />
