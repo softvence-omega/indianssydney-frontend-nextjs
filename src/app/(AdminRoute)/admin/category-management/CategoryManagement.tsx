@@ -60,13 +60,11 @@ interface Category {
 }
 
 const CategoryManagement = () => {
-  const { data, isLoading, isFetching, isSuccess } = useGetAllCategoryQuery({});
+  const { data, isLoading } = useGetAllCategoryQuery({});
   const [createNewCategory, { isLoading: isCreating }] =
     useCreateNewCategoryMutation();
-  const [updateCategory, { isLoading: isUpdating }] =
-    useUpdateCategoryMutation();
-  const [deleteCategoryById, { isLoading: isDeleting }] =
-    useDeleteCategoryMutation();
+  const [updateCategory] = useUpdateCategoryMutation();
+  const [deleteCategoryById] = useDeleteCategoryMutation();
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);

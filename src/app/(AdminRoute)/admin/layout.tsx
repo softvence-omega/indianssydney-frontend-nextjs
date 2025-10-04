@@ -3,6 +3,7 @@
 import AdminNavBar from "@/components/Admin/shared/AdminNavbar";
 import { cn } from "@/lib/utils";
 import { logout } from "@/store/features/auth/auth.slice";
+import { useAppSelector } from "@/store/hook";
 import { AppDispatch } from "@/store/store";
 import { motion } from "framer-motion";
 import {
@@ -184,6 +185,7 @@ const NavMenu = ({
 );
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
+  const userRole = useAppSelector((state) => state?.auth?.user?.role);
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -220,6 +222,27 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // Protect route
+  useEffect(() => {
+    if (userRole && userRole !== "SUPER_ADMIN") {
+      toast.error("You are not authorized to access this page.");
+      router.push("/unauthorized"); // redirect non-admin users
+    }
+  }, [userRole, router]);
+
+  // Optional: show loading until we know the role
+  if (!userRole) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-500">Checking permissions...</p>
+      </div>
+    );
+  }
+
+  if (userRole !== "SUPER_ADMIN") {
+    return null; // prevent UI flicker during redirect
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-[#ECF4F8] font-Robot">

@@ -11,29 +11,57 @@ import NewsSlider from "../home/NewsCurrent/NewsSlider";
 import { MenuItem } from "@/types";
 
 const normalizeString = (str: string) =>
-  str.toLowerCase().replace(/[&\s]+/g, "-");
+  str?.toLowerCase().replace(/[&\s]+/g, "-");
 
-const BusinessTemplate = ({ category, subcategorySlug }: { category: MenuItem; subcategorySlug: string }) => {
-  // filter main category
+interface SubCategory {
+  id: string;
+  subname: string;
+  subslug: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  tamplate: string;
+  subCategories?: SubCategory[];
+}
+
+const BusinessTemplate = ({
+  category,
+  subcategorySlug,
+}: {
+  category: Category;
+  subcategorySlug: string;
+}) => {
+  // ✅ Filter main category
   const categoryArticles = newsItems.filter(
-    (item) => normalizeString(item.category) === normalizeString(category.label)
+    (item) => normalizeString(item.category) === normalizeString(category.name)
   );
+  // ✅ Group by subcategory + construct href
+  const articlesBySubcategory =
+    (category?.subCategories || []).map((submenu) => {
+      const subArticles = newsItems.filter(
+        (item) =>
+          normalizeString(item.category) === normalizeString(category.name) &&
+          normalizeString(item.subcategory || "") ===
+            normalizeString(submenu.subname)
+      );
 
-  // group by subcategory
-  const articlesBySubcategory = (category?.submenus || []).map((submenu) => {
-    const subArticles = newsItems.filter(
-      (item) =>
-        normalizeString(item.category) === normalizeString(category.label) &&
-        normalizeString(item.subcategory || "") ===
-          normalizeString(submenu.label)
-    );
-    return { submenu, subArticles };
-  });
+      return {
+        submenu: {
+          ...submenu,
+          href: `/${category.slug}/${submenu.subslug}`, // 👈 ensure href is set
+          label: submenu.subname,
+        },
+        subArticles,
+      };
+    }) || [];
 
   return (
     <CommonWrapper>
       <CommonPadding>
-        <PrimaryHeading title={category.label} icon={false} />
+        <PrimaryHeading title={category?.name} icon={false} />
 
         {/* Empty state */}
         {categoryArticles.length === 0 && (
@@ -65,13 +93,15 @@ const BusinessTemplate = ({ category, subcategorySlug }: { category: MenuItem; s
       <Ad />
 
       <CommonPadding>
-      <NewsTabs
-  category={category}
-  activeSubcategory={subcategorySlug}
-  articlesBySubcategory={articlesBySubcategory}
-  categoryArticles={categoryArticles} // 👈 added
-/>
-
+        <NewsTabs
+          category={{
+            ...category,
+            href: `/${category.slug}`, // 👈 also give category its href
+          }}
+          activeSubcategory={subcategorySlug}
+          articlesBySubcategory={articlesBySubcategory}
+          categoryArticles={categoryArticles}
+        />
       </CommonPadding>
     </CommonWrapper>
   );
