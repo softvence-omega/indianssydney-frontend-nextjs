@@ -12,6 +12,23 @@ export const articleApi = baseAPI.injectEndpoints({
       providesTags: ["content"],
     }),
 
+    // for all user category and sub category
+    getArticlesByCategory: build.query({
+      query: (categorySlug: string) => ({
+        url: `/content/category/${categorySlug}`,
+        method: "GET",
+      }),
+      providesTags: ["category"],
+    }),
+
+    getArticlesBySubCategory: build.query({
+      query: (subCategorySlug: string) => ({
+        url: `/content/subcategory/${subCategorySlug}`,
+        method: "GET",
+      }),
+      providesTags: ["category"],
+    }),
+
     // for contributor get my articles
 
     getMyArticles: build.query({
