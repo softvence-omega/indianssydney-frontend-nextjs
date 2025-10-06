@@ -1,14 +1,23 @@
-// GridCard.tsx (for Grid View)
+// GridCard.tsx
 import { ContentItem } from "@/utils/myContentData";
 import React from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react";
 
 type GridCardProps = {
   item: ContentItem;
 };
 
 const GridCard: React.FC<GridCardProps> = ({ item }) => {
+  const router = useRouter();
+
+  const handleEdit = () => {
+    router.push(`/edit-article/${item.id}`);
+  };
+
   return (
-    <div className="relative w-full overflow-hidden h-[300px]">
+    <div className="relative w-full overflow-hidden h-[300px] cursor-pointer group">
       <img
         src={item?.image}
         alt={item.title}
@@ -43,6 +52,21 @@ const GridCard: React.FC<GridCardProps> = ({ item }) => {
             {item.views} views • {item.likes} likes • {item.comments} comments
           </div>
         </div>
+      </div>
+
+      {/* Edit Button - Hover Effect */}
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleEdit();
+          }}
+          className="bg-white text-black hover:bg-gray-100"
+        >
+          <Pencil className="w-4 h-4" />
+        </Button>
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ import { ArrowLeft, Share2, Eye, Calendar, User } from "lucide-react";
 import { UploadFormData, AdditionalField } from "./types";
 
 interface ArticlePreviewProps {
-  formData: UploadFormData;
+  formData: any;
   onBack: () => void;
   onPublish: () => void;
 }
@@ -90,7 +90,7 @@ const ArticlePreview = ({ formData, onBack, onPublish }: ArticlePreviewProps) =>
               {/* Tags */}
               <div className="flex flex-wrap gap-2 mb-6">
                 {Array.isArray(formData.tags) && formData.tags.length > 0 ? (
-                  formData.tags.map((tag) => (
+                  formData.tags.map((tag:string) => (
                     <Badge
                       key={tag}
                       variant="secondary"
@@ -169,7 +169,7 @@ const ArticlePreview = ({ formData, onBack, onPublish }: ArticlePreviewProps) =>
                 {formData.paragraph &&
                   formData.paragraph
                     .split("\n")
-                    .map((p, i) => <p key={i}>{p}</p>)}
+                    .map((p:any, i:any) => <p key={i}>{p}</p>)}
               </div>
 
               {/* Additional Fields */}

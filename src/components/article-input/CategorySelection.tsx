@@ -11,7 +11,7 @@ interface CategorySelectionProps {
   onSelect: (contentType: ContentTypeNew) => void;
 }
 
-const CategorySelection = ({ onSelect }: CategorySelectionProps) => {
+const CategorySelection = () => {
   const categories = [
     {
       type: "ARTICLE",
@@ -19,6 +19,7 @@ const CategorySelection = ({ onSelect }: CategorySelectionProps) => {
       description:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       icon: FileText,
+      href: "/publish-content/article",
     },
     {
       type: "VIDEO",
@@ -26,6 +27,7 @@ const CategorySelection = ({ onSelect }: CategorySelectionProps) => {
       description:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       icon: Play,
+      href: "/publish-content/video",
     },
     {
       type: "PODCAST",
@@ -33,6 +35,7 @@ const CategorySelection = ({ onSelect }: CategorySelectionProps) => {
       description:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       icon: Mic,
+      href: "/publish-content/podcast",
     },
   ];
 
@@ -73,7 +76,9 @@ const CategorySelection = ({ onSelect }: CategorySelectionProps) => {
                           {category.description}
                         </p>
                         <PrimaryButton
-                          onClick={() => onSelect(category?.type as any)}
+                          onClick={() => {
+                            window.location.href = category.href;
+                          }}
                           title="Upload"
                           className=" text-white "
                         />

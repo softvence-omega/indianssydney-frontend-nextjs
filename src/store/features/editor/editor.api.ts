@@ -32,6 +32,13 @@ export const editorOverviewApi = baseAPI.injectEndpoints({
       }),
     }),
 
+    getTrafficEngagementForEditor: build.query({
+      query: () => ({
+        url: `/admin-dashboard/traffic-engagement`,
+        method: "GET",
+      }),
+    }),
+
     //  end
   }),
 });
@@ -41,4 +48,5 @@ export const {
   useGetRecentActivityEditorQuery,
   useGetTopPerformingContentsQuery,
   useGetTopContributorsQuery,
+  useGetTrafficEngagementForEditorQuery,
 } = editorOverviewApi;

@@ -1,11 +1,10 @@
 "use client";
 
-import ArticleDetailsForm from "@/components/article-input/ArticleDetailsForm";
 import CategorySelection from "@/components/article-input/CategorySelection";
 import { useCreateNewArticleMutation } from "@/store/features/article/article.api";
 import { useState } from "react";
-import ArticlePreview from "./ArticlePreview";
 import { ContentType, UploadFormData } from "./types";
+import ArticlePreview from "./ArticlePreview";
 
 export default function PublishContent() {
   const [createNewArticle] = useCreateNewArticleMutation();
@@ -122,43 +121,7 @@ export default function PublishContent() {
 
   return (
     <div>
-      {step === "category" && (
-        <CategorySelection onSelect={handleCategorySelect} />
-      )}
-
-      {step === "form" && (
-        <ArticleDetailsForm
-          formData={formData}
-          onUpdate={handleUpdate}
-          onSubmit={handleFormSubmit}
-          onBack={handleBack}
-        />
-      )}
-
-      {step === "preview" && (
-        <ArticlePreview
-          formData={formData}
-          onBack={handleBack}
-          onPublish={handlePublish}
-        />
-      )}
-
-      {step === "submitted" && (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Content Published!</h1>
-            <p className="text-gray-600 mb-4">
-              Your content has been successfully published.
-            </p>
-            <button
-              onClick={() => setStep("category")}
-              className="bg-brick-red text-white px-4 py-2 rounded"
-            >
-              Publish Another
-            </button>
-          </div>
-        </div>
-      )}
+      <CategorySelection />
     </div>
   );
 }

@@ -48,6 +48,15 @@ export const articleApi = baseAPI.injectEndpoints({
       providesTags: ["content"],
     }),
 
+    editContent: build.mutation({
+      query: ({ id, data }: { id: string; data: FormData }) => ({
+        url: `/content/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["content"],
+    }),
+
     // for all user get article details
 
     getArticleDetails: build.query({
@@ -133,4 +142,5 @@ export const {
   useGetArticleDetailsQuery,
   useGetMyArticlesQuery,
   useGetHomePageDataQuery,
+  useEditContentMutation
 } = articleApi;
