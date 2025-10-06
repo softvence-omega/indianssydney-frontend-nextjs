@@ -35,46 +35,6 @@ const Page = () => {
     setFormData((prev) => ({ ...prev, ...updatedFields }));
   };
 
-  // publish function
-  // const handlePublish = async () => {
-  //   try {
-  //     const payload = new FormData();
-  //     Object.entries(formData).forEach(([key, value]) => {
-  //       if (Array.isArray(value) || typeof value === "object") {
-  //         payload.append(key, JSON.stringify(value));
-  //       } else {
-  //         payload.append(key, value as any);
-  //       }
-  //     });
-
-  //     // Example API request
-  //     const res = await fetch("/api/publish-article", {
-  //       method: "POST",
-  //       body: payload,
-  //     });
-
-  //     if (!res.ok) throw new Error("Failed to publish article");
-  //     alert("🎉 Article published successfully!");
-  //     setStep(1);
-  //     setFormData({
-  //       title: "",
-  //       subTitle: "",
-  //       categoryId: "",
-  //       subCategoryId: "",
-  //       categorysslug: "",
-  //       subcategorysslug: "",
-  //       imageCaption: "",
-  //       paragraph: "",
-  //       shortQuote: "",
-  //       tags: [],
-  //       contentType: "ARTICLE",
-  //       additionalContents: [],
-  //     });
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("❌ Something went wrong while publishing");
-  //   }
-  // };
 
   const handlePublish = async () => {
     const uploadedData = new FormData(); // Remove `as any`
@@ -145,74 +105,6 @@ const Page = () => {
       )}
 
       {step === 2 && (
-        // <Card className="max-w-4xl mx-auto bg-white p-6 shadow-sm rounded-none">
-        //   <CardContent>
-        //     <h1 className="text-4xl font-bold mb-2">{formData.title}</h1>
-        //     <h2 className="text-xl text-gray-600 mb-4">{formData.subTitle}</h2>
-
-        //     {formData.shortQuote && (
-        //       <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-500 mb-4">
-        //         {formData.shortQuote}
-        //       </blockquote>
-        //     )}
-
-        //     {formData.imageCaption && (
-        //       <p className="text-sm text-gray-500 mb-4">
-        //         Caption: {formData.imageCaption}
-        //       </p>
-        //     )}
-
-        //     <div className="text-gray-800 leading-relaxed whitespace-pre-line mb-6">
-        //       {formData.paragraph}
-        //     </div>
-
-        //     {formData.additionalContents.map((field, i) => (
-        //       <div key={i} className="mb-6">
-        //         {field.type === "paragraph" && (
-        //           <p className="text-gray-700">{field.value}</p>
-        //         )}
-        //         {field.type === "shortQuote" && (
-        //           <blockquote className="italic border-l-4 border-gray-300 pl-4 text-gray-600">
-        //             {field.value}
-        //           </blockquote>
-        //         )}
-        //         {field.type === "image" && field.value && (
-        //           <img
-        //             src={field.value as string}
-        //             alt=""
-        //             className="rounded-lg w-full my-4"
-        //           />
-        //         )}
-        //         {field.type === "video" && field.value && (
-        //           <video controls className="w-full rounded-lg my-4">
-        //             <source src={field.value as string} />
-        //           </video>
-        //         )}
-        //         {field.type === "audio" && field.value && (
-        //           <audio controls className="my-4">
-        //             <source src={field.value as string} />
-        //           </audio>
-        //         )}
-        //       </div>
-        //     ))}
-
-        //     <div className="flex justify-between mt-8">
-        //       <Button
-        //         variant="outline"
-        //         className="rounded-none shadow-none"
-        //         onClick={() => setStep(1)}
-        //       >
-        //         ← Back to Edit
-        //       </Button>
-        //       <Button
-        //         className="bg-brick-red text-white rounded-none shadow-none"
-        //         onClick={handlePublish}
-        //       >
-        //         🚀 Publish Article
-        //       </Button>
-        //     </div>
-        //   </CardContent>
-        // </Card>
         <ArticlePreview
           formData={formData}
           onBack={() => setStep(1)}

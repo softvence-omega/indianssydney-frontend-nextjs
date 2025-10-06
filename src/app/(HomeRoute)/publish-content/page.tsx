@@ -4,7 +4,6 @@ import CategorySelection from "@/components/article-input/CategorySelection";
 import { useCreateNewArticleMutation } from "@/store/features/article/article.api";
 import { useState } from "react";
 import { ContentType, UploadFormData } from "./types";
-import ArticlePreview from "./ArticlePreview";
 
 export default function PublishContent() {
   const [createNewArticle] = useCreateNewArticleMutation();

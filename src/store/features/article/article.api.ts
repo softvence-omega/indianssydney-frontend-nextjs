@@ -2,6 +2,24 @@ import { baseAPI } from "@/store/api/baseApi";
 
 export const articleApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
+    // content by category slug
+
+    getContentByCategorySlug: build.query({
+      query: (categorySlug: string) => ({
+        url: `/content/category/${categorySlug}`,
+        method: "GET",
+      }),
+      providesTags: ["content"],
+    }),
+
+    geContentBySubCaregorySlug: build.query({
+      query: (ContentsubCategorySlug: string) => ({
+        url: `/content/subcategory/${ContentsubCategorySlug}`,
+        method: "GET",
+      }),
+      providesTags: ["content"],
+    }),
+
     // for all user home page data
 
     getHomePageData: build.query({
@@ -142,5 +160,7 @@ export const {
   useGetArticleDetailsQuery,
   useGetMyArticlesQuery,
   useGetHomePageDataQuery,
-  useEditContentMutation
+  useEditContentMutation,
+  useGeContentBySubCaregorySlugQuery,
+  useGetContentByCategorySlugQuery,
 } = articleApi;
