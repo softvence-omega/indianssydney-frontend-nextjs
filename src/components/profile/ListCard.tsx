@@ -1,16 +1,19 @@
-// ListCard.tsx (Responsive List View)
+// ListCard.tsx
 import React from "react";
-import { EllipsisVertical, Trash2 } from "lucide-react";
+import { EllipsisVertical, Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { Popover, Transition } from "@headlessui/react";
 import { ContentItem } from "@/utils/myContentData";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 type ListCardProps = {
   item: ContentItem;
 };
 
 const ListCard: React.FC<ListCardProps> = ({ item }) => {
-  // Safely format date
+  const router = useRouter();
+
   const formattedDate = item.publishedAt
     ? new Date(item.publishedAt).toLocaleDateString("en-US", {
         year: "numeric",
@@ -24,8 +27,12 @@ const ListCard: React.FC<ListCardProps> = ({ item }) => {
     console.log(`Removed article with id: ${item.id}`);
   };
 
+  const handleEdit = () => {
+    router.push(`/edit-article/${item.id}`);
+  };
+
   return (
-    <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border border-[#EDEFF0] p-4 sm:p-6 bg-pure-white ">
+    <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border border-[#EDEFF0] p-4 sm:p-6 bg-pure-white">
       {/* Left: Image + Details */}
       <div className="flex flex-col sm:flex-row gap-4 w-full">
         <img
@@ -43,8 +50,8 @@ const ListCard: React.FC<ListCardProps> = ({ item }) => {
                 item.status === "APPROVE"
                   ? "bg-blue-primary"
                   : item.status === "PENDING"
-                  ? "bg-[#8D9B90] "
-                  : "bg-brick-red "
+                  ? "bg-[#8D9B90]"
+                  : "bg-brick-red"
               }`}
             >
               {item.status}
@@ -56,17 +63,16 @@ const ListCard: React.FC<ListCardProps> = ({ item }) => {
           <p className="text-sm text-gray-600 line-clamp-2 sm:line-clamp-3 max-w-xl">
             {item.description}
           </p>
-          <div className={`text-xs font-medium mt-1`}>
-            {item.views} views • {item.likes} likes• {item.comments} comments
+          <div className="text-xs font-medium mt-1">
+            {item.views} views • {item.likes} likes • {item.comments} comments
           </div>
         </div>
       </div>
 
       {/* Right: Date + Actions */}
-      <div className="flex  items-start sm:items-center justify-between sm:justify-center gap-2 sm:gap-4 w-full sm:w-auto">
+      <div className="flex items-start sm:items-center justify-between sm:justify-center gap-2 sm:gap-4 w-full sm:w-auto">
         <p className="text-sm text-gray-500 text-nowrap">{formattedDate}</p>
         <div>
-          {" "}
           <Popover className="relative">
             {({ open }) => (
               <>
@@ -86,6 +92,13 @@ const ListCard: React.FC<ListCardProps> = ({ item }) => {
                   leaveTo="transform opacity-0 scale-95"
                 >
                   <Popover.Panel className="absolute right-0 w-40 bg-white border border-gray-200 shadow-lg rounded-md z-10">
+                    <button
+                      onClick={handleEdit}
+                      className="flex items-center w-full px-4 py-2 text-sm text-blue-600 hover:bg-gray-100"
+                    >
+                      <Pencil className="h-4 w-4 mr-2" />
+                      Edit
+                    </button>
                     <button
                       onClick={handleRemove}
                       className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"

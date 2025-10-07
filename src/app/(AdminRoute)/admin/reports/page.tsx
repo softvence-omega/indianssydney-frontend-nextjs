@@ -3,43 +3,22 @@
 import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
-// Sample dynamic data
-const reportsData = [
-  {
-    id: "1",
-    profile: "John Doe",
-    content: "Lorem Ipsum",
-    reason:
-      "Lorem ipsum is simply dummy text of the printing and typesetting industry.",
-  },
-  {
-    id: "2",
-    profile: "John Doe",
-    content: "Lorem Ipsum",
-    reason:
-      "Lorem ipsum is simply dummy text of the printing and typesetting industry.",
-  },
-  {
-    id: "3",
-    profile: "Jane Smith",
-    content: "Sample Content",
-    reason:
-      "Another sample reason for demonstration purposes in the reporting system.",
-  },
-  {
-    id: "4",
-    profile: "Mike Johnson",
-    content: "Test Content",
-    reason:
-      "This is a test content report with a longer reason to show text wrapping capabilities.",
-  },
-];
+import { useGetAllReportsQuery } from "@/store/features/admin/report.api";
 
 const ReportsListPage = () => {
-  const handleDelete = (id: string) => {
-    console.log(`Delete report with id: ${id}`);
-  };
+  const { data, isLoading, isError } = useGetAllReportsQuery({});
+
+  if (isLoading)
+    return <p className="text-center text-gray-500">Loading reports...</p>;
+
+  if (isError)
+    return (
+      <p className="text-center text-red-500">
+        Failed to load reports. Please try again.
+      </p>
+    );
+
+  const reports = data?.data || [];
 
   return (
     <div>
@@ -60,31 +39,71 @@ const ReportsListPage = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Profile
+                  Reporter
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Content
+                  Content Title
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Reason
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Screenshot
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
+
             <tbody className="bg-white divide-y divide-gray-200">
-              {reportsData.map((report) => (
+              {reports.map((report: any) => (
                 <tr key={report.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                    {report.profile}
+                  {/* Reporter Info */}
+                  <td className="px-6 py-4 flex items-center gap-2">
+                    <img
+                      src={report.user?.profilePhoto}
+                      alt={report.user?.fullName || "User"}
+                      width={36}
+                      height={36}
+                      className="rounded-full object-cover"
+                    />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {report.user?.fullName}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {report.user?.email}
+                      </p>
+                    </div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
-                    {report.content}
+
+                  {/* Content Title */}
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    {report.content?.title || "Untitled"}
                   </td>
+
+                  {/* Reason */}
                   <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
                     {report.reason}
                   </td>
+
+                  {/* Screenshot */}
+                  <td className="px-6 py-4">
+                    {report.images?.[0]?.imageUrl ? (
+                      <img
+                        src={report.images[0].imageUrl}
+                        alt="Screenshot"
+                        width={80}
+                        height={50}
+                        className="rounded-md object-cover border"
+                      />
+                    ) : (
+                      <span className="text-xs text-gray-400">No image</span>
+                    )}
+                  </td>
+
+                  {/* Actions */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                     <Link href={`/admin/reports/${report.id}`}>
                       <Button variant="outline" size="sm">
@@ -94,7 +113,7 @@ const ReportsListPage = () => {
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => handleDelete(report.id)}
+                      onClick={() => console.log("Delete:", report.id)}
                     >
                       Delete
                     </Button>
@@ -108,53 +127,64 @@ const ReportsListPage = () => {
 
       {/* Mobile Card View */}
       <div className="lg:hidden space-y-4">
-        {reportsData.map((report) => (
+        {reports.map((report: any) => (
           <div
             key={report.id}
             className="bg-white rounded-lg shadow p-4 sm:p-6"
           >
-            <div className="space-y-3">
+            <div className="flex items-center gap-3 mb-3">
+              <img
+                src={report.user?.profilePhoto}
+                alt={report.user?.fullName || "User"}
+                width={40}
+                height={40}
+                className="rounded-full object-cover"
+              />
               <div>
-                <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-                  Profile
-                </h3>
-                <p className="mt-1 text-sm font-medium text-gray-900">
-                  {report.profile}
+                <p className="font-medium text-gray-900">
+                  {report.user?.fullName}
                 </p>
+                <p className="text-xs text-gray-500">{report.user?.email}</p>
               </div>
-              <div>
-                <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-                  Content
-                </h3>
-                <p className="mt-1 text-sm text-gray-900">{report.content}</p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-                  Reason
-                </h3>
-                <p className="mt-1 text-sm text-gray-700">{report.reason}</p>
-              </div>
-              <div className="pt-3 border-t border-gray-200 flex gap-2">
-                <Link href={`/admin/reports/${report.id}`} className="flex-1">
-                  <Button variant="outline" className="w-full">
-                    View
-                  </Button>
-                </Link>
-                <Button
-                  variant="destructive"
-                  className="flex-1"
-                  onClick={() => handleDelete(report.id)}
-                >
-                  Delete
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-gray-800 mb-1">
+                {report.content?.title || "Untitled"}
+              </h3>
+              <p className="text-sm text-gray-600">{report.reason}</p>
+
+              {report.images?.[0]?.imageUrl && (
+                <img
+                  src={report.images[0].imageUrl}
+                  alt="Screenshot"
+                  width={300}
+                  height={200}
+                  className="rounded-md mt-3 border object-cover"
+                />
+              )}
+            </div>
+
+            <div className="pt-3 border-t border-gray-200 flex gap-2 mt-4">
+              <Link href={`/admin/reports/${report.id}`} className="flex-1">
+                <Button variant="outline" className="w-full">
+                  View
                 </Button>
-              </div>
+              </Link>
+              <Button
+                variant="destructive"
+                className="flex-1"
+                onClick={() => console.log("Delete:", report.id)}
+              >
+                Delete
+              </Button>
             </div>
           </div>
         ))}
       </div>
 
       {/* Empty State */}
-      {reportsData.length === 0 && (
+      {reports.length === 0 && (
         <div className="bg-white rounded-lg shadow p-8 text-center">
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             No reports found

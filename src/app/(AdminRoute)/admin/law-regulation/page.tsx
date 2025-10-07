@@ -13,48 +13,89 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FileText } from "lucide-react";
 
+import { toast } from "sonner";
+import {
+  useCreateLawMutation,
+  useDeleteLawMutation,
+  useGetAllLawsQuery,
+} from "@/store/features/admin/llm.api";
+
 interface Law {
-  id: number;
-  name: string;
-  file?: File | null;
+  id: string;
+  description: string;
+  files?: { id: string; url: string }[];
 }
 
 const Page = () => {
   const [open, setOpen] = useState(false);
-  const [laws, setLaws] = useState<Law[]>([
-    { id: 1, name: "Racial Discrimination Act 1975" },
-    { id: 2, name: "Sex Discrimination Act 1984" },
-    { id: 3, name: "Australian Human Rights Commission Act 1986" },
-  ]);
-
-  const [newLaw, setNewLaw] = useState<{ name: string; file: File | null }>({
+  const [newLaw, setNewLaw] = useState<{ name: string; files: File[] }>({
     name: "",
-    file: null,
+    files: [],
   });
 
-  const handleAddLaw = () => {
-    if (newLaw.name) {
-      setLaws([...laws, { id: Date.now(), name: newLaw.name, file: newLaw.file }]);
-      setNewLaw({ name: "", file: null });
-      setOpen(false);
+  // RTK Query hooks
+  const { data, isLoading, refetch } = useGetAllLawsQuery({});
+  const [createLaw, { isLoading: isCreating }] = useCreateLawMutation();
+  const [deleteLaw] = useDeleteLawMutation();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setNewLaw({
+        ...newLaw,
+        files: Array.from(e.target.files),
+      });
     }
   };
 
-  const handleDelete = (id: number) => {
-    setLaws(laws.filter((law) => law.id !== id));
+  const handleAddLaw = async () => {
+    if (!newLaw.name || newLaw.files.length === 0) {
+      toast.error("Please provide a law name and at least one file.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("description", newLaw.name);
+    newLaw.files.forEach((file) => formData.append("files", file));
+
+    try {
+      const res = await createLaw(formData).unwrap();
+      toast.success("Law added successfully!");
+      setNewLaw({ name: "", files: [] });
+      setOpen(false);
+      refetch();
+    } catch (err) {
+      console.error("❌ Failed to add law:", err);
+      toast.error("Failed to add law. Please try again.");
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteLaw(id).unwrap();
+      toast.success("Law deleted successfully!");
+      refetch();
+    } catch (err) {
+      console.error("❌ Delete failed:", err);
+      toast.error("Failed to delete law.");
+    }
   };
 
   return (
-    <div className="">
+    <div>
       {/* Header Section */}
       <div className="flex flex-col md:flex-row gap-4 text-center md:text-left items-center justify-between mb-4">
         <div>
-          <h2 className="text-lg sm:text-xl font-semibold">Laws and Regulations</h2>
+          <h2 className="text-lg sm:text-xl font-semibold">
+            Laws and Regulations
+          </h2>
           <p className="text-sm text-gray-500">
             Add your laws so that the AI can identify the rules and regulations.
           </p>
         </div>
-        <Button className="bg-orange-600 hover:bg-orange-700" onClick={() => setOpen(true)}>
+        <Button
+          className="bg-orange-600 hover:bg-orange-700"
+          onClick={() => setOpen(true)}
+        >
           Add New +
         </Button>
       </div>
@@ -62,28 +103,47 @@ const Page = () => {
       {/* Laws List */}
       <div className="bg-white shadow rounded-lg p-4">
         <h3 className="text-sm font-medium mb-2">Laws</h3>
-        <div className="space-y-3">
-          {laws.map((law) => (
-            <div
-              key={law.id}
-              className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between border-b pb-2 last:border-none"
-            >
-              <div className="flex items-center space-x-2">
-                <FileText className="h-5 w-5 text-gray-600" />
-                <span className="text-gray-800">{law.name}</span>
+
+        {isLoading ? (
+          <p className="text-gray-500 text-sm">Loading...</p>
+        ) : (
+          <div className="space-y-3">
+            {data?.data?.map((law: any) => (
+              <div
+                key={law.id}
+                className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between border-b pb-2 last:border-none"
+              >
+                <div className="flex items-center space-x-2">
+                  <FileText className="h-5 w-5 text-gray-600" />
+                  <span className="text-gray-800">{law.description}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  {law.files?.[0]?.url && (
+                    <a
+                      href={law.files[0].url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 text-sm underline"
+                    >
+                      View File
+                    </a>
+                  )}
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => handleDelete(law.id)}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </div>
-              <div>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => handleDelete(law.id)}
-                >
-                  Delete
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+
+            {data?.data?.length === 0 && (
+              <p className="text-gray-500 text-sm">No laws found.</p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Add New Law Modal */}
@@ -92,9 +152,10 @@ const Page = () => {
           <DialogHeader>
             <DialogTitle>Add New Law</DialogTitle>
           </DialogHeader>
+
           <div className="space-y-4">
             <div>
-              <Label htmlFor="lawName">Law Name</Label>
+              <Label htmlFor="lawName">Law Name / Description</Label>
               <Input
                 id="lawName"
                 placeholder="Enter law name"
@@ -103,16 +164,21 @@ const Page = () => {
               />
             </div>
             <div>
-              <Label htmlFor="lawFile">Upload File</Label>
+              <Label htmlFor="lawFile">Upload File(s)</Label>
               <Input
                 id="lawFile"
                 type="file"
-                onChange={(e) =>
-                  setNewLaw({ ...newLaw, file: e.target.files?.[0] || null })
-                }
+                multiple
+                onChange={handleFileChange}
               />
+              {newLaw.files.length > 0 && (
+                <p className="text-xs text-gray-500 mt-1">
+                  {newLaw.files.length} file(s) selected
+                </p>
+              )}
             </div>
           </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>
               Cancel
@@ -120,8 +186,9 @@ const Page = () => {
             <Button
               className="bg-orange-600 hover:bg-orange-700"
               onClick={handleAddLaw}
+              disabled={isCreating}
             >
-              Add
+              {isCreating ? "Adding..." : "Add"}
             </Button>
           </DialogFooter>
         </DialogContent>

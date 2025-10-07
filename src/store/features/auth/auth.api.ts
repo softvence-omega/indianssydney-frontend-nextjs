@@ -25,20 +25,8 @@ export const userAPI = baseAPI.injectEndpoints({
       }),
       invalidatesTags: [],
     }),
-
-    updatePassword: build.mutation({
-      query: (payload) => ({
-        url: "/user/update-password",
-        method: "PUT",
-        body: payload,
-      }),
-    }),
   }),
 });
 
-export const {
-  useLoginMutation,
-  useVerifyOTPMutation,
-  useRegisterMutation,
-  useUpdatePasswordMutation,
-} = userAPI;
+export const { useLoginMutation, useVerifyOTPMutation, useRegisterMutation } =
+  userAPI;

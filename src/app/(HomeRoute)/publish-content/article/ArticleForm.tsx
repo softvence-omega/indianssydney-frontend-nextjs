@@ -16,34 +16,20 @@ import { Textarea } from "@/components/ui/textarea";
 import uploadFileInAws from "@/utils/fileUploader";
 import { ArrowLeft, Plus, Upload, X } from "lucide-react";
 import { useRef, useState } from "react";
-import type {
-  AdditionalField,
-  AdditionalFieldType,
-  UploadFormData,
-} from "../../app/(HomeRoute)/publish-content/types";
+
 import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
+import { AdditionalField, AdditionalFieldType } from "../types";
+import { useRouter } from "next/navigation";
 
-interface ArticleDetailsFormProps {
-  formData: UploadFormData;
-  onUpdate: (updates: Partial<UploadFormData>) => void;
-  onSubmit: () => void;
-  onBack: () => void;
-}
-
-const ArticleDetailsForm = ({
-  formData,
-  onUpdate,
-  onSubmit,
-  onBack,
-}: ArticleDetailsFormProps) => {
-  const { data, isLoading, isError } = useGetAllCategoryQuery({});
+const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
+  const { data } = useGetAllCategoryQuery({});
   const [newTag, setNewTag] = useState("");
   const [additionalFieldType, setAdditionalFieldType] = useState<
     AdditionalFieldType | ""
   >("");
-  const [uploadType, setUploadType] = useState<
-    "image" | "audio" | "video" | ""
-  >("");
+  const [uploadType, setUploadType] = useState<"image" | "audio" | "video">(
+    "image"
+  );
   const [formFileData, setFormFileData] = useState<{ file?: File }>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -51,16 +37,8 @@ const ArticleDetailsForm = ({
   const selectedCategory = categories.find(
     (cat: any) => cat.id === formData.categoryId
   );
-
-  const predefinedTags = [
-    "React",
-    "JavaScript",
-    "TypeScript",
-    "Node.js",
-    "Python",
-    "AI",
-  ];
-
+  const router = useRouter();
+  const predefinedTags = ["React", "JavaScript", "TypeScript", "Node.js", "AI"];
   const additionalFieldTypes: AdditionalFieldType[] = [
     "paragraph",
     "shortQuote",
@@ -69,17 +47,20 @@ const ArticleDetailsForm = ({
     "audio",
   ];
 
+  // tag handlers
   const handleTagAdd = (tag: string) => {
-    if (tag && !formData?.tags?.includes(tag)) {
+    if (tag && !formData.tags.includes(tag)) {
       onUpdate({ tags: [...formData.tags, tag] });
     }
     setNewTag("");
   };
-
   const handleTagRemove = (tagToRemove: string) => {
-    onUpdate({ tags: formData.tags.filter((tag) => tag !== tagToRemove) });
+    onUpdate({
+      tags: formData.tags.filter((tag: string) => tag !== tagToRemove),
+    });
   };
 
+  // add additional field
   const handleAddAdditionalField = () => {
     if (additionalFieldType) {
       const newField: AdditionalField = {
@@ -90,7 +71,6 @@ const ArticleDetailsForm = ({
           additionalFieldType === "audio"
             ? null
             : "",
-        // order: formData.additionalContents.length,
       };
       onUpdate({
         additionalContents: [...formData.additionalContents, newField],
@@ -114,10 +94,8 @@ const ArticleDetailsForm = ({
   ) => {
     const file = files ? files[0] : null;
     if (!file) return;
-
     try {
       const res = await uploadFileInAws(file);
-      console.log("File uploaded:", res);
       handleAdditionalFieldUpdate(index, res as string);
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -126,7 +104,7 @@ const ArticleDetailsForm = ({
 
   const handleRemoveAdditionalField = (index: number) => {
     const updatedFields = formData.additionalContents.filter(
-      (_, i) => i !== index
+      (_: any, i: number) => i !== index
     );
     onUpdate({ additionalContents: updatedFields });
   };
@@ -135,13 +113,9 @@ const ArticleDetailsForm = ({
     field: AdditionalField,
     index: number
   ) => {
-    if (
-      field.type === "image" ||
-      field.type === "video" ||
-      field.type === "audio"
-    ) {
+    if (["image", "video", "audio"].includes(field.type)) {
       return (
-        <div className="border border-dashed border-gray-300 p-4">
+        <div className="border border-dashed border-gray-300 p-4 rounded-none">
           <input
             type="file"
             accept={
@@ -152,7 +126,7 @@ const ArticleDetailsForm = ({
                 : "audio/*"
             }
             onChange={(e) => handleAdditionalFieldFile(index, e.target.files)}
-            className="hidden"
+            className="hidden rounded-none"
             id={`file-input-${index}`}
           />
           <label
@@ -170,26 +144,20 @@ const ArticleDetailsForm = ({
         </div>
       );
     }
-
     return (
       <Input
-        placeholder={`Enter ${field.type?.toLowerCase()}`}
+        placeholder={`Enter ${field.type}`}
+        className="rounded-none"
         value={typeof field.value === "string" ? field.value : ""}
-        className="w-full rounded-none shadow-none"
         onChange={(e) => handleAdditionalFieldUpdate(index, e.target.value)}
       />
     );
   };
 
-  const getHeaderText = () => {
-    switch (formData.contentType) {
-      case "VIDEO":
-        return "Publish Video:";
-      case "PODCAST":
-        return "Publish Podcast:";
-      default:
-        return "Publish Article:";
-    }
+  const acceptMap = {
+    image: "image/*",
+    audio: "audio/*",
+    video: "video/*",
   };
 
   const handleDynamicFileUpload = (files: FileList | null) => {
@@ -199,32 +167,27 @@ const ArticleDetailsForm = ({
     }
   };
 
-  const acceptMap = {
-    image: "image/*",
-    audio: "audio/*",
-    video: "video/*",
-  };
-
   return (
-    <div className="min-h-screen bg-white p-4">
+    <div className="min-h-screen">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
-          <Button variant="ghost" onClick={onBack} className="mb-4">
+          <Button
+            variant="ghost"
+            onClick={() => router.back()}
+            className="mb-4"
+          >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Categories
           </Button>
 
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {getHeaderText()}
+            Publish Article
           </h1>
           <p className="text-gray-600">
-            Lorem ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem ipsum has been the industrys standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book.
+            Publish your first article on our platform
           </p>
         </div>
-
+        {/* Category Sub Category Selection */}
         <Card className="mb-4 rounded-none shadow-none">
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -320,221 +283,150 @@ const ArticleDetailsForm = ({
             <CardTitle>Submit Your Article Details:</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Title */}
             <div>
-              <Label htmlFor="title" className="text-sm font-medium mb-2 block">
-                1. Title <span className="text-red-500">*</span>
-              </Label>
+              <Label>1. Title *</Label>
               <Input
-                id="title"
-                className="w-full rounded-none shadow-none"
-                placeholder="What is your title for this content"
+                className="w-full rounded-none shadow-none mt-2"
+                placeholder="Enter title"
                 value={formData.title}
                 onChange={(e) => onUpdate({ title: e.target.value })}
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Lorem ipsum is simply dummy text of the printing and typesetting
-                industry
-              </p>
             </div>
 
-            {/* Sub-Title */}
             <div>
-              <Label
-                htmlFor="subTitle"
-                className="text-sm font-medium mb-2 block"
-              >
-                2. Sub-Title <span className="text-red-500">*</span>
-              </Label>
+              <Label>2. Sub-Title *</Label>
               <Input
-                id="subTitle"
-                className="w-full rounded-none shadow-none"
-                placeholder="What is sub title for your content"
+                className="w-full rounded-none shadow-none mt-2"
+                placeholder="Enter Sub-title"
                 value={formData.subTitle}
                 onChange={(e) => onUpdate({ subTitle: e.target.value })}
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Lorem ipsum is simply dummy text of the printing and typesetting
-                industry
-              </p>
             </div>
 
-            {/* Dynamic File Upload */}
             <div>
-              <Label className="text-sm font-medium mb-2 block">
-                3. Select a file type
-              </Label>
+              <Label>3. File Type</Label>
               <Select
                 onValueChange={(val) =>
                   setUploadType(val as "image" | "audio" | "video")
                 }
               >
-                <SelectTrigger className="max-w-[200px] mb-4 rounded-none shadow-none">
+                <SelectTrigger className="w-[200px] rounded-none mt-2">
                   <SelectValue placeholder="Choose type..." />
                 </SelectTrigger>
-                <SelectContent className="rounded-none">
-                  <SelectItem value="image" className="rounded-none">
-                    Image
-                  </SelectItem>
-                  <SelectItem value="audio" className="rounded-none">
-                    Audio
-                  </SelectItem>
-                  <SelectItem value="video" className="rounded-none">
-                    Video
-                  </SelectItem>
+                <SelectContent>
+                  <SelectItem value="image">Image</SelectItem>
+                  <SelectItem value="audio">Audio</SelectItem>
+                  <SelectItem value="video">Video</SelectItem>
                 </SelectContent>
               </Select>
 
               {uploadType && (
-                <div>
-                  <Label className="text-sm font-medium mb-2 block">
-                    Upload{" "}
-                    {uploadType.charAt(0).toUpperCase() + uploadType.slice(1)}{" "}
-                    (optional)
-                  </Label>
-                  <div className="border border-dashed border-gray-300 p-4 text-center">
-                    <input
-                      type="file"
-                      accept={acceptMap[uploadType]}
-                      ref={fileInputRef}
-                      className="hidden"
-                      id={`${uploadType}-upload`}
-                      onChange={(e) => handleDynamicFileUpload(e.target.files)}
-                    />
-                    <label
-                      htmlFor={`${uploadType}-upload`}
-                      className="flex flex-col items-center cursor-pointer"
-                    >
-                      <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-sm text-gray-500 mb-2">
-                        {formFileData.file
-                          ? formFileData.file.name
-                          : `Drag & Drop ${uploadType}`}
-                      </p>
-                      <Button variant="outline" size="sm">
-                        📎 Upload
-                      </Button>
-                    </label>
-                  </div>
+                <div className="mt-3 border border-dashed border-gray-300 p-4 text-center">
+                  <input
+                    type="file"
+                    accept={acceptMap[uploadType]}
+                    ref={fileInputRef}
+                    className="hidden"
+                    id={`${uploadType}-upload`}
+                    onChange={(e) => handleDynamicFileUpload(e.target.files)}
+                  />
+                  <label
+                    htmlFor={`${uploadType}-upload`}
+                    className="flex flex-col items-center cursor-pointer"
+                  >
+                    <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                    <p className="text-sm text-gray-500 mb-2">
+                      {formFileData.file
+                        ? formFileData.file.name
+                        : `Drag & Drop ${uploadType}`}
+                    </p>
+                    <Button variant="outline" size="sm">
+                      📎 Upload
+                    </Button>
+                  </label>
                 </div>
               )}
             </div>
 
-            {/* Image Caption */}
             <div>
-              <Label
-                htmlFor="imageCaption"
-                className="text-sm font-medium mb-2 block"
-              >
-                4. File Caption
-              </Label>
+              <Label>4. File Caption</Label>
               <Input
-                id="imageCaption"
-                className="w-full rounded-none shadow-none"
-                placeholder="Write a caption for your selected file"
-                value={formData.imageCaption || ""}
+                className="w-full rounded-none shadow-none mt-2"
+                placeholder="Create a caption for your file"
+                value={formData.imageCaption}
                 onChange={(e) => onUpdate({ imageCaption: e.target.value })}
               />
             </div>
 
-            {/* Short Quote */}
             <div>
-              <Label
-                htmlFor="shortQuote"
-                className="text-sm font-medium mb-2 block"
-              >
-                5. Short Quote
-              </Label>
+              <Label>5. Short Quote</Label>
               <Input
-                id="shortQuote"
-                className="w-full rounded-none shadow-none"
-                placeholder="Write a quote for your article"
+                className="w-full rounded-none shadow-none mt-2"
+                placeholder="Create a Short Quote for the article"
                 value={formData.shortQuote}
                 onChange={(e) => onUpdate({ shortQuote: e.target.value })}
               />
             </div>
 
-            {/* Paragraph */}
             <div>
-              <Label
-                htmlFor="paragraph"
-                className="text-sm font-medium mb-2 block"
-              >
-                6. Paragraph <span className="text-red-500">*</span>
-              </Label>
+              <Label>6. Paragraph *</Label>
               <Textarea
-                id="paragraph"
-                placeholder="Write your paragraph here"
-                className="min-h-[120px] w-full rounded-none shadow-none"
+                className="w-full rounded-none shadow-none mt-2"
+                placeholder="Create a Paragraph for your file"
                 value={formData.paragraph}
                 onChange={(e) => onUpdate({ paragraph: e.target.value })}
               />
-              <div className="flex justify-end mt-2">
-                <Button
-                  size="sm"
-                  className="bg-gray-800 text-white text-sm rounded-none"
-                >
-                  🤖 Generate tags by AI
-                </Button>
-              </div>
             </div>
-
-            {/* Tags */}
+            <div className="flex justify-end mt-2">
+              <Button
+                size="sm"
+                className="bg-gray-800 text-white text-sm rounded-none"
+              >
+                🤖 Generate tags by AI
+              </Button>
+            </div>
             <div>
-              <Label className="text-sm font-medium mb-2 block">
-                8. Tags{" "}
-                <span className="text-gray-400">
-                  {" "}
-                  (Choose from AI suggestion tags)
-                </span>{" "}
-                <span className="text-red-500">*</span>
-              </Label>
-              {/* Selected Tags */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                {formData?.tags?.map((tag) => (
+              <Label>7. Tags *</Label>
+              <div className="flex flex-wrap gap-2 my-2">
+                {formData.tags.map((tag: string) => (
                   <Badge
                     key={tag}
                     variant="secondary"
-                    className="bg-orange-100 text-orange-800"
+                    className="bg-orange-100 text-orange-800 mt-"
                   >
                     {tag}
                     <button
                       onClick={() => handleTagRemove(tag)}
-                      className="ml-2 text-orange-600 hover:text-orange-800"
+                      className="ml-2 text-orange-600"
                     >
                       <X className="w-3 h-3" />
                     </button>
                   </Badge>
                 ))}
               </div>
-
-              {/* Predefined Tags */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                {predefinedTags?.map((tag) => (
+              <div className="flex flex-wrap gap-2 mb-2">
+                {predefinedTags.map((tag) => (
                   <Badge
                     key={tag}
                     variant="outline"
-                    className="cursor-pointer hover:bg-orange-50"
+                    className="cursor-pointer"
                     onClick={() => handleTagAdd(tag)}
                   >
                     {tag}
                   </Badge>
                 ))}
               </div>
-
-              {/* Custom Tag Input */}
               <div className="flex gap-2">
                 <Input
                   placeholder="Add custom tag"
+                  className="rounded-none shadow-none"
                   value={newTag}
-                  className="w-full rounded-none shadow-none"
                   onChange={(e) => setNewTag(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleTagAdd(newTag)}
                 />
                 <Button
-                  className="h-auto rounded-none shadow-none bg-accent-orange"
+                  className="rounded-none "
                   onClick={() => handleTagAdd(newTag)}
-                  size="sm"
                 >
                   Add
                 </Button>
@@ -545,31 +437,31 @@ const ArticleDetailsForm = ({
             {formData.additionalContents.length > 0 && (
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Additional Fields:</h3>
-                {formData.additionalContents?.map((field, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-4 p-4 border rounded-lg"
-                  >
-                    <div className="flex-1">
-                      <Label className="text-sm font-medium mb-2 block">
-                        {field.type.charAt(0).toUpperCase() +
-                          field.type.slice(1)}
-                      </Label>
-                      {renderAdditionalFieldInput(field, index)}
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleRemoveAdditionalField(index)}
+                {formData.additionalContents.map(
+                  (field: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-4 p-4 border"
                     >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ))}
+                      <div className="flex-1">
+                        <Label className="mb-2">{field.type}</Label>
+                        {renderAdditionalFieldInput(field, index)}
+                      </div>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="rounded-none"
+                        onClick={() => handleRemoveAdditionalField(index)}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  )
+                )}
               </div>
             )}
 
-            {/* Add Additional Field */}
+            {/* Add New Additional Field */}
             <div className="flex gap-2">
               <Select
                 value={additionalFieldType}
@@ -578,33 +470,31 @@ const ArticleDetailsForm = ({
                 }
               >
                 <SelectTrigger className="flex-1 rounded-none shadow-none">
-                  <SelectValue placeholder="Select field type to add" />
+                  <SelectValue placeholder="Select field type" />
                 </SelectTrigger>
-                <SelectContent>
-                  {additionalFieldTypes?.map((type) => (
+                <SelectContent className="rounded-none">
+                  {additionalFieldTypes.map((type) => (
                     <SelectItem key={type} value={type}>
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                      {type}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               <Button
+                className="rounded-none bg-brick-red"
                 onClick={handleAddAdditionalField}
-                className="bg-brick-red text-white px-8 rounded-none shadow-none"
                 disabled={!additionalFieldType}
               >
                 <Plus className="w-4 h-4 mr-2" /> Add Field
               </Button>
             </div>
 
-            {/* Submit Button */}
-            <div className="pt-6">
+            <div className="pt-6 flex justify-end">
               <Button
                 onClick={onSubmit}
-                className="bg-brick-red hover:bg-red-800 text-white px-8 rounded-none shadow-none"
-                size="lg"
+                className="bg-brick-red text-white px-8"
               >
-                Submit
+                Preview Article →
               </Button>
             </div>
           </CardContent>
@@ -614,4 +504,4 @@ const ArticleDetailsForm = ({
   );
 };
 
-export default ArticleDetailsForm;
+export default ArticleForm;
