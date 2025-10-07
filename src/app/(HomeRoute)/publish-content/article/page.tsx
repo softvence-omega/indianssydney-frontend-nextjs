@@ -1,12 +1,15 @@
 "use client";
 
-import CategorySelection from "@/components/article-input/CategorySelection";
-import { useCreateNewArticleMutation } from "@/store/features/article/article.api";
 import { useState } from "react";
-import { ContentType, UploadFormData } from "./types";
+import ArticleForm from "./ArticleForm";
+import ArticlePreview from "../ArticlePreview";
+import { useCreateNewArticleMutation } from "@/store/features/article/article.api";
+import { UploadFormData } from "../types";
+import { toast } from "sonner";
 
-export default function PublishContent() {
+const Page = () => {
   const [createNewArticle] = useCreateNewArticleMutation();
+  const [step, setStep] = useState<1 | 2>(1);
   const initialFormData: UploadFormData = {
     contentType: "ARTICLE",
     title: "",
@@ -26,32 +29,13 @@ export default function PublishContent() {
     tags: [],
     additionalContents: [],
   };
-
-  // State
   const [formData, setFormData] = useState<UploadFormData>(initialFormData);
-  const [step, setStep] = useState<
-    "category" | "form" | "preview" | "submitted"
-  >("category");
-
-  // Handle category select
-  const handleCategorySelect = (contentType: ContentType) => {
-    setFormData((prev) => ({ ...prev, contentType }));
-    setStep("form");
-    console.log("Selected content type:", contentType);
+  // update handler
+  const handleUpdate = (updatedFields: Partial<typeof formData>) => {
+    setFormData((prev) => ({ ...prev, ...updatedFields }));
   };
 
-  // Handle form updates
-  const handleUpdate = (updates: Partial<UploadFormData>) => {
-    setFormData((prev) => ({ ...prev, ...updates }));
-    console.log("Form updated:", updates);
-  };
 
-  // Handle submit (go to preview)
-  const handleFormSubmit = () => {
-    setStep("preview");
-  };
-
-  // Handle publish
   const handlePublish = async () => {
     const uploadedData = new FormData(); // Remove `as any`
     try {
@@ -102,25 +86,33 @@ export default function PublishContent() {
       console.log("Form Data:", formData);
 
       // Reset form and update step
-      setStep("submitted");
+      toast.success("Content published successfully!");
       setFormData(initialFormData);
     } catch (error) {
       console.error("Error publishing content:", error);
     }
   };
 
-  // Handle back
-  const handleBack = () => {
-    if (step === "form") {
-      setStep("category");
-    } else if (step === "preview") {
-      setStep("form");
-    }
-  };
-
   return (
-    <div>
-      <CategorySelection />
+    <div className="min-h-screen bg-gray-50 p-6">
+      {step === 1 && (
+        <ArticleForm
+          formData={formData}
+          onUpdate={handleUpdate}
+          onSubmit={() => setStep(2)}
+          onBack={() => console.log("Go back to category page")}
+        />
+      )}
+
+      {step === 2 && (
+        <ArticlePreview
+          formData={formData}
+          onBack={() => setStep(1)}
+          onPublish={handlePublish}
+        />
+      )}
     </div>
   );
-}
+};
+
+export default Page;

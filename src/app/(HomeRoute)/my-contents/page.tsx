@@ -220,10 +220,8 @@ const MyContents = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // ✅ Extract articles safely
   const myArticles = data?.data || [];
 
-  // ✅ Pagination logic
   const pageSize =
     viewMode === "grid" ? ITEMS_PER_PAGE_GRID : ITEMS_PER_PAGE_LIST;
   const totalPages = Math.max(1, Math.ceil(myArticles.length / pageSize));

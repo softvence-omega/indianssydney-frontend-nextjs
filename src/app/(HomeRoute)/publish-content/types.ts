@@ -10,33 +10,13 @@ export type AdditionalFieldType =
 
 export interface AdditionalField {
   type: AdditionalFieldType;
-  value: string |File| null;
+  value: string | File | null;
 }
 
 export type ContentType = "ARTICLE" | "VIDEO" | "PODCAST";
 
-// export interface FormData {
-//   contentType: ContentType;
-//   category: string;
-//   subCategory: string;
-//   title: string;
-//   subTitle: string;
-//   audioFile: File | null;
-//   image: File | null;
-//   video: File | null;
-//   imageCaption: string;
-//   shortQuote: string;
-//   paragraph: string;
-//   dateTimeSlot: string;
-//   tags: string[];
-//   additionalFields: { [key: string]: AdditionalField };
-//   publishedAt?: string;
-//   views?: number;
-//   likes?: number;
-//   comments?: number;
-// }
-
 export interface UploadFormData {
+  id?: string;
   contentType: ContentType;
   title: string;
   subTitle: string;
@@ -52,7 +32,7 @@ export interface UploadFormData {
   videoThumbnail?: File | null;
   youtubeVideoUrl?: "";
   shortQuote: string;
-  tags:string[];
+  tags: string[];
   additionalContents: AdditionalField[];
   publishedAt?: string;
   contentviews?: number;

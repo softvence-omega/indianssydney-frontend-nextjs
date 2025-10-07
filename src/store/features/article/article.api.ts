@@ -2,6 +2,24 @@ import { baseAPI } from "@/store/api/baseApi";
 
 export const articleApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
+    // content by category slug
+
+    getContentByCategorySlug: build.query({
+      query: (categorySlug: string) => ({
+        url: `/content/category/${categorySlug}`,
+        method: "GET",
+      }),
+      providesTags: ["content"],
+    }),
+
+    geContentBySubCaregorySlug: build.query({
+      query: (ContentsubCategorySlug: string) => ({
+        url: `/content/subcategory/${ContentsubCategorySlug}`,
+        method: "GET",
+      }),
+      providesTags: ["content"],
+    }),
+
     // for all user home page data
 
     getHomePageData: build.query({
@@ -10,6 +28,23 @@ export const articleApi = baseAPI.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["content"],
+    }),
+
+    // for all user category and sub category
+    getArticlesByCategory: build.query({
+      query: (categorySlug: string) => ({
+        url: `/content/category/${categorySlug}`,
+        method: "GET",
+      }),
+      providesTags: ["category"],
+    }),
+
+    getArticlesBySubCategory: build.query({
+      query: (subCategorySlug: string) => ({
+        url: `/content/subcategory/${subCategorySlug}`,
+        method: "GET",
+      }),
+      providesTags: ["category"],
     }),
 
     // for contributor get my articles
@@ -29,6 +64,15 @@ export const articleApi = baseAPI.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["content"],
+    }),
+
+    editContent: build.mutation({
+      query: ({ id, data }: { id: string; data: FormData }) => ({
+        url: `/content/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["content"],
     }),
 
     // for all user get article details
@@ -116,4 +160,7 @@ export const {
   useGetArticleDetailsQuery,
   useGetMyArticlesQuery,
   useGetHomePageDataQuery,
+  useEditContentMutation,
+  useGeContentBySubCaregorySlugQuery,
+  useGetContentByCategorySlugQuery,
 } = articleApi;

@@ -3,7 +3,6 @@
 import { useParams, usePathname } from "next/navigation";
 import CommonWrapper from "@/common/CommonWrapper";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
-
 import NewsTemplate from "@/components/templates/NewsTemplate";
 import BusinessTemplate from "@/components/templates/BusinessTemplate";
 import EducationTemplate from "@/components/templates/EducationTemplate";
@@ -71,7 +70,7 @@ const CategoryPage = () => {
   }
 
   // ✅ Find category dynamically from API
-  const categories = data.data;
+  const categories = data?.data;
   const category = categories.find((c: any) => c.slug === categorySlug);
 
   if (!category) {
