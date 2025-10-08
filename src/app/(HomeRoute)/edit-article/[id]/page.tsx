@@ -880,25 +880,6 @@ const EditArticle = () => {
     setFormData((prev) => ({ ...prev, additionalContents: updatedFields }));
   };
 
-  // File Upload Handler
-  //   const handleDynamicFileUpload = async (files: FileList | null) => {
-  //     if (files && files[0]) {
-  //       setFormFileData({ file: files[0] });
-  //       setUploading(true);
-  //       try {
-  //         const res = await uploadFileInAws(files[0]);
-  //         if (!res?.url) throw new Error("Upload failed");
-  //         setFormData((prev) => ({ ...prev, [uploadType]: res.url }));
-  //         toast.success(`${uploadType} uploaded successfully!`);
-  //       } catch (error) {
-  //         console.error("Error uploading file:", error);
-  //         toast.error("Failed to upload file.");
-  //       } finally {
-  //         setUploading(false);
-  //       }
-  //     }
-  //   };
-
   const handleDynamicFileUpload = (files: FileList | null) => {
     if (files && files[0]) {
       setFormFileData({ file: files[0] });

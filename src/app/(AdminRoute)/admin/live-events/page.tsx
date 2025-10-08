@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import DashboardHeader from "@/components/reusable/DashboardHeader";
-import LiveEventCard, { LiveEvent } from "./LiveEventCard";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -14,128 +13,115 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import LiveEventCard, { LiveEvent } from "./LiveEventCard";
+import {
+  useCreateNewLiveMutation,
+  useGetAllLiveEventQuery,
+} from "@/store/features/live-events/live.api";
 
+// ✅ Validation Schema
 const eventSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  about: z.string().min(1, "About is required"),
-  date: z.string().min(1, "Date is required"),
+  subTitle: z.string().min(1, "Subtitle is required"),
+  thumbnail: z.custom<File>((file) => file instanceof File, {
+    message: "Thumbnail is required",
+  }),
+  tags: z
+    .array(z.string().min(1, "Tag cannot be empty"))
+    .nonempty("At least one tag is required"),
   startTime: z.string().min(1, "Start time is required"),
   endTime: z.string().min(1, "End time is required"),
-  coverImage: z.custom<File>((file) => file instanceof File, {
-    message: "Cover image is required",
-  }),
+  youtubeLiveUrl: z.string().url("Must be a valid YouTube URL"),
 });
 
 type FormData = z.infer<typeof eventSchema>;
-type LiveEventStatus = "current" | "past" | "upcoming";
-
-export const demoLiveEvents: LiveEvent[] = [
-  {
-    id: "1",
-    title: "Next.js Best Practices",
-    description: "Learn how to build scalable Next.js apps.",
-    coverImage: "/register.png",
-    author: "John Doe",
-    date: "2025-09-01",
-    startTime: "09:00",
-    endTime: "16:00",
-    status: "current",
-  },
-  {
-    id: "2",
-    title: "React Performance Workshop",
-    description: "Optimize your React apps for speed.",
-    coverImage: "/register.png",
-    author: "Jane Smith",
-    date: "2025-09-03",
-    startTime: "15:00",
-    endTime: "16:30",
-    status: "upcoming",
-  },
-  {
-    id: "3",
-    title: "AI in Web Development",
-    description: "How AI is transforming frontend workflows.",
-    coverImage: "/register.png",
-    author: "Alex Johnson",
-    date: "2025-08-25",
-    startTime: "11:00",
-    endTime: "12:00",
-    status: "past",
-  },
-];
 
 const LiveEventsPage = () => {
-  const [filter, setFilter] = useState<LiveEventStatus>("current");
-  const [events, setEvents] = useState<LiveEvent[]>(demoLiveEvents);
+  const { data, isLoading, isError } = useGetAllLiveEventQuery({});
+  const [createLiveEvent, { isLoading: isCreating }] =
+    useCreateNewLiveMutation();
+
   const [open, setOpen] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
-
-  const now = new Date();
-  const defaultDate = now.toISOString().split("T")[0];
-  const defaultTime = now.toTimeString().slice(0, 5);
 
   const {
     register,
     handleSubmit,
+    control,
     reset,
-    formState: { errors, isSubmitting },
     setValue,
+    formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(eventSchema),
-    defaultValues: {
-      date: defaultDate,
-      startTime: defaultTime,
-      endTime: defaultTime,
-    },
-    mode: "onSubmit", // Validate on submit
+    defaultValues: { tags: [""] },
   });
 
-  const filteredEvents = events.filter((event) => event.status === filter);
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "tags",
+  });
 
+  // ✅ Map backend data to card format
+  const liveEvents: LiveEvent[] = useMemo(() => {
+    if (!data) return [];
+    return data.map((item: any) => ({
+      id: item.id,
+      title: item.title,
+      description: item.subTitle,
+      coverImage: item.thumbnail,
+      author: item?.user?.fullName || "Admin",
+      date: new Date(item.startTime).toLocaleDateString(),
+      startTime: new Date(item.startTime).toLocaleTimeString(),
+      endTime: new Date(item.endTime).toLocaleTimeString(),
+      status: "upcoming", // static, no filter now
+    }));
+  }, [data]);
+
+  // ✅ Create New Event
   const onSubmit = async (data: FormData) => {
     try {
-      const newEvent: LiveEvent = {
-        id: String(events.length + 1),
-        title: data.title,
-        description: data.about,
-        coverImage: preview || "/placeholder.png",
-        author: "Admin",
-        date: data.date,
-        startTime: data.startTime,
-        endTime: data.endTime,
-        status: "upcoming",
-      };
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("subTitle", data.subTitle);
+      formData.append("thumbnail", data.thumbnail);
+      data.tags.forEach((tag, i) => formData.append(`tags[${i}]`, tag));
+      formData.append("startTime", new Date(data.startTime).toISOString());
+      formData.append("endTime", new Date(data.endTime).toISOString());
+      formData.append("youtubeLiveUrl", data.youtubeLiveUrl);
 
-      setEvents((prev) => [...prev, newEvent]);
-      console.log("New Event:", newEvent);
-      // alert(`Event Created: ${JSON.stringify(newEvent, null, 2)}`);
-      toast.success("Event created successfully!");
-      reset();
-      setPreview(null);
-      setOpen(false);
-    } catch (error) {
-      console.error("Submission error:", error);
+      const res = await createLiveEvent(formData).unwrap();
+
+      if (res?.success) {
+        toast.success("Live event created successfully!");
+        setOpen(false);
+        reset();
+        setPreview(null);
+      } else {
+        toast.error(res?.message || "Failed to create event");
+      }
+    } catch (error: any) {
+      console.error("Error creating live event:", error);
+      toast.error(error?.data?.message || "Failed to create event");
     }
   };
 
+  // ✅ Image Upload Preview
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Set coverImage without triggering full form validation
-      setValue("coverImage", file, { shouldValidate: false });
+      setValue("thumbnail", file, { shouldValidate: true });
       setPreview(URL.createObjectURL(file));
     }
   };
 
   return (
     <div>
-      <div className="flex justify-between items-center gap-4">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
         <DashboardHeader title="Live Events" />
         <Button
           className="bg-accent-orange hover:bg-orange-500"
@@ -146,77 +132,101 @@ const LiveEventsPage = () => {
         </Button>
       </div>
 
-      <div className="flex gap-4 mb-6">
-        {["current", "upcoming", "past"].map((tab) => (
-          <button
-            key={tab}
-            className={`cursor-pointer ${
-              filter === tab
-                ? "text-accent-orange font-semibold"
-                : "text-gray-600"
-            }`}
-            onClick={() => setFilter(tab as LiveEventStatus)}
-          >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </button>
-        ))}
-      </div>
-
-      {filteredEvents.length > 0 ? (
-        filteredEvents.map((event) => (
-          <LiveEventCard key={event.id} live={event} />
-        ))
-      ) : (
-        <p className="text-sm text-gray-500">No {filter} events available.</p>
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex justify-center items-center py-10">
+          <Loader2 className="animate-spin mr-2" /> Loading live events...
+        </div>
       )}
 
-      <Dialog
-        open={open}
-        onOpenChange={(isOpen) => {
-          setOpen(isOpen);
-          if (!isOpen) {
-            if (preview) URL.revokeObjectURL(preview); // Clean up preview URL
-            reset();
-            setPreview(null);
-          }
-        }}
-      >
+      {/* Error State */}
+      {isError && (
+        <p className="text-red-500 text-sm text-center">
+          Failed to fetch live events.
+        </p>
+      )}
+
+      {/* Events List (No Tabs — All shown) */}
+      {!isLoading && liveEvents.length > 0 ? (
+        <div className="grid gap-4">
+          {liveEvents.map((event) => (
+            <LiveEventCard key={event.id} live={event} />
+          ))}
+        </div>
+      ) : (
+        !isLoading && (
+          <p className="text-gray-500 text-sm text-center mt-4">
+            No live events available.
+          </p>
+        )
+      )}
+
+      {/* Add Event Dialog */}
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Add Live Event</DialogTitle>
           </DialogHeader>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* Title */}
             <div className="space-y-2">
-              <Label>Title</Label>
+              <Label>Title *</Label>
               <Input placeholder="Event title" {...register("title")} />
               {errors.title && (
                 <p className="text-red-500 text-sm">{errors.title.message}</p>
               )}
             </div>
 
+            {/* Subtitle */}
             <div className="space-y-2">
-              <Label>About</Label>
-              <Textarea
-                placeholder="Event description"
-                {...register("about")}
-              />
-              {errors.about && (
-                <p className="text-red-500 text-sm">{errors.about.message}</p>
+              <Label>Subtitle *</Label>
+              <Input placeholder="Short description" {...register("subTitle")} />
+              {errors.subTitle && (
+                <p className="text-red-500 text-sm">
+                  {errors.subTitle.message}
+                </p>
               )}
             </div>
 
+            {/* Tags */}
+            <div className="space-y-2">
+              <Label>Tags *</Label>
+              {fields.map((field, index) => (
+                <div key={field.id} className="flex gap-2 mb-2">
+                  <Input
+                    placeholder={`Tag ${index + 1}`}
+                    {...register(`tags.${index}`)}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => remove(index)}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => append("")}
+                className="text-sm"
+              >
+                + Add Tag
+              </Button>
+              {errors.tags && (
+                <p className="text-red-500 text-sm">
+                  {errors.tags.message as string}
+                </p>
+              )}
+            </div>
+
+            {/* Start / End Time */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Date</Label>
-                <Input type="date" {...register("date")} />
-                {errors.date && (
-                  <p className="text-red-500 text-sm">{errors.date.message}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label>Start Time</Label>
-                <Input type="time" {...register("startTime")} />
+                <Label>Start Time *</Label>
+                <Input type="datetime-local" {...register("startTime")} />
                 {errors.startTime && (
                   <p className="text-red-500 text-sm">
                     {errors.startTime.message}
@@ -224,8 +234,8 @@ const LiveEventsPage = () => {
                 )}
               </div>
               <div className="space-y-2">
-                <Label>End Time</Label>
-                <Input type="time" {...register("endTime")} />
+                <Label>End Time *</Label>
+                <Input type="datetime-local" {...register("endTime")} />
                 {errors.endTime && (
                   <p className="text-red-500 text-sm">
                     {errors.endTime.message}
@@ -234,31 +244,42 @@ const LiveEventsPage = () => {
               </div>
             </div>
 
+            {/* YouTube URL */}
             <div className="space-y-2">
-              <Label>Cover Image</Label>
+              <Label>YouTube Live URL *</Label>
               <Input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
+                placeholder="https://youtube.com/live/..."
+                {...register("youtubeLiveUrl")}
               />
-              {errors.coverImage && (
+              {errors.youtubeLiveUrl && (
                 <p className="text-red-500 text-sm">
-                  {errors.coverImage.message}
+                  {errors.youtubeLiveUrl.message}
+                </p>
+              )}
+            </div>
+
+            {/* Thumbnail Upload */}
+            <div className="space-y-2">
+              <Label>Thumbnail *</Label>
+              <Input type="file" accept="image/*" onChange={handleImageUpload} />
+              {errors.thumbnail && (
+                <p className="text-red-500 text-sm">
+                  {errors.thumbnail.message}
                 </p>
               )}
               {preview && (
                 <img
                   src={preview}
-                  alt="Preview"
+                  alt="Thumbnail Preview"
                   className="mt-2 w-full h-40 object-cover rounded-md border"
                 />
               )}
             </div>
 
-            <DialogFooter className="mt-4 flex justify-end gap-2">
+            <DialogFooter>
               <Button
-                variant="outline"
                 type="button"
+                variant="outline"
                 onClick={() => setOpen(false)}
               >
                 Cancel
@@ -266,9 +287,12 @@ const LiveEventsPage = () => {
               <Button
                 type="submit"
                 className="bg-accent-orange hover:bg-orange-500"
-                disabled={isSubmitting}
+                disabled={isCreating}
               >
-                Save
+                {isCreating && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Save Event
               </Button>
             </DialogFooter>
           </form>
