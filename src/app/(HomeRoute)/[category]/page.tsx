@@ -69,7 +69,7 @@ const CategoryPage = () => {
     );
   }
 
-  // ✅ Find category dynamically from API
+  // Find category dynamically from API
   const categories = data?.data;
   const category = categories.find((c: any) => c.slug === categorySlug);
 
@@ -84,13 +84,13 @@ const CategoryPage = () => {
     );
   }
 
-  // ✅ Check if subcategory exists
+  // Check if subcategory exists
   const subcategory =
     category.subCategories?.find(
       (sub: any) => sub.subslug === subcategorySlug
     ) || null;
 
-  // ✅ Choose template (fallback to NewsTemplate if missing)
+  // Choose template (fallback to NewsTemplate if missing)
   const templateKey = (category.tamplate ?? "NewsTemplate") as TemplateKeys;
   const Template =
     templateMap[templateKey as TemplateKeys] || templateMap["NewsTemplate"];

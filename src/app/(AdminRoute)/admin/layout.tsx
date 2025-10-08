@@ -77,7 +77,7 @@ const navItems: NavItem[] = [
     href: "/admin/ai-management",
     icon: AiOutlineOpenAI,
     subItems: [
-      { title: "LLM Management", href: "/admin/llm-option" },
+      // { title: "LLM Management", href: "/admin/llm-option" },
       { title: "Laws & Regulation", href: "/admin/law-regulation" },
     ],
   },
