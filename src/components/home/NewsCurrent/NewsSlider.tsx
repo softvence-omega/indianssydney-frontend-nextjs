@@ -64,7 +64,7 @@ const NewsSlider: React.FC<NewsSliderProps> = ({ items }) => {
         onSlideChange={handleSlideChange} // Add slide change event
         className="w-full"
       >
-        {items.map((item) => (
+        {items?.map((item) => (
           <SwiperSlide key={item.id}>
             <NewsCard {...item} />
           </SwiperSlide>
