@@ -2,6 +2,18 @@ import { baseAPI } from "@/store/api/baseApi";
 
 export const articleApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
+
+    // Get Video Article For admin
+
+// getVideoArticle: build.query({
+//   query: () => ({
+//     url: "",
+//     method: "GET",
+//   }),
+//   providesTags: ["content"],
+// }),
+
+
     // content by category slug
 
     getContentByCategorySlug: build.query({
