@@ -1,10 +1,11 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
 import { Select } from "@headlessui/react"; // For dropdown filtering
+import { useGetNotificationsQuery } from "@/store/features/notifications/notification.api";
 
 // Sample notifications data
 const notificationsData = [
@@ -33,6 +34,8 @@ const notificationsData = [
 ];
 
 const Notifications = () => {
+  const { data, isLoading, isError } = useGetNotificationsQuery({});
+  console.log(data);
   const [selectedFilter, setSelectedFilter] = useState("All");
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -74,7 +77,7 @@ const Notifications = () => {
 
                   <div>
                     <p className="text-xs text-gray-500">
-                     {notification.status === "saved"
+                      {notification.status === "saved"
                         ? "You have saved this article"
                         : notification.status === "pending"
                         ? "You've submitted an article"
@@ -103,7 +106,6 @@ const Notifications = () => {
                         ? "Pending"
                         : "Rejected"}
                     </span>
-                  
                   </div>
                 </div>
               ))}
