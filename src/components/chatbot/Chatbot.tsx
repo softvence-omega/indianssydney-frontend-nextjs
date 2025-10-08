@@ -2,10 +2,10 @@
 import { BiSolidMessageSquareDetail } from "react-icons/bi";
 import React, { useState } from "react";
 import { X, User, Bot } from "lucide-react";
+import { usePostChatbotMutation } from "@/store/features/chatbot/chatbot.api";
 
-// Using a message icon SVG since BiSolidMessageSquareDetail isn't available
 const MessageIcon = () => (
- <BiSolidMessageSquareDetail className="w-5 h-5 text-white"/>
+  <BiSolidMessageSquareDetail className="w-5 h-5 text-white" />
 );
 
 const Chatbot = () => {
@@ -17,34 +17,76 @@ const Chatbot = () => {
       sender: "bot",
     },
   ]);
+  const [input, setInput] = useState("");
+  const [postChatbot, { isLoading }] = usePostChatbotMutation();
 
   const preMadeQuestions = [
-    "Your pre-made question will be here?",
-    "Your pre-made question will be here?",
-    "Your pre-made question will be here?",
-    "Your pre-made question will be here?",
-    "Your pre-made question will be here?",
+    "How to log into this site?",
+    "What are the features of this platform?",
+    "How can I reset my password?",
+    "Where can I find support?",
+    "What is the pricing model?",
   ];
 
-  const handleQuestionClick = (question:string) => {
-    // Add user message
+  const handleQuestionClick = async (question: string) => {
     const userMessage = {
       id: messages.length + 1,
       text: question,
       sender: "user",
     };
-
     setMessages((prev) => [...prev, userMessage]);
 
-    // Simulate bot response after a short delay
-    setTimeout(() => {
+    try {
+      const response = await postChatbot({ user_message: question }).unwrap();
+      console.log("Chatbot response", response);
       const botResponse = {
         id: messages.length + 2,
-        text: "Thank you for your question! I'm here to help you with any queries you might have.",
+        text:
+          response?.bot_response || "Sorry, I could not process your request.",
         sender: "bot",
       };
       setMessages((prev) => [...prev, botResponse]);
-    }, 1000);
+    } catch (error) {
+      console.error("Error in handleQuestionClick:", error);
+      const botResponse = {
+        id: messages.length + 2,
+        text: "Something went wrong. Please try again later.",
+        sender: "bot",
+      };
+      setMessages((prev) => [...prev, botResponse]);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!input.trim()) return;
+
+    const userMessage = {
+      id: messages.length + 1,
+      text: input,
+      sender: "user",
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+
+    try {
+      const response = await postChatbot({ user_message: input }).unwrap();
+      console.log("Chatbot response for custom input:", response);
+      const botResponse = {
+        id: messages.length + 2,
+        text:
+          response?.bot_response || "Sorry, I could not process your request.",
+        sender: "bot",
+      };
+      setMessages((prev) => [...prev, botResponse]);
+    } catch (error) {
+      console.error("Error in handleSendMessage:", error);
+      const botResponse = {
+        id: messages.length + 2,
+        text: "Something went wrong. Please try again later.",
+        sender: "bot",
+      };
+      setMessages((prev) => [...prev, botResponse]);
+    }
   };
 
   return (
@@ -57,7 +99,7 @@ const Chatbot = () => {
         <MessageIcon />
       </div>
 
-      {/* Chat Popup - positioned relative to the button */}
+      {/* Chat Popup */}
       {isOpen && (
         <div className="absolute bottom-16 right-0 max-w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col">
           {/* Header */}
@@ -125,11 +167,8 @@ const Chatbot = () => {
                   <Bot className="w-4 h-4 text-gray-400 mt-1" />
                 </div>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the standard
-                  dummy text ever since the 1500s, when an unknown printer
-                  took a galley of type and scrambled it to make a type
-                  specimen book.
+                  Ask me anything about the platform, and I’ll do my best to
+                  assist you!
                 </p>
               </div>
             )}
@@ -141,9 +180,16 @@ const Chatbot = () => {
               <input
                 type="text"
                 placeholder="Type your message..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                 className="flex-1 p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               />
-              <button className="p-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl transition-colors">
+              <button
+                onClick={handleSendMessage}
+                disabled={isLoading}
+                className="p-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl transition-colors disabled:opacity-50"
+              >
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -165,5 +211,4 @@ const Chatbot = () => {
     </div>
   );
 };
-
 export default Chatbot;

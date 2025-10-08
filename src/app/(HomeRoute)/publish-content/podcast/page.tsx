@@ -30,7 +30,7 @@ const VideoArticlePage = () => {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    contentType: "VIDEO",
+    contentType: "PODCAST",
     title: "",
     subTitle: "",
     categoryId: "",
@@ -136,11 +136,11 @@ const VideoArticlePage = () => {
       const res = await createNewArticle(payload).unwrap();
       console.log(res);
 
-      alert("Video Article published successfully!");
+      alert("Video Podcast published successfully!");
 
       // reset form
       setFormData({
-        contentType: "VIDEO",
+        contentType: "PODCAST",
         title: "",
         subTitle: "",
         categoryId: "",
