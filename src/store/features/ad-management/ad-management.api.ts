@@ -24,9 +24,10 @@ export const adManagementApi = baseAPI.injectEndpoints({
       invalidatesTags: ["ad-management"],
     }),
     updateAd: build.mutation({
-      query: (id: string) => ({
+      query: ({id, data}) => ({
         url: `/settings/ads/${id}`,
         method: "PATCH",
+        body: data,
       }),
       invalidatesTags: ["ad-management"],
     }),
