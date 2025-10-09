@@ -57,7 +57,7 @@ const BusinessInnovation = ({ data }: { data: any }) => {
                 key={data?.contents?.[2]?.id}
                 id={data?.contents?.[2]?.id}
                 image={data?.contents?.[2]?.image}
-                tag={data?.contents?.[2]?.id}
+                tag={data?.contents?.[2]?.tags?.[0]}
                 title={data?.contents?.[2]?.title}
                 description={data?.contents?.[2]?.paragraph}
                 author={data?.contents?.[2]?.fullName}
