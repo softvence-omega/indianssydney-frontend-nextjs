@@ -138,11 +138,11 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 </div>
 
                 {/* Hero Image */}
-                {formData.image && (
+                {formData?.image && (
                   <div className="mb-6">
                     <img
-                      src={formData.image}
-                      alt={formData.title}
+                      src={formData?.image}
+                      alt={formData?.title}
                       className="w-full h-64 md:h-80 lg:h-full object-cover"
                     />
                     {formData.imageCaption && (
@@ -154,7 +154,7 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 )}
 
                 {/* Audio */}
-                {formData.audio && (
+                {formData?.audio && (
                   <div className="mb-6">
                     <div className="w-full bg-white border border-gray-300 rounded-lg shadow-sm p-3 flex items-center gap-3">
                       <audio
@@ -167,14 +167,14 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 )}
 
                 {/* Paragraph */}
-                {formData.paragraph && (
+                {formData?.paragraph && (
                   <div className="leading-relaxed text-justify my-4">
                     {formData.paragraph}
                   </div>
                 )}
 
                 {/* Video */}
-                {formData.video && (
+                {formData?.video && (
                   <div className="my-3">
                     <video
                       controls
@@ -185,7 +185,7 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 )}
 
                 {/* YouTube Embed */}
-                {formData.youtubeVideoUrl && (
+                {formData?.youtubeVideoUrl && (
                   <div className="my-6">
                     <div className="aspect-w-16 aspect-h-9">
                       <iframe
