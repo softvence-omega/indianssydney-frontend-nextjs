@@ -2,22 +2,20 @@ import { baseAPI } from "@/store/api/baseApi";
 
 export const articleApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
-
     // Get Video Article For admin
 
-// getVideoArticle: build.query({
-//   query: () => ({
-//     url: "",
-//     method: "GET",
-//   }),
-//   providesTags: ["content"],
-// }),
-
+    // getVideoArticle: build.query({
+    //   query: () => ({
+    //     url: "",
+    //     method: "GET",
+    //   }),
+    //   providesTags: ["content"],
+    // }),
 
     // content by category slug
 
     getContentByCategorySlug: build.query({
-      query: (categorySlug: string) => ({
+      query: (categorySlug) => ({
         url: `/content/category/${categorySlug}`,
         method: "GET",
       }),
@@ -25,7 +23,7 @@ export const articleApi = baseAPI.injectEndpoints({
     }),
 
     geContentBySubCaregorySlug: build.query({
-      query: (ContentsubCategorySlug: string) => ({
+      query: (ContentsubCategorySlug) => ({
         url: `/content/subcategory/${ContentsubCategorySlug}`,
         method: "GET",
       }),

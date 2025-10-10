@@ -32,13 +32,13 @@ export const liveApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["live"],
     }),
-    updateLiveEvent: build.mutation<any, { id: string; data: any }>({
-      query: ({ id, data }) => ({
-        url: `/contentmanage/update-plan/${id}`,
+    updateLiveEvent: build.mutation({
+      query: ({ id, data }: { id: string; data: any }) => ({
+        url: `/live-events/${id}`,
         method: "PATCH",
-        body: data, // Send data directly as the body
+        body: data,
       }),
-      invalidatesTags: ["plan"],
+      invalidatesTags: ["live"],
     }),
 
     //  end

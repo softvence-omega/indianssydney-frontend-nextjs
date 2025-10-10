@@ -35,7 +35,6 @@ const Page = () => {
     setFormData((prev) => ({ ...prev, ...updatedFields }));
   };
 
-
   const handlePublish = async () => {
     const uploadedData = new FormData(); // Remove `as any`
     try {
@@ -50,6 +49,8 @@ const Page = () => {
       uploadedData.append("subTitle", formData.subTitle || "");
       uploadedData.append("categoryId", formData.categoryId || "");
       uploadedData.append("subCategoryId", formData.subCategoryId || "");
+      uploadedData.append("categorysslug", formData.categorysslug || "");
+      uploadedData.append("subcategorysslug", formData.subcategorysslug || "");
       uploadedData.append("imageCaption", formData.imageCaption || "");
       uploadedData.append("youtubeVideoUrl", formData.youtubeVideoUrl || "");
       uploadedData.append("shortQuote", formData.shortQuote || "");
