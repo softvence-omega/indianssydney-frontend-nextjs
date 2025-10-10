@@ -408,7 +408,7 @@ const NewsTemplate = ({
     isLoading: categorySlugLoading,
     isError: categorySlugError,
   } = useGetContentByCategorySlugQuery(
-    { categorySlug: category?.slug as string },
+    { categorySlug: category?.slug },
     { skip: !category?.slug }
   );
 
@@ -417,7 +417,7 @@ const NewsTemplate = ({
     isLoading: subCategorySlugLoading,
     isError: subCategorySlugError,
   } = useGeContentBySubCaregorySlugQuery(
-    { ContentsubCategorySlug: subcategorySlug as string },
+    { ContentsubCategorySlug: subcategorySlug },
     { skip: !subcategorySlug }
   );
 

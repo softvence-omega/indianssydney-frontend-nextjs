@@ -4,8 +4,16 @@ import UpcomingPodcasts from "@/app/(HomeRoute)/podcast-video/UpcomingPodcasts";
 import WeeklyMagazine from "@/app/(HomeRoute)/podcast-video/WeeklyMagazine";
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
+import { useGetAllLiveEventQuery } from "@/store/features/live-events/live.api";
 
 const LiveEventsPage = () => {
+  const {
+    data: liveEventData,
+    isLoading,
+    isError,
+    error,
+  } = useGetAllLiveEventQuery({});
+  console.log(liveEventData);
   return (
     <div>
       <CommonWrapper>
