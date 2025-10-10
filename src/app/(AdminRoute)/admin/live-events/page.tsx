@@ -92,7 +92,7 @@ const CreateEventModal = ({
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "tags",
+    name: "tags" as never,
   });
 
   const thumbnailValue = watch("thumbnail");
@@ -374,7 +374,7 @@ const EditEventModal = ({
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "tags",
+    name: "tags" as never,
   });
 
   const thumbnailValue = watch("thumbnail");
@@ -706,8 +706,8 @@ const DeleteConfirmationModal = ({
         <DialogDescription>
           {eventTitle ? (
             <>
-              Are you sure you want to delete the event{" "}
-              <strong>"{eventTitle}"</strong>? This action cannot be undone.
+              Are you sure you want to delete the event
+              <strong>{eventTitle}</strong>? This action cannot be undone.
             </>
           ) : (
             "Are you sure you want to delete this live event? This action cannot be undone."

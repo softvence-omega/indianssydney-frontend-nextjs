@@ -189,6 +189,7 @@ const CategoryManagement = () => {
       }
     } catch (error) {
       toast.error("Something went wrong", { id: toastId });
+      console.log(error)
     } finally {
       setOpenDeleteModal(false);
     }
