@@ -20,6 +20,7 @@ import { useRef, useState } from "react";
 import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
 import { AdditionalField, AdditionalFieldType } from "../types";
 import { useRouter } from "next/navigation";
+import { useTagGeneratorMutation } from "@/store/features/ai-content/ai-content.api";
 
 const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
   const { data } = useGetAllCategoryQuery({});
@@ -27,6 +28,8 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
   const [additionalFieldType, setAdditionalFieldType] = useState<
     AdditionalFieldType | ""
   >("");
+
+  const [generateTags] = useTagGeneratorMutation();
   const [uploadType, setUploadType] = useState<"image" | "audio" | "video">(
     "image"
   );

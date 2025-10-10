@@ -8,7 +8,6 @@ import { ArrowLeft, Share2, Eye, Calendar, User } from "lucide-react";
 
 import RecommendedArticles from "./RecommendedArticles";
 import Newsletter from "./Newsletter";
-import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
 import ReportModal from "./ReportModal";
 import { useState } from "react";
 import PrimaryButton from "../reusable/PrimaryButton";
@@ -18,9 +17,34 @@ interface VideoDetailsProps {
   onBack: () => void;
 }
 
+interface DetailsData {
+  id: string;
+  title: string;
+  subTitle?: string;
+  paragraph: string;
+  shortQuote?: string;
+  video?: string | null;
+  youtubeVideoUrl?: string | null;
+  image?: string | null;
+  imageCaption?: string;
+  tags: string[];
+  user: {
+    id: string;
+    fullName: string | null;
+    email: string;
+    profilePhoto: string | null;
+  };
+  views?: number;
+  createdAt: string;
+  additionalContents?: { id: string; type: string; value: string; order: number }[];
+  category?: { id: string; name: string; slug: string; tamplate: string };
+  subCategory?: { id: string; subname: string; subslug: string };
+}
+
 const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
-  const currentDate = new Date().toLocaleDateString();
+  const currentDate = new Date(formData.createdAt).toLocaleDateString();
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
   // Sort additional fields by order if it's an array
   const sortedAdditionalFields = formData.additionalContents
     ? formData.additionalContents.sort((a, b) => a.order - b.order)
@@ -103,16 +127,27 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                   </div>
                 </div>
 
-                {/* Hero Video */}
-                {formData.video && (
-                  <div className="mb-6">
+                {/* Video Section */}
+                <div className="mb-6">
+                  {formData.video ? (
                     <video
                       controls
                       className="w-full h-64 md:h-96 object-cover"
                       src={formData.video}
                     />
-                  </div>
-                )}
+                  ) : formData.youtubeVideoUrl ? (
+                    <iframe
+                      className="w-full h-64 md:h-96"
+                      src={`https://www.youtube.com/embed/${formData.youtubeVideoUrl.split("v=")[1]}`}
+                      title="YouTube video player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <p className="text-gray-500">No video available</p>
+                  )}
+                </div>
 
                 {/* Short Quote */}
                 {formData.shortQuote && (
@@ -150,25 +185,9 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                         </p>
                       );
                     case "image":
-                      return null;
-                    // (
-                    //   <img
-                    //     key={id}
-                    //     src={resolveSrc(value as File | string)}
-                    //     alt="Additional content"
-                    //     className="w-full h-64 md:h-80 object-cover my-5 rounded-lg"
-                    //   />
-                    // );
+                      return null; // Handle image if needed
                     case "video":
-                      return null;
-                    // (
-                    //   <video
-                    //     key={id}
-                    //     controls
-                    //     className="w-full h-64 md:h-96 object-cover my-5 rounded-lg"
-                    //     src={resolveSrc(value as File | string)}
-                    //   />
-                    // );
+                      return null; // Handle video if needed
                     default:
                       return null;
                   }
@@ -183,8 +202,8 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                     }}
                   />
                 </div>
-                {/* Related Topics */}
 
+                {/* Related Topics */}
                 <div>
                   <h2 className="mb-4 text-xl font-semibold">Related Topics</h2>
                   <div className="flex flex-wrap gap-2 mb-6">

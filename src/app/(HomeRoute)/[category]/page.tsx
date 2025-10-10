@@ -143,7 +143,7 @@ const templateMap: Record<TemplateKeys, React.FC<TemplateProps>> = {
 const excludedComponents: Record<string, any> = {
   // Example: "/category" → Custom component for that category
   // events: dynamic(() => import("@/components/home/PodcastVideo")),
-  "live-events": dynamic(() => import("@/components/home/PodcastVideo")),
+  "live-events": dynamic(() => import("@/components/home/LiveEventsPage")),
 
   // // Example: "/category/subcategory" → Custom component for that subcategory
   // "business/special": dynamic(

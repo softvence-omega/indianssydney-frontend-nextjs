@@ -16,38 +16,42 @@ const BusinessInnovation = ({ data }: { data: any }) => {
         <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-4">
           {/* 1 */}
           <div>
-            <NewsCardSecondary
-              key={data?.contents?.[0]?.id}
-              id={data?.contents?.[0]?.id}
-              title={data?.contents?.[0]?.title}
-              subTitle={data?.contents?.[0]?.subTitle}
-              paragraph={data?.contents?.[0]?.paragraph}
-              image={data?.contents?.[0]?.image} // fallback if no image
-              category={data?.contents?.[0]?.name}
-              author={data?.contents?.[0]?.fullName}
-              publishedAt={new Date(
-                data?.contents?.[0]?.createdAt
-              ).toLocaleDateString()}
-              layout="right"
-            />
+            {data?.contents?.[0] && (
+              <NewsCardSecondary
+                key={data?.contents?.[0]?.id}
+                id={data?.contents?.[0]?.id}
+                title={data?.contents?.[0]?.title}
+                subTitle={data?.contents?.[0]?.subTitle}
+                paragraph={data?.contents?.[0]?.paragraph}
+                image={data?.contents?.[0]?.image} // fallback if no image
+                category={data?.contents?.[0]?.name}
+                author={data?.contents?.[0]?.fullName}
+                publishedAt={new Date(
+                  data?.contents?.[0]?.createdAt
+                ).toLocaleDateString()}
+                layout="right"
+              />
+            )}
           </div>
 
           {/* 2 (bottom left) */}
           <div className=" lg:col-start-1 lg:row-start-2">
-            <NewsCardSecondary
-              key={data?.contents?.[1]?.id}
-              id={data?.contents?.[1]?.id}
-              title={data?.contents?.[1]?.title}
-              subTitle={data?.contents?.[1]?.subTitle}
-              paragraph={data?.contents?.[1]?.paragraph}
-              image={data?.contents?.[1]?.image} // fallback if no image
-              category={data?.contents?.[1]?.name}
-              author={data?.contents?.[1]?.fullName}
-              publishedAt={new Date(
-                data?.contents?.[1]?.createdAt
-              ).toLocaleDateString()}
-              layout="right"
-            />
+            {data?.contents?.[1] && (
+              <NewsCardSecondary
+                key={data?.contents?.[1]?.id}
+                id={data?.contents?.[1]?.id}
+                title={data?.contents?.[1]?.title}
+                subTitle={data?.contents?.[1]?.subTitle}
+                paragraph={data?.contents?.[1]?.paragraph}
+                image={data?.contents?.[1]?.image} // fallback if no image
+                category={data?.contents?.[1]?.name}
+                author={data?.contents?.[1]?.fullName}
+                publishedAt={new Date(
+                  data?.contents?.[1]?.createdAt
+                ).toLocaleDateString()}
+                layout="right"
+              />
+            )}
           </div>
 
           {/* 3 (tall center) */}
