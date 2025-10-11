@@ -385,7 +385,7 @@ const CategoryManagement = () => {
                   <SelectItem value="EducationTemplate">
                     Education Template
                   </SelectItem>
-                  <SelectItem value="FoodTemplate">Food Template</SelectItem>
+                  {/* <SelectItem value="FoodTemplate">Food Template</SelectItem> */}
                   <SelectItem value="BusinessTemplate">
                     Business Template
                   </SelectItem>

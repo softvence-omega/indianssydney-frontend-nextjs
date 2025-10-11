@@ -16,7 +16,12 @@ import { useGetHomePageDataQuery } from "@/store/features/article/article.api";
 const Page = () => {
   const { data, isLoading, isError } = useGetHomePageDataQuery({});
 
-  if (isLoading) return <div className="p-10 text-xl">Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="p-10 text-xl min-h-[50vh] text-center animate-pulse flex items-center justify-center">
+        Loading...
+      </div>
+    );
   if (isError)
     return (
       <div className="p-10 text-xl text-red-500">Error loading articles</div>
@@ -30,8 +35,9 @@ const Page = () => {
         <EducationCareer data={data?.data?.[2]} />
         <Ad />
         <SportsPlay data={data?.data?.[0]} />
-        <LifeLiving data={data?.data?.[0]} />
-        <ArtsMedia />
+        {/* <LifeLiving data={data?.data?.[0]} /> */}
+        {/* <ArtsMedia /> */}
+        <NewsCurrent data={data?.data?.[0]} />
         <PodcastVideo />
         <Ad />
         {/* <EnvironmentPlanet />
