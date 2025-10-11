@@ -24,7 +24,7 @@ export const articleApi = baseAPI.injectEndpoints({
 
     geContentBySubCaregorySlug: build.query({
       query: (ContentsubCategorySlug) => ({
-        url: `/content/subcategory/${ContentsubCategorySlug}`,
+        url: `/content/ubcategory/${ContentsubCategorySlug}`,
         method: "GET",
       }),
       providesTags: ["content"],
