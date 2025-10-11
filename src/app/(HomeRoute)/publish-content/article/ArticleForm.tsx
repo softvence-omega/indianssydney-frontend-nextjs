@@ -20,7 +20,11 @@ import { useRef, useState } from "react";
 import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
 import { AdditionalField, AdditionalFieldType } from "../types";
 import { useRouter } from "next/navigation";
-import { useTagGeneratorMutation } from "@/store/features/ai-content/ai-content.api";
+import {
+  useGenerateContentMutation,
+  useTagGeneratorMutation,
+} from "@/store/features/ai-content/ai-content.api";
+import { toast } from "sonner";
 
 const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
   const { data } = useGetAllCategoryQuery({});
@@ -30,6 +34,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
   >("");
 
   const [generateTags] = useTagGeneratorMutation();
+  const [generateContent] = useGenerateContentMutation();
   const [uploadType, setUploadType] = useState<"image" | "audio" | "video">(
     "image"
   );
@@ -41,7 +46,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
     (cat: any) => cat.id === formData.categoryId
   );
   const router = useRouter();
-  const predefinedTags = ["React", "JavaScript", "TypeScript", "Node.js", "AI"];
+  const predefinedTags = ["News", "Business"];
   const additionalFieldTypes: AdditionalFieldType[] = [
     "paragraph",
     "shortQuote",
@@ -170,6 +175,61 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
     }
   };
 
+  const handleGenerateTags = async () => {
+    if (!formData.categorysslug || !formData.subcategorysslug) {
+      toast.error("Please select a category and subcategory.");
+      return;
+    }
+    try {
+      toast.info("Generating tags..."); // Show loading toast
+      const data = {
+        category: formData.categorysslug,
+        subcategory: formData.subcategorysslug,
+      };
+      const result = await generateTags(data).unwrap();
+      if (result?.tags) {
+        const newTags = result.tags.filter(
+          (tag: string) => !formData.tags.includes(tag)
+        );
+        onUpdate({ tags: [...formData.tags, ...newTags] });
+        toast.dismiss(); // Dismiss loading toast
+        toast.success("Tags generated successfully!");
+      } else {
+        toast.dismiss();
+        toast.error("No tags returned from the API.");
+      }
+    } catch (error) {
+      console.error("Error generating tags:", error);
+      toast.dismiss();
+      toast.error("Failed to generate tags. Please try again.");
+    }
+  };
+
+  const handleGenerateContent = async () => {
+    if (!formData.paragraph) {
+      toast.error("Please write something in paragraph");
+      return;
+    }
+    try {
+      toast.info("Generating content...");
+      const data = {
+        paragraph: formData.paragraph,
+      };
+      const result = await generateContent(data).unwrap();
+      if (result?.generatedContent) {
+        onUpdate({ paragraph: result.generatedContent });
+        toast.dismiss();
+        toast.success("Paragraph generated successfully!");
+      } else {
+        toast.dismiss();
+        toast.error("No content returned from the API.");
+      }
+    } catch (error) {
+      console.error("Error generating content:", error);
+      toast.dismiss();
+      toast.error("Failed to generate content. Please try again.");
+    }
+  };
   return (
     <div className="min-h-screen">
       <div className="max-w-4xl mx-auto">
@@ -380,8 +440,16 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
                 onChange={(e) => onUpdate({ paragraph: e.target.value })}
               />
             </div>
-            <div className="flex justify-end mt-2">
+            <div className="flex justify-end mt-2 gap-4">
               <Button
+                onClick={handleGenerateContent}
+                size="sm"
+                className="bg-brick-red text-white text-sm rounded-none"
+              >
+                🤖 Generate content by AI
+              </Button>
+              <Button
+                onClick={handleGenerateTags}
                 size="sm"
                 className="bg-gray-800 text-white text-sm rounded-none"
               >
