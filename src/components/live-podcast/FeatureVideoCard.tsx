@@ -9,6 +9,7 @@ interface FeatureVideoCardProps {
   youtubeVideoUrl?: string;
   category?: string;
   title?: string;
+  image?: string;
   description?: string;
   createdAt?: string;
   contentviews?: number;

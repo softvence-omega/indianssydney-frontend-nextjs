@@ -103,7 +103,7 @@ const EditPodcast = () => {
     try {
       const uploadedUrl = await uploadFileInAws(file);
       if (!uploadedUrl) throw new Error("Upload failed");
-      setFormData((p) => ({ ...p, video: uploadedUrl }));
+      setFormData((p: any) => ({ ...p, video: uploadedUrl }));
       toast.success("Video uploaded successfully!");
     } catch (err) {
       toast.error("Video upload failed");
@@ -146,14 +146,14 @@ const EditPodcast = () => {
         payload.append("youtubeVideoUrl", videoLink);
       }
 
-      if (formData.video instanceof File) {
-        payload.append("video", formData.video);
+      if ((formData?.video as any) instanceof File) {
+        payload.append("video", formData?.video as any);
       } else if (typeof formData.video === "string") {
         payload.append("video", formData.video);
       }
 
-      if (formData.videoThumbnail instanceof File) {
-        payload.append("videoThumbnail", formData.videoThumbnail);
+      if ((formData?.videoThumbnail as any) instanceof File) {
+        payload.append("videoThumbnail", formData?.videoThumbnail as any);
       }
 
       const result = await updateVideo({ id, data: payload });

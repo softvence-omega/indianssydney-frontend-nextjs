@@ -88,11 +88,9 @@ const RelatedPodcasts = () => {
             key={index}
             image={card.image}
             category={card.category}
-            timeAgo={card.timeAgo}
             title={card.title}
             description={card.description}
             readTime={card.readTime}
-            views={card.views}
           />
         ))}
       </div>
