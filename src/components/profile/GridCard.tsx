@@ -24,9 +24,7 @@ const GridCard: React.FC<GridCardProps> = ({ item }) => {
   const handleViewDetails = (contentType: string) => {
     contentType === "ARTICLE"
       ? router.push(`/details/article/${item.id}`)
-      : contentType === "VIDEO"
-      ? router.push(`/details/video/${item.id}`)
-      : router.push(`/details/podcast/${item.id}`);
+      : router.push(`/details/video/${item.id}`);
   };
 
   return (
@@ -57,7 +55,7 @@ const GridCard: React.FC<GridCardProps> = ({ item }) => {
               {item.status}
             </span>
           </div>
-          <div onClick={()=>handleViewDetails(item.contentType)}>
+          <div onClick={() => handleViewDetails(item.contentType)}>
             <h2 className="text-lg md:text-xl font-semibold mb-2 font-playfair line-clamp-2">
               {item.title}
             </h2>

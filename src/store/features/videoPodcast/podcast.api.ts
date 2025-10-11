@@ -25,6 +25,14 @@ export const podcastApi = baseAPI.injectEndpoints({
       }),
       providesTags: ["podcast"],
     }),
+
+    getAllPodcasts: build.query({
+      query: () => ({
+        url: "/content/contentType-podcast",
+        method: "GET",
+      }),
+      providesTags: ["podcast"],
+    }),
   }),
 });
 
@@ -32,4 +40,5 @@ export const {
   useGetPodcastsApprovedQuery,
   useGetPodcastsPendingQuery,
   useGetPodcastsDeclinedQuery,
+  useGetAllPodcastsQuery,
 } = podcastApi;

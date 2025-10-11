@@ -25,11 +25,21 @@ export const videoApi = baseAPI.injectEndpoints({
       }),
       providesTags: ["content"],
     }),
+
+    getAllVideos: build.query({
+      query: () => ({
+        url: "/content/contentType-video",
+        method: "GET",
+      }),
+      providesTags: ["content"],
+    })
   }),
+
 });
 
 export const {
   useGetVideosApprovedQuery,
   useGetVideosPendingQuery,
   useGetVideosDeclinedQuery,
+  useGetAllVideosQuery
 } = videoApi;

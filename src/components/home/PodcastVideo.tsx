@@ -1,4 +1,5 @@
 import LivePodcasts from "@/app/(HomeRoute)/podcast-video/LivePodcasts";
+import Podcasts from "@/app/(HomeRoute)/podcast-video/Podcasts";
 import TopStories from "@/app/(HomeRoute)/podcast-video/TopStories";
 import UpcomingPodcasts from "@/app/(HomeRoute)/podcast-video/UpcomingPodcasts";
 import WeeklyMagazine from "@/app/(HomeRoute)/podcast-video/WeeklyMagazine";
@@ -10,17 +11,20 @@ const PodcastVideo = () => {
     <div>
       <CommonWrapper>
         <CommonPadding>
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          {/* <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
             <div className="col-span-3">
               <LivePodcasts />
             </div>
             <UpcomingPodcasts />
-          </div>
+          </div> */}
           <div className="my-6">
             <WeeklyMagazine />
           </div>
+          <div className="my-6">
+            <Podcasts />
+          </div>
           <div className="mb-6">
-            <TopStories />
+            {/* <TopStories /> */}
           </div>
         </CommonPadding>
       </CommonWrapper>
