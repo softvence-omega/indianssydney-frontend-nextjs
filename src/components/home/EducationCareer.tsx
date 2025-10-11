@@ -1,8 +1,7 @@
 import CommonPadding from "@/common/CommonPadding";
+import NewsCard3 from "@/components/reusable/NewsCard3";
 import NewsCardSecondary from "@/components/reusable/NewsCardSecondary";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
-import { newsItems } from "@/utils/demoData";
-import NewsCard3 from "@/components/reusable/NewsCard3";
 
 const EducationCareer = ({ data }: { data: any }) => {
   return (
@@ -45,13 +44,20 @@ const EducationCareer = ({ data }: { data: any }) => {
             </div>
 
             <div className="hidden lg:grid grid-cols-2 lg:grid-cols-1 gap-4">
-              {newsItems.slice(0, 4).map((item) => (
-                <NewsCardSecondary
-                  key={item.id}
-                  {...item}
-                  imageHeight="lg:h-[140px]"
-                />
-              ))}
+              {data?.contents?.slice(0, 4)?.map((item: any) => {
+                console.log(item)
+                return (
+                  <NewsCardSecondary
+                    key={item.id}
+                    id={item.id}
+                    image={item.image || "/placeholder.png"}
+                    title={item.title}
+                    category={item.category?.name}
+                    author={item.user?.fullName || "Unknown"}
+                    imageHeight="lg:h-[140px]"
+                  />
+                )
+              })}
             </div>
           </div>
         </div>

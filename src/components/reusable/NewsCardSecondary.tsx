@@ -41,9 +41,8 @@ const NewsCardSecondary: React.FC<NewsCardProps> = ({
   return (
     <Link
       href={`/details/article/${id}`}
-      className={`grid md:grid-cols-2 gap-6 ${
-        layout === "right" ? "md:flex-row-reverse" : "md:flex-row"
-      }`}
+      className={`grid md:grid-cols-2 gap-6 ${layout === "right" ? "md:flex-row-reverse" : "md:flex-row"
+        }`}
     >
       {/* Image Section */}
       <div className={`w-full h-[140px] ${imageHeight} overflow-hidden`}>
