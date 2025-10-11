@@ -44,7 +44,7 @@ const BusinessTemplate = ({
     isLoading: categorySlugLoading,
     isError: categorySlugError,
   } = useGetContentByCategorySlugQuery(
-    { categorySlug: category?.slug },
+     category?.slug as string || "",
     { skip: !category?.slug }
   );
 
