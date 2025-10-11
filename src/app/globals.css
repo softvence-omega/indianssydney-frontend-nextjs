@@ -205,3 +205,103 @@
 .font-playfair {
   font-family: var(--font-playfair);
 }
+
+
+/* Container card */
+#google_translate_element {
+  --card-bg: #efe9dc;     /* beige */
+  --muted: #6b6b6b;       /* muted label color */
+  --text: #222222;        /* main text */
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  display: inline-block;
+  background: var(--card-bg);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 10px 12px;
+  width: 150px;           /* match screenshot width */
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  box-sizing: border-box;
+}
+
+/* Small "Select Language" label above (visual only) */
+#google_translate_element::before{
+  content: "Select Language";
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
+}
+
+/* Remove ugly default gadget background/border */
+#google_translate_element .goog-te-gadget,
+#google_translate_element .goog-te-gadget-simple {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Make the menu/value area look like a compact row */
+#google_translate_element .goog-te-menu-value {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+  user-select: none;
+}
+
+/* Hide Google logo image but keep "Powered by" text visible */
+#google_translate_element .goog-logo-link img {
+  display: none !important;
+}
+
+/* Style the small "Powered by Google Translate" line */
+#google_translate_element .goog-te-gadget .goog-logo-link {
+  display: block;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  text-decoration: none;
+  opacity: 0.95;
+}
+
+/* Try to present a flag-like square if Google's widget uses an inline icon */
+#google_translate_element .goog-te-gadget-icon,
+#google_translate_element .goog-te-gadget-simple .goog-te-gadget-icon {
+  width: 28px !important;
+  height: 18px !important;
+  display: inline-block !important;
+  background-size: cover !important;
+  background-position: center !important;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  flex: 0 0 auto;
+}
+
+/* If the widget uses spans for language code, make them look like the screenshot */
+#google_translate_element .goog-te-menu-value span {
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* Tweak the built-in select element (if present) to be invisible but functional */
+#google_translate_element select.goog-te-combo {
+  opacity: 0;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* small responsive adjustment */
+@media (max-width: 360px){
+  #google_translate_element { width: 130px; padding: 8px 10px; }
+  #google_translate_element .goog-te-gadget-icon { width: 24px; height:14px; }
+}
