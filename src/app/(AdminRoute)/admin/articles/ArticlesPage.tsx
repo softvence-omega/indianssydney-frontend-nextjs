@@ -42,12 +42,22 @@ const ArticlesPage = () => {
     }
   };
 
-  const renderArticles = (articles: any[], isLoading: boolean) => {
-    if (isLoading) return <SkeletonLoader />;
-    if (!articles?.length) return <p>No articles found.</p>;
-    console.log(articles);
+ const renderArticles = (articles: any[], isLoading: boolean) => {
+  if (isLoading) return <SkeletonLoader />;
+  if (!articles?.length) return <p>No articles found.</p>;
 
-    return articles.map((article) => (
+  return articles.map((article) => {
+    let parsedCompareResult = null;
+
+    if (article.compareResult) {
+      try {
+        parsedCompareResult = JSON.parse(article.compareResult);
+      } catch (error) {
+        console.error("Error parsing compareResult:", error);
+      }
+    }
+
+    return (
       <ArticleCard
         key={article.id}
         article={{
@@ -62,11 +72,14 @@ const ArticlesPage = () => {
             positives: [],
             negatives: [],
           },
+          compareResult: parsedCompareResult, // 👈 add parsed result here
         }}
         onStatusChange={handleStatusChange}
       />
-    ));
-  };
+    );
+  });
+};
+
 
   return (
     <div>
