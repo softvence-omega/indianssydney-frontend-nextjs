@@ -2,10 +2,34 @@ import { baseAPI } from "@/store/api/baseApi";
 
 export const videoApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
-    getVideos: build.query({
-      query: () => "/content/contentType-video",
+    getVideosApproved: build.query({
+      query: () => ({
+        url: "/contentmanage/approved-by-type-superadmin",
+        method: "GET",
+      }),
+      providesTags: ["content"],
+    }),
+
+    getVideosPending: build.query({
+      query: () => ({
+        url: "/contentmanage/pending-by-type-superadmin",
+        method: "GET",
+      }),
+      providesTags: ["content"],
+    }),
+
+    getVideosDeclined: build.query({
+      query: () => ({
+        url: "/contentmanage/declined-by-type-superadmin",
+        method: "GET",
+      }),
+      providesTags: ["content"],
     }),
   }),
 });
 
-export const { useGetVideosQuery } = videoApi;
+export const {
+  useGetVideosApprovedQuery,
+  useGetVideosPendingQuery,
+  useGetVideosDeclinedQuery,
+} = videoApi;
