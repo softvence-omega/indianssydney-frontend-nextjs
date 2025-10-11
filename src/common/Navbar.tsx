@@ -154,7 +154,7 @@ const Navbar: React.FC = () => {
           {/* Right actions */}
           <div className="flex items-center space-x-2 md:space-x-3 order-3 md:order-none flex-shrink-0">
             {/* Language Switch - Hidden on mobile, visible on medium+ */}
-            <div className="relative hidden md:block">
+            <div id="google_translate_element" className="relative hidden md:block">
               <select
                 value={selectedLang}
                 onChange={(e) => setSelectedLang(e.target.value)}
@@ -167,8 +167,7 @@ const Navbar: React.FC = () => {
                   backgroundPosition: "left center",
                 }}
               >
-                {languages.map((lang) => (
-                  <option key={lang.code} value={lang.code}>
+                {languages.map((lang) => ( <option key={lang.code} value={lang.code}>
                     {lang.code}
                   </option>
                 ))}
