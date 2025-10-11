@@ -57,7 +57,7 @@ const BusinessTemplate = ({
     isLoading: subCategorySlugLoading,
     isError: subCategorySlugError,
   } = useGeContentBySubCaregorySlugQuery(
-    { ContentsubCategorySlug: subcategorySlug as string },
+     subcategorySlug as string || "",
     { skip: !subcategorySlug }
   );
   // ✅ Handle loading/error

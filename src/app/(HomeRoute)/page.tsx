@@ -40,11 +40,12 @@ const Page = () => {
         <ArtsMedia />
         <PodcastVideo />
         <Ad />
-        <EnvironmentPlanet />
+        {/* <EnvironmentPlanet />
         <FoodFlavours />
         <CultureIdentity />
         <VoicesPerspective />
-        <Recommendation />
+        */}
+        <Recommendation /> 
         <div className=" bottom-4 right-4 fixed z-50">
           <Chatbot />
         </div>
