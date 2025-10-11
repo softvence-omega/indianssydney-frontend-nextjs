@@ -19,7 +19,6 @@ const GridCard: React.FC<GridCardProps> = ({ item }) => {
       ? router.push(`/edit-video/${item.id}`)
       : router.push(`/edit-podcast/${item.id}`);
     // router.push(`/edit-article/${item.id}`);
-    console.log(item);
   };
 
   const handleViewDetails = (contentType: string) => {

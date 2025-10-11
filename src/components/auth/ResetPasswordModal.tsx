@@ -53,7 +53,6 @@ const ResetPasswordModal: React.FC<SignUpModalProps> = ({
 
   const onSubmit = (data: ResetPasswordType) => {
     toast.success("Registered Successfully!");
-    console.log("✅ Registration Data:", data);
     reset();
   };
 

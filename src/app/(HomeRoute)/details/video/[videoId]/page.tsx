@@ -51,8 +51,6 @@ export default function VideoDetailPage({
     );
   }
 
-  console.log(video?.data);
-
   // Pass the found article to the ArticleDetails component
   return <VideoDetails formData={video?.data} onBack={() => router.back()} />;
 }

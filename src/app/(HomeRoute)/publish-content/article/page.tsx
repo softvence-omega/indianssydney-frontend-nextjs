@@ -80,11 +80,10 @@ const Page = () => {
             : formData.additionalContents
         );
       }
-      console.log(uploadedData);
+
       // Call the API
       const result = await createNewArticle(uploadedData);
-      console.log("API Response:", result);
-      console.log("Form Data:", formData);
+
 
       // Reset form and update step
       toast.success("Content published successfully!");
@@ -101,7 +100,7 @@ const Page = () => {
           formData={formData}
           onUpdate={handleUpdate}
           onSubmit={() => setStep(2)}
-          onBack={() => console.log("Go back to category page")}
+          
         />
       )}
 

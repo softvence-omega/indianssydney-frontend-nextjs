@@ -51,7 +51,6 @@ const UserManagement = () => {
         id: editUserId as string,
         data: { role: newRole },
       }).unwrap()
-      console.log(res)
       if (res?.message) {
         toast.success("Role updated successfully", { id: toastId });
       }

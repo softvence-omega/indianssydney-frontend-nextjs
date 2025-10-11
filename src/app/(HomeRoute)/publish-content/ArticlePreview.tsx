@@ -23,8 +23,6 @@ const ArticlePreview = ({ formData, onBack, onPublish }: ArticlePreviewProps) =>
   };
 
   // Debugging: Log formData.tags to check its value
-  console.log("formData.tags in ArticlePreview:", formData.tags);
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto p-4">

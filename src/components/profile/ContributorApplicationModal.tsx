@@ -36,7 +36,6 @@ const ContributorApplicationModal: React.FC<ContributorModalProps> = ({
       const payload = {
         about: data.about,
       }
-      console.log(payload)
       const result = await applyOnServer(payload).unwrap()
       if (result) {
         toast.success("Applied Successfully", { id })
