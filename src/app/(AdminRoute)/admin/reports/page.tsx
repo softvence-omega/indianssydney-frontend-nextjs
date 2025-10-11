@@ -112,9 +112,7 @@ const ReportsListPage = () => {
                     </Link>
                     <Button
                       variant="destructive"
-                      size="sm"
-                      onClick={() => console.log("Delete:", report.id)}
-                    >
+                      size="sm">
                       Delete
                     </Button>
                   </td>
@@ -174,8 +172,7 @@ const ReportsListPage = () => {
               <Button
                 variant="destructive"
                 className="flex-1"
-                onClick={() => console.log("Delete:", report.id)}
-              >
+                 >
                 Delete
               </Button>
             </div>

@@ -54,8 +54,6 @@ export default function ArticleDetailPage({
     );
   }
 
-  console.log(article.data);
-
   return (
     <ArticleDetails formData={article?.data} onBack={() => router.back()} />
   );

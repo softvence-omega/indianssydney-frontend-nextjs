@@ -13,7 +13,6 @@ const LiveEventsPage = () => {
     isError,
     error,
   } = useGetAllLiveEventQuery({});
-  console.log(liveEventData);
   return (
     <div>
       <CommonWrapper>

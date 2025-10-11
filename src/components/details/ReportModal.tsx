@@ -57,7 +57,6 @@ const ReportModal = ({ isOpen, onClose, contentId }: ReportModalProps) => {
       screenshots.forEach((file) => formData.append("files", file));
 
       const res = await createReport(formData).unwrap();
-      console.log("✅ Report API Response:", res);
 
       toast.success("Report submitted successfully!");
       onClose();
@@ -67,7 +66,6 @@ const ReportModal = ({ isOpen, onClose, contentId }: ReportModalProps) => {
       setScreenshots([]);
       setPreviewUrls([]);
     } catch (error: any) {
-      console.error("❌ Report submission failed:", error);
       toast.error(error?.data?.message || "Failed to submit report");
     }
   };

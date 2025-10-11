@@ -25,7 +25,6 @@ const ITEMS_PER_PAGE_LIST = 5;
 
 const MyContents = () => {
   const { data, isLoading, isFetching } = useGetMyArticlesQuery({});
-  console.log(data);
   const user = useSelector((state: RootState) => state?.auth?.user);
 
   const [activeTab, setActiveTab] = useState<TabKey>("my");

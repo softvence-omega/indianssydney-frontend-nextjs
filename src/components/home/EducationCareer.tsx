@@ -5,7 +5,6 @@ import { newsItems } from "@/utils/demoData";
 import NewsCard3 from "@/components/reusable/NewsCard3";
 
 const EducationCareer = ({ data }: { data: any }) => {
-  console.log("Businesess Innovation", data);
   return (
     <div>
       <CommonPadding>

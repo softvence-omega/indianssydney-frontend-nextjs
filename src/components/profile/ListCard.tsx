@@ -24,7 +24,6 @@ const ListCard: React.FC<ListCardProps> = ({ item }) => {
 
   const handleRemove = () => {
     toast.success("Article removed from bookmarks!");
-    console.log(`Removed article with id: ${item.id}`);
   };
 
   const handleEdit = () => {

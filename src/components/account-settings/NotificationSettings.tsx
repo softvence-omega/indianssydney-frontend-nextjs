@@ -27,7 +27,6 @@ const NotificationSettings = () => {
   // Save handler
   const handleSave = () => {
     toast.success("Changes saved!");
-    console.log("Saved settings:", settings);
   };
 
   return (

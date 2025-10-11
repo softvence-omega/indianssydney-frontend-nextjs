@@ -35,7 +35,6 @@ const notificationsData = [
 
 const Notifications = () => {
   const { data, isLoading, isError } = useGetNotificationsQuery({});
-  console.log(data);
   const [selectedFilter, setSelectedFilter] = useState("All");
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

@@ -146,11 +146,8 @@ const VideoArticlePage = () => {
         payload.append("videoThumbnail", finalPayload.videoThumbnail);
       }
 
-      // Log FormData entries for debugging
-      console.log("FormData entries:", Array.from(payload.entries()));
-
       const res = await createNewArticle(payload).unwrap();
-      console.log(res);
+
 
       alert("Video Podcast published successfully!");
 

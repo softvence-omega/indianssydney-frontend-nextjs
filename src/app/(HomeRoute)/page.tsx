@@ -1,20 +1,16 @@
 "use client";
 
 import CommonWrapper from "@/common/CommonWrapper";
+import Chatbot from "@/components/chatbot/Chatbot";
 import ArtsMedia from "@/components/home/ArtsMedia";
 import BusinessInnovation from "@/components/home/BusinessInnovation";
 import EducationCareer from "@/components/home/EducationCareer";
+import LifeLiving from "@/components/home/LifeLiving";
 import NewsCurrent from "@/components/home/NewsCurrent/NewsCurrent";
+import PodcastVideo from "@/components/home/PodcastVideo";
+import Recommendation from "@/components/home/Recommendation";
 import SportsPlay from "@/components/home/SportsPlay";
 import Ad from "@/components/reusable/Ad";
-import Recommendation from "@/components/home/Recommendation";
-import EnvironmentPlanet from "@/components/home/EnvironmentPlanet copy";
-import LifeLiving from "@/components/home/LifeLiving";
-import PodcastVideo from "@/components/home/PodcastVideo";
-import FoodFlavours from "@/components/home/FoodFlavours";
-import CultureIdentity from "@/components/home/CultureIdentity";
-import VoicesPerspective from "@/components/home/VoicesPerspective";
-import Chatbot from "@/components/chatbot/Chatbot";
 import { useGetHomePageDataQuery } from "@/store/features/article/article.api";
 
 const Page = () => {
@@ -26,8 +22,6 @@ const Page = () => {
       <div className="p-10 text-xl text-red-500">Error loading articles</div>
     );
 
-  console.log("home page data", data);
-
   return (
     <div>
       <CommonWrapper>
@@ -35,8 +29,8 @@ const Page = () => {
         <BusinessInnovation data={data?.data?.[1]} />
         <EducationCareer data={data?.data?.[2]} />
         <Ad />
-        <SportsPlay />
-        <LifeLiving />
+        <SportsPlay data={data?.data?.[0]} />
+        <LifeLiving data={data?.data?.[0]} />
         <ArtsMedia />
         <PodcastVideo />
         <Ad />
@@ -45,7 +39,7 @@ const Page = () => {
         <CultureIdentity />
         <VoicesPerspective />
         */}
-        <Recommendation /> 
+        <Recommendation />
         <div className=" bottom-4 right-4 fixed z-50">
           <Chatbot />
         </div>

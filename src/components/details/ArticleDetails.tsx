@@ -40,7 +40,6 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
     try {
       const res = await postBookmark(contentId).unwrap();
       toast.success("Added to bookmark!");
-      console.log("Bookmark success:", res);
     } catch (error: any) {
       console.error("Bookmark error:", error);
       toast.error(error?.data?.message || "Failed to add bookmark");
