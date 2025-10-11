@@ -20,13 +20,11 @@ const PlanCard: React.FC<PlanCardProps> = ({
   features,
   buttonText,
 }) => {
-  console.log("plan id", id);
 
   const [createPlan] = useCreatePaymentMutation();
   const handleClick = async () => {
     try {
       const res = await createPlan({ planId: id }).unwrap();
-      console.log("✅ Payment response:", res);
 
       if (res?.url) {
         // Redirect the user to the Stripe Checkout page

@@ -861,7 +861,6 @@ const EditArticle = () => {
     setUploading(true);
     try {
       const res = await uploadFileInAws(file);
-      console.log(res);
       if (!res) throw new Error("Upload failed");
       handleAdditionalFieldUpdate(index, res);
       toast.success(`${file.type.split("/")[0]} uploaded successfully!`);

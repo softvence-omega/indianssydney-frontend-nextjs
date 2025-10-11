@@ -1,16 +1,16 @@
 import CommonPadding from "@/common/CommonPadding";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
-import { newsItems } from "@/utils/demoData";
 import NewsCard4 from "../reusable/NewsCard4";
 
-const SportsPlay = () => {
+const SportsPlay = ({ data }: { data: any }) => {
+  console.log(data)
   return (
     <div>
       <CommonPadding>
         <div className="border-b border-slight-border">
-          <PrimaryHeading title="Sports & Play" seeAllRoute="/sports-play" />
+          <PrimaryHeading title={data?.category?.name} seeAllRoute={data?.category?.slug} />
           <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-2 lg:grid-cols-3 gap-4">
-            {newsItems.slice(1, 4).map((item) => (
+            {data?.contents?.slice(1, 4).map((item:any) => (
               <NewsCard4 key={item.id} {...item} />
             ))}
           </div>

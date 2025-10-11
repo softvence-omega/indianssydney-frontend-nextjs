@@ -24,12 +24,10 @@ export default async function uploadFileInAws(file: File) {
     });
 
     upload.on("httpUploadProgress", (progress) => {
-      console.log("Progress:", progress);
     });
 
     const result = await upload.done();
     return result?.Location;
   } catch (err) {
-    console.log("Upload Error:", err);
   }
 }

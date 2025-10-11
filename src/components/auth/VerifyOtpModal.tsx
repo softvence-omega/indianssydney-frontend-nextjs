@@ -29,7 +29,6 @@ const VerifyOtpModal: React.FC<VerifyOtpModalProps> = ({
   const handleVerify = async () => {
     try {
       const resetToken = localStorage.getItem("resetToken");
-      console.log(resetToken);
       if (!resetToken) throw new Error("Missing resetToken");
       if (!email) throw new Error("Missing email");
 

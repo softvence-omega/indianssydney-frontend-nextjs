@@ -35,7 +35,6 @@ type NewsSliderProps = {
 const NewsSlider: React.FC<NewsSliderProps> = ({ items }) => {
   const [isFirstSlide, setIsFirstSlide] = useState(true);
   const [isLastSlide, setIsLastSlide] = useState(false);
-  console.log("Inside Swipper", items);
 
   // Correct type for swiper parameter
   const handleSlideChange = (swiper: SwiperType) => {

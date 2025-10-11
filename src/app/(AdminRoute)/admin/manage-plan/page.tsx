@@ -58,10 +58,8 @@ const ManagePlan: React.FC = () => {
         shortBio: data.shortBio,
         features: data.facilities,
       };
-      console.log("Sending payload:", payload);
 
       if (editingPayment?.id) {
-        console.log("Updating plan with ID:", editingPayment.id);
         await updatePlan({ id: editingPayment.id, data: payload }).unwrap();
         toast.success("Plan updated successfully");
         refetch(); // Force refetch to update UI

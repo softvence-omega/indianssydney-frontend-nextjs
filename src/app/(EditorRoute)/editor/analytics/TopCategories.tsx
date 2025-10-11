@@ -12,9 +12,6 @@ interface Category {
 
 const TopCategories = () => {
   const { data, isLoading, isError } = useGetTopCategoryQuery({});
-
-  console.log("Top categories data:", data);
-
   if (isLoading)
     return (
       <div className="bg-white rounded-lg p-4 lg:p-6 shadow text-gray-500">

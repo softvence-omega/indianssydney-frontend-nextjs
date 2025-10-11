@@ -37,13 +37,11 @@ export default function PublishContent() {
   const handleCategorySelect = (contentType: ContentType) => {
     setFormData((prev) => ({ ...prev, contentType }));
     setStep("form");
-    console.log("Selected content type:", contentType);
   };
 
   // Handle form updates
   const handleUpdate = (updates: Partial<UploadFormData>) => {
     setFormData((prev) => ({ ...prev, ...updates }));
-    console.log("Form updated:", updates);
   };
 
   // Handle submit (go to preview)
@@ -95,11 +93,10 @@ export default function PublishContent() {
             : formData.additionalContents
         );
       }
-      console.log(uploadedData);
+
       // Call the API
       const result = await createNewArticle(uploadedData);
-      console.log("API Response:", result);
-      console.log("Form Data:", formData);
+
 
       // Reset form and update step
       setStep("submitted");

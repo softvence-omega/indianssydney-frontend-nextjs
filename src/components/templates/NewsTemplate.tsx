@@ -51,8 +51,6 @@ const NewsTemplate = ({
     { skip: !subcategorySlug }
   );
 
-  console.log("subCategoryData:", subCategoryData); // ✅ Debug
-
   if (categorySlugLoading || subCategorySlugLoading)
     return (
       <CommonWrapper>

@@ -48,9 +48,6 @@ const BusinessTemplate = ({
     { skip: !category?.slug }
   );
 
-  console.log(category?.slug ,categoryData);
-
-
   // ✅ Fetch Subcategory Data
   const {
     data: subCategoryData,
