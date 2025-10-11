@@ -2,6 +2,13 @@ import { baseAPI } from "@/store/api/baseApi";
 
 export const adminReportApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
+    createReport: build.mutation({
+      query: (data) => ({
+        url: "/user/create-report",
+        method: "POST",
+        body: data,
+      }),
+    }),
     getAllReports: build.query({
       query: () => ({
         url: "/contentmanage/reports",
@@ -13,4 +20,5 @@ export const adminReportApi = baseAPI.injectEndpoints({
   }),
 });
 
-export const { useGetAllReportsQuery } = adminReportApi;
+export const { useCreateReportMutation, useGetAllReportsQuery } =
+  adminReportApi;

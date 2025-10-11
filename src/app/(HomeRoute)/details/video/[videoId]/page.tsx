@@ -4,40 +4,54 @@ import { useRouter } from "next/navigation";
 import CommonWrapper from "@/common/CommonWrapper";
 import CommonPadding from "@/common/CommonPadding";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-import { demoDetailsData } from "@/app/(HomeRoute)/publish-content/demoDetailsData"; // Import demo data
 import VideoDetails from "@/components/details/VideoDetails";
+import React from "react";
+import { useGetArticleDetailsQuery } from "@/store/features/article/article.api";
 
 export default function VideoDetailPage({
   params,
 }: {
-  params: { videoId: string };
+  params: Promise<{ videoId: string }>; // 🚀 params is a Promise now
 }) {
+  // ✅ unwrap params with React.use()
+  const { videoId } = React.use(params);
   const router = useRouter();
+  const {
+    data: video,
+    isLoading,
+    isError,
+  } = useGetArticleDetailsQuery(videoId);
 
-  // Find the article by matching articleId with the data.id
-  const video =
-    demoDetailsData.data && demoDetailsData.data.id === params?.videoId
-      ? demoDetailsData.data
-      : undefined;
-
-  // If no article found, display "Article Not Found" message
-  if (!video) {
+  if (isLoading) {
     return (
-      <div>
-        <CommonWrapper>
-          <CommonPadding>
-            <div className="h-[60vh] flex flex-col items-center justify-center">
-              <h1 className="text-3xl font-bold mb-4">Video Not Found</h1>
-              <p className="text-lg text-gray-600 mb-6">
-                The video you are looking for does not exist.
-              </p>
-              <PrimaryButton title="GO BACK" onClick={() => router.back()} />
-            </div>
-          </CommonPadding>
-        </CommonWrapper>
-      </div>
+      <CommonWrapper>
+        <CommonPadding>
+          <div className="h-[60vh] flex flex-col items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+            <p className="text-lg text-gray-600">Loading article...</p>
+          </div>
+        </CommonPadding>
+      </CommonWrapper>
     );
   }
+
+  if (isError || !video?.data) {
+    return (
+      <CommonWrapper>
+        <CommonPadding>
+          <div className="h-[60vh] flex flex-col items-center justify-center">
+            <h1 className="text-3xl font-bold mb-4">Article Not Found</h1>
+            <p className="text-lg text-gray-600 mb-6">
+              The article you are looking for does not exist.
+            </p>
+            <PrimaryButton title="GO BACK" onClick={() => router.back()} />
+          </div>
+        </CommonPadding>
+      </CommonWrapper>
+    );
+  }
+
+  console.log(video?.data);
 
   // Pass the found article to the ArticleDetails component
   return <VideoDetails formData={video} onBack={() => router.back()} />;

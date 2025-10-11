@@ -83,15 +83,31 @@ const VideoArticlePage = () => {
     }
   };
 
-  // ---------------- PUBLISH HANDLER ----------------
-  // ---------------- PUBLISH HANDLER ----------------
+  // ---------------- PUBLISH HANDLER ---------------
   const handlePublish = async () => {
     try {
       // Construct final payload according to UploadFormData
-      const finalPayload = {
+      const finalPayload: {
+        paragraph: string;
+        youtubeVideoUrl: string;
+        video: File | null;
+        contentType: string;
+        title: string;
+        subTitle: string;
+        categoryId: string;
+        subCategoryId: string;
+        categorysslug: string;
+        subcategorysslug: string;
+        image: File | null;
+        audio: File | null;
+        imageCaption: string;
+        videoThumbnail: File | null;
+        shortQuote: string;
+        tags: string[];
+      } = {
         ...formData,
         paragraph: formData.paragraph,
-        youtubeVideoUrl: uploadMode === "link" ? videoLink.trim() : "", // only if link mode
+        youtubeVideoUrl: uploadMode === "link" ? videoLink.trim() : "",
         video: videoFile || null,
       };
 
@@ -110,23 +126,23 @@ const VideoArticlePage = () => {
       payload.append("youtubeVideoUrl", finalPayload.youtubeVideoUrl || "");
       payload.append("shortQuote", finalPayload.shortQuote || "");
 
-      // Append tags as comma-separated string to match article style
+      // Append tags as comma-separated string
       const tags = Array.isArray(finalPayload.tags)
         ? finalPayload.tags.join(",")
         : finalPayload.tags || "";
       payload.append("tags", tags);
 
-      // Append files (skip if null or not File)
-      if (finalPayload.image instanceof File) {
+      // Append files (skip if null)
+      if (finalPayload.image) {
         payload.append("image", finalPayload.image);
       }
-      if (finalPayload.video instanceof File) {
+      if (finalPayload.video) {
         payload.append("video", finalPayload.video);
       }
-      if (finalPayload.audio instanceof File) {
+      if (finalPayload.audio) {
         payload.append("audio", finalPayload.audio);
       }
-      if (finalPayload.videoThumbnail instanceof File) {
+      if (finalPayload.videoThumbnail) {
         payload.append("videoThumbnail", finalPayload.videoThumbnail);
       }
 
@@ -138,7 +154,7 @@ const VideoArticlePage = () => {
 
       alert("Video Podcast published successfully!");
 
-      // reset form
+      // Reset form
       setFormData({
         contentType: "PODCAST",
         title: "",
@@ -154,6 +170,7 @@ const VideoArticlePage = () => {
         imageCaption: "",
         youtubeVideoUrl: "",
         shortQuote: "",
+        videoThumbnail: null,
         tags: [],
       });
       setVideoFile(null);

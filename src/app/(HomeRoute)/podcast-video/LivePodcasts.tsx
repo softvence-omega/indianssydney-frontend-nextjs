@@ -1,11 +1,14 @@
 import LivePodcastCard from "@/components/live-podcast/LiveCard";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
+import { useGetAllLiveEventQuery } from "@/store/features/live-events/live.api";
 
 const LivePodcasts = () => {
+
+  const {data, isLoading, isError}=useGetAllLiveEventQuery({})
   return (
     <div>
       <div>
-        <PrimaryHeading title="Live Podcasts" className="mb-4" />
+        <PrimaryHeading title="Live Events" className="mb-4" />
         <LivePodcastCard
           episode="1"
           title="The Soundwave Show"

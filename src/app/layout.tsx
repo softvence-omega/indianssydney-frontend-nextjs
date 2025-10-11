@@ -52,7 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Provider>
 
         <Toaster richColors/>
-        <div id="google_translate_element"></div>
+        {/* <div id="google_translate_element"></div> */}
       </body>
     </html>
   );
