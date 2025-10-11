@@ -11,44 +11,19 @@ import Newsletter from "./Newsletter";
 import ReportModal from "./ReportModal";
 import { useState } from "react";
 import PrimaryButton from "../reusable/PrimaryButton";
+import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
 
 interface VideoDetailsProps {
   formData: DetailsData;
   onBack: () => void;
 }
 
-interface DetailsData {
-  id: string;
-  title: string;
-  subTitle?: string;
-  paragraph: string;
-  shortQuote?: string;
-  video?: string | null;
-  youtubeVideoUrl?: string | null;
-  image?: string | null;
-  imageCaption?: string;
-  tags: string[];
-  user: {
-    id: string;
-    fullName: string | null;
-    email: string;
-    profilePhoto: string | null;
-  };
-  views?: number;
-  createdAt: string;
-  additionalContents?: { id: string; type: string; value: string; order: number }[];
-  category?: { id: string; name: string; slug: string; tamplate: string };
-  subCategory?: { id: string; subname: string; subslug: string };
-}
 
 const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
   const currentDate = new Date(formData.createdAt).toLocaleDateString();
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   // Sort additional fields by order if it's an array
-  const sortedAdditionalFields = formData.additionalContents
-    ? formData.additionalContents.sort((a, b) => a.order - b.order)
-    : [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -67,12 +42,12 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                 {/* Header */}
                 <div className="mb-6">
                   <h1 className="text-3xl font-semibold mb-4 leading-tight font-playfair">
-                    {formData.title}
+                    {formData?.title}
                   </h1>
 
-                  {formData.subTitle && (
+                  {formData?.subTitle && (
                     <p className="text-lg text-gray-600 mb-4">
-                      {formData.subTitle}
+                      {formData?.subTitle}
                     </p>
                   )}
 
@@ -115,7 +90,7 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
 
                   {/* Tags */}
                   <div className="flex flex-wrap gap-2 mb-6">
-                    {formData.tags.map((tag) => (
+                    {formData?.tags?.map((tag) => (
                       <Badge
                         key={tag}
                         variant="secondary"
@@ -138,7 +113,9 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                   ) : formData.youtubeVideoUrl ? (
                     <iframe
                       className="w-full h-64 md:h-96"
-                      src={`https://www.youtube.com/embed/${formData.youtubeVideoUrl.split("v=")[1]}`}
+                      src={`https://www.youtube.com/embed/${
+                        formData.youtubeVideoUrl.split("v=")[1]
+                      }`}
                       title="YouTube video player"
                       frameBorder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -163,35 +140,7 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                   </p>
                 )}
 
-                {/* Additional Fields */}
-                {sortedAdditionalFields.map(({ type, value, id }) => {
-                  switch (type) {
-                    case "shortQuote":
-                      return (
-                        <blockquote
-                          key={id}
-                          className="border-l-4 border-orange-500 pl-4 my-6 italic text-black bg-off-white py-4"
-                        >
-                          {value as string}
-                        </blockquote>
-                      );
-                    case "paragraph":
-                      return (
-                        <p
-                          key={id}
-                          className="text-gray-700 leading-relaxed text-justify my-5"
-                        >
-                          {value as string}
-                        </p>
-                      );
-                    case "image":
-                      return null; // Handle image if needed
-                    case "video":
-                      return null; // Handle video if needed
-                    default:
-                      return null;
-                  }
-                })}
+        
 
                 {/* Report Button */}
                 <div className="my-4">
@@ -207,7 +156,7 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                 <div>
                   <h2 className="mb-4 text-xl font-semibold">Related Topics</h2>
                   <div className="flex flex-wrap gap-2 mb-6">
-                    {formData.tags.map((tag) => (
+                    {formData?.tags?.map((tag) => (
                       <Badge
                         key={tag}
                         variant="secondary"

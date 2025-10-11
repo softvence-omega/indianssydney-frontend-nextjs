@@ -63,12 +63,12 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 {/* Article Header */}
                 <div className="mb-6">
                   <h1 className="text-3xl font-semibold mb-4 leading-tight font-playfair">
-                    {formData.title}
+                    {formData?.title}
                   </h1>
 
-                  {formData.subTitle && (
+                  {formData?.subTitle && (
                     <p className="text-lg text-gray-600 mb-4">
-                      {formData.subTitle}
+                      {formData?.subTitle}
                     </p>
                   )}
 

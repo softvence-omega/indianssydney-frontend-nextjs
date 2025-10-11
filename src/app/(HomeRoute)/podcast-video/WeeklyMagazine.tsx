@@ -1,7 +1,10 @@
 import LivePodcastCard from "@/components/live-podcast/LiveCard";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
+import { useGetVideosQuery } from "@/store/features/videoPodcast/video.api";
 
 const WeeklyMagazine = () => {
+  const { data, isLoading, isError } = useGetVideosQuery({});
+  console.log(data);
   return (
     <div>
       <PrimaryHeading title="Weekly Audio Magazine" className="mb-4" />

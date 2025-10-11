@@ -28,7 +28,7 @@ export default function VideoDetailPage({
         <CommonPadding>
           <div className="h-[60vh] flex flex-col items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-            <p className="text-lg text-gray-600">Loading article...</p>
+            <p className="text-lg text-gray-600">Loading video...</p>
           </div>
         </CommonPadding>
       </CommonWrapper>
@@ -42,7 +42,7 @@ export default function VideoDetailPage({
           <div className="h-[60vh] flex flex-col items-center justify-center">
             <h1 className="text-3xl font-bold mb-4">Article Not Found</h1>
             <p className="text-lg text-gray-600 mb-6">
-              The article you are looking for does not exist.
+              The video you are looking for does not exist.
             </p>
             <PrimaryButton title="GO BACK" onClick={() => router.back()} />
           </div>
@@ -54,5 +54,5 @@ export default function VideoDetailPage({
   console.log(video?.data);
 
   // Pass the found article to the ArticleDetails component
-  return <VideoDetails formData={video} onBack={() => router.back()} />;
+  return <VideoDetails formData={video?.data} onBack={() => router.back()} />;
 }
