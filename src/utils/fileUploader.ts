@@ -1,11 +1,11 @@
-"use client"
+"use client";
 import { S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 const s3 = new S3Client({
   region: "us-east-1",
   credentials: {
-    accessKeyId: "",
-    secretAccessKey: "",
+    accessKeyId: process.env.NEXT_PUBLIC_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.NEXT_PUBLIC_SECRET_ACCESS_KEY as string,
   },
 });
 
@@ -16,7 +16,7 @@ export default async function uploadFileInAws(file: File) {
     const upload = new Upload({
       client: s3,
       params: {
-        Bucket: "indianssendy12",
+        Bucket: "newportalbucket1122",
         Key: file.name,
         Body: file,
         ContentType: file.type,

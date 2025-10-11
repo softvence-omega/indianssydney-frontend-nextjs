@@ -1,7 +1,10 @@
 import React from "react";
 import { Check } from "lucide-react";
+import { toast } from "sonner";
+import { useCreatePaymentMutation } from "@/store/features/payment/payment.api";
 
 type PlanCardProps = {
+  id: string;
   price: string;
   duration: string;
   description: string;
@@ -10,12 +13,33 @@ type PlanCardProps = {
 };
 
 const PlanCard: React.FC<PlanCardProps> = ({
+  id,
   price,
   duration,
   description,
   features,
   buttonText,
 }) => {
+  console.log("plan id", id);
+
+  const [createPlan] = useCreatePaymentMutation();
+  const handleClick = async () => {
+    try {
+      const res = await createPlan({ planId: id }).unwrap();
+      console.log("✅ Payment response:", res);
+
+      if (res?.url) {
+        // Redirect the user to the Stripe Checkout page
+        window.location.href = res?.url;
+      } else {
+        toast.error("No checkout URL returned from server.");
+      }
+    } catch (err) {
+      console.error("❌ Create failed:", err);
+      toast.error("Failed to create plan.");
+    }
+  };
+
   return (
     <div className="max-w-sm w-full border border-gray-200 bg-gray-50 rounded-md shadow-sm p-6">
       {/* Price */}
@@ -25,7 +49,7 @@ const PlanCard: React.FC<PlanCardProps> = ({
       </div>
 
       {/* Description */}
-      <p className="text-gray-500 text-sm mt-2">{description}</p>
+      <p className="text-gray-500 text-sm mt-2 text-left">{description}</p>
       <hr className="my-4" />
 
       {/* Features */}
@@ -39,7 +63,10 @@ const PlanCard: React.FC<PlanCardProps> = ({
       </ul>
 
       {/* Button */}
-      <button className="mt-6 w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded transition-colors duration-300">
+      <button
+        onClick={() => handleClick()}
+        className="mt-6 cursor-pointer w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded transition-colors duration-300"
+      >
         {buttonText}
       </button>
     </div>

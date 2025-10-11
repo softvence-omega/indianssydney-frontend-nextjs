@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle } from "lucide-react";
-
+import Link from "next/link";
 
 export type Article = {
   id: string;
@@ -16,7 +16,7 @@ export type Article = {
   description: string;
   author: string;
   date: string;
-  status: "recent" | "pending" | "approved" | "declined";
+  status: "recent" | "PENDING" | "APPROVE" | "Declined";
   negativity: {
     score: number;
     positives: string[];
@@ -24,28 +24,29 @@ export type Article = {
   };
 };
 
-
 const ArticleCard: React.FC<{
   article: Article;
-  onStatusChange: (id: string, status: "approved" | "declined") => void;
+  onStatusChange: (id: string, status: "APPROVE" | "Declined") => void;
 }> = ({ article, onStatusChange }) => {
   return (
     <Card className="mb-4 shadow-none">
       <CardContent>
         {/* Article Info */}
         <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
-          <div>
-            <h2 className="font-semibold text-lg">{article.title}</h2>
-            <p className="text-sm text-gray-600">{article.description}</p>
-            <p className="text-xs mt-2 text-gray-500">
-              Author - {article.author} | {article.date}
-            </p>
-          </div>
+          <Link href={`/details/article/${article.id}`} className="w-full">
+            <div>
+              <h2 className="font-semibold text-lg">{article.title}</h2>
+              <p className="text-sm text-gray-600">{article.description}</p>
+              <p className="text-xs mt-2 text-gray-500">
+                Author - {article.author} | {article.date}
+              </p>
+            </div>
+          </Link>
 
           <div className="flex gap-2">
-            {article.status === "approved" ? (
+            {article.status === "APPROVE" ? (
               <Badge className="bg-green-500 text-white">Approved</Badge>
-            ) : article.status === "declined" ? (
+            ) : article.status === "Declined" ? (
               <Badge className="bg-red-500 text-white">Declined</Badge>
             ) : (
               <>
@@ -53,7 +54,7 @@ const ArticleCard: React.FC<{
                   size="sm"
                   variant="outline"
                   className="border-green-500 text-green-600"
-                  onClick={() => onStatusChange(article.id, "approved")}
+                  onClick={() => onStatusChange(article.id, "APPROVE")}
                 >
                   Accept
                 </Button>
@@ -61,7 +62,7 @@ const ArticleCard: React.FC<{
                   size="sm"
                   variant="outline"
                   className="border-red-500 text-red-600"
-                  onClick={() => onStatusChange(article.id, "declined")}
+                  onClick={() => onStatusChange(article.id, "Declined")}
                 >
                   Decline
                 </Button>

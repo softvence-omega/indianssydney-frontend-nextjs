@@ -1,3 +1,5 @@
+"use client";
+
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";

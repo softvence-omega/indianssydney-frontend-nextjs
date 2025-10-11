@@ -18,10 +18,12 @@ import { Swiper as SwiperType } from "swiper";
 type NewsItem = {
   id: string; // ✅ match your data
   image: string;
-  tag?: string;
+  tags?: string[];
   title: string;
-  description: string;
-  author: string;
+  subTitle: string;
+  user: {
+    fullName?: string;
+  };
   readTime: string;
 };
 
@@ -33,6 +35,7 @@ type NewsSliderProps = {
 const NewsSlider: React.FC<NewsSliderProps> = ({ items }) => {
   const [isFirstSlide, setIsFirstSlide] = useState(true);
   const [isLastSlide, setIsLastSlide] = useState(false);
+  console.log("Inside Swipper", items);
 
   // Correct type for swiper parameter
   const handleSlideChange = (swiper: SwiperType) => {
@@ -61,7 +64,7 @@ const NewsSlider: React.FC<NewsSliderProps> = ({ items }) => {
         onSlideChange={handleSlideChange} // Add slide change event
         className="w-full"
       >
-        {items.map((item) => (
+        {items?.map((item) => (
           <SwiperSlide key={item.id}>
             <NewsCard {...item} />
           </SwiperSlide>

@@ -5,36 +5,38 @@ import { FileText, Play, Mic, Radio } from "lucide-react";
 
 import CommonPadding from "@/common/CommonPadding";
 import PrimaryButton from "../reusable/PrimaryButton";
-import { ContentType } from "@/utils/myContentData";
+import { ContentTypeNew } from "@/utils/myContentData";
 
 interface CategorySelectionProps {
-  onSelect: (contentType: ContentType) => void;
+  onSelect: (contentType: ContentTypeNew) => void;
 }
 
-const CategorySelection = ({ onSelect }: CategorySelectionProps) => {
+const CategorySelection = () => {
   const categories = [
     {
-      type: "article" as ContentType,
+      type: "ARTICLE",
       title: "Article",
       description:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       icon: FileText,
+      href: "/publish-content/article",
     },
     {
-      type: "video" as ContentType,
+      type: "VIDEO",
       title: "Video",
       description:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       icon: Play,
+      href: "/publish-content/video",
     },
     {
-      type: "podcast" as ContentType,
+      type: "PODCAST",
       title: "Podcast",
       description:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
       icon: Mic,
+      href: "/publish-content/podcast",
     },
-    
   ];
 
   return (
@@ -43,7 +45,9 @@ const CategorySelection = ({ onSelect }: CategorySelectionProps) => {
         <div className="max-w-5xl mx-auto">
           <Card className="border border-dashed border-[#EDEFF0] bg-pure-white rounded-none">
             <CardContent className="p-8">
-              <h2 className="text-2xl font-bold mb-2 text-center">Choose Category</h2>
+              <h2 className="text-2xl font-bold mb-2 text-center">
+                Choose Category
+              </h2>
               <p className="text-gray-600 mb-8 text-justify">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
                 industry. Lorem Ipsum has been the industrys standard dummy text
@@ -72,7 +76,9 @@ const CategorySelection = ({ onSelect }: CategorySelectionProps) => {
                           {category.description}
                         </p>
                         <PrimaryButton
-                          onClick={() => onSelect(category.type)}
+                          onClick={() => {
+                            window.location.href = category.href;
+                          }}
                           title="Upload"
                           className=" text-white "
                         />

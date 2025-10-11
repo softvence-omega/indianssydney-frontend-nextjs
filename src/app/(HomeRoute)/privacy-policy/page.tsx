@@ -1,54 +1,55 @@
+"use client";
+
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
 import CommonHeader from "@/components/reusable/CommonHeader";
-
-// Define privacy policy sections
-const privacySections = [
-  {
-    title: "What we need from you",
-    content:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  },
-  {
-    title: "How we protect your data",
-    content:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  },
-  {
-    title: "The Australian Canvas privacy policy",
-    content:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  },
-  {
-    title: "Your privacy with our collaborators and marketers",
-    content:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  },
-  {
-    title: "Our Email Guidelines",
-    content:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-  },
-];
+import { useGetAllPrivacyPolicyQuery } from "@/store/features/site/privacy.api"; // ✅ use query hook
+import { Loader2 } from "lucide-react";
 
 const PrivacyPolicy = () => {
+  const { data, isLoading, isError } = useGetAllPrivacyPolicyQuery({});
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="animate-spin w-6 h-6 text-gray-600" />
+      </div>
+    );
+  }
+
+  if (isError || !data?.success) {
+    return (
+      <div className="text-center py-20 text-gray-500">
+        Failed to load Privacy Policies. Please try again later.
+      </div>
+    );
+  }
+
+  const privacyPolicies = data?.data || [];
+
   return (
     <div className="bg-white">
       <CommonHeader
         title="Privacy Policy"
-        description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+        description="Below are our privacy policies explaining how we handle and protect your information."
       />
       <CommonWrapper>
         <CommonPadding>
           <div className="px-6 py-8">
-            {privacySections.map((section, index) => (
-              <div key={index} >
-                <div className="pb-10">
-                    <h2 className="text-xl font-semibold mb-4">{section.title}</h2>
-                <p>{section.content}</p>
-                </div>
+            {privacyPolicies.map((section: any, index: number) => (
+              <div key={section.id || index} className="pb-10">
+                <h2 className="text-xl font-semibold mb-4">{section.title}</h2>
+                <p className="text-gray-700 leading-relaxed">
+                  {section.subtext}
+                </p>
               </div>
             ))}
+
+            {privacyPolicies.length === 0 && (
+              <p className="text-gray-500 text-center">
+                No privacy policies found.
+              </p>
+            )}
           </div>
         </CommonPadding>
       </CommonWrapper>

@@ -1,11 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+
+import { toast } from "sonner";
+import { useCreateReportMutation } from "@/store/features/admin/report.api";
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -14,11 +22,12 @@ interface ReportModalProps {
 }
 
 const ReportModal = ({ isOpen, onClose, contentId }: ReportModalProps) => {
-  const [title, setTitle] = useState("");
+  const [createReport, { isLoading }] = useCreateReportMutation();
   const [reason, setReason] = useState("");
   const [screenshots, setScreenshots] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
+  // ✅ Handle file upload
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
@@ -27,6 +36,7 @@ const ReportModal = ({ isOpen, onClose, contentId }: ReportModalProps) => {
     }
   };
 
+  // ✅ Remove selected image
   const removeImage = (index: number) => {
     const newScreenshots = screenshots.filter((_, i) => i !== index);
     const newPreviewUrls = previewUrls.filter((_, i) => i !== index);
@@ -34,24 +44,32 @@ const ReportModal = ({ isOpen, onClose, contentId }: ReportModalProps) => {
     setPreviewUrls(newPreviewUrls);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // ✅ Submit handler
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const reportData = {
-      contentId,
-      title,
-      reason,
-      screenshots,
-    };
+    try {
+      const formData = new FormData();
+      formData.append("contentId", contentId);
+      formData.append("reason", reason);
 
-    console.log("Report Submitted:", reportData);
+      // 👇 Must match backend: `files[]`
+      screenshots.forEach((file) => formData.append("files", file));
 
-    // Reset form after submission
-    setTitle("");
-    setReason("");
-    setScreenshots([]);
-    setPreviewUrls([]);
-    onClose();
+      const res = await createReport(formData).unwrap();
+      console.log("✅ Report API Response:", res);
+
+      toast.success("Report submitted successfully!");
+      onClose();
+
+      // Reset fields
+      setReason("");
+      setScreenshots([]);
+      setPreviewUrls([]);
+    } catch (error: any) {
+      console.error("❌ Report submission failed:", error);
+      toast.error(error?.data?.message || "Failed to submit report");
+    }
   };
 
   return (
@@ -67,23 +85,10 @@ const ReportModal = ({ isOpen, onClose, contentId }: ReportModalProps) => {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Title */}
+          {/* Reason Field */}
           <div>
             <label className="block text-sm font-medium mb-1">
-              1. Title <span className="text-gray-500">(Mention the article title)</span> *
-            </label>
-            <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter article title"
-              required
-            />
-          </div>
-
-          {/* Reason */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              2. Reason <span className="text-gray-500">(Why are you reporting?)</span> *
+              Reason <span className="text-gray-500">(Why are you reporting?)</span> *
             </label>
             <Textarea
               value={reason}
@@ -93,21 +98,20 @@ const ReportModal = ({ isOpen, onClose, contentId }: ReportModalProps) => {
             />
           </div>
 
-          {/* Screenshots */}
+          {/* File Upload */}
           <div>
             <label className="block text-sm font-medium mb-1">
-              3. Provide screenshots{" "}
-              <span className="text-gray-500">(Upload your screenshots)</span> *
+              Provide screenshots{" "}
+              <span className="text-gray-500">(Optional)</span>
             </label>
             <Input
               type="file"
               accept="image/*"
               multiple
               onChange={handleFileChange}
-              required
             />
 
-            {/* Preview */}
+            {/* Image Previews */}
             {previewUrls.length > 0 && (
               <div className="mt-3 grid grid-cols-2 gap-3">
                 {previewUrls.map((url, index) => (
@@ -130,10 +134,14 @@ const ReportModal = ({ isOpen, onClose, contentId }: ReportModalProps) => {
             )}
           </div>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <div className="flex justify-end">
-            <Button type="submit" className="bg-red-600 text-white">
-              Submit
+            <Button
+              type="submit"
+              className="bg-red-600 text-white"
+              disabled={isLoading}
+            >
+              {isLoading ? "Submitting..." : "Submit"}
             </Button>
           </div>
         </form>

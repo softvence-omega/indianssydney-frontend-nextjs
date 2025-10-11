@@ -4,13 +4,23 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Share2, Eye, Calendar, User } from "lucide-react";
+import {
+  ArrowLeft,
+  Share2,
+  Eye,
+  Calendar,
+  User,
+  Youtube,
+  Bookmark,
+} from "lucide-react";
 import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
 import RecommendedArticles from "./RecommendedArticles";
 import Newsletter from "./Newsletter";
 import PrimaryButton from "../reusable/PrimaryButton";
 import { useState } from "react";
 import ReportModal from "./ReportModal";
+import { toast } from "sonner";
+import { usePostBookmarkMutation } from "@/store/features/bookmark/bookmark.api";
 
 interface ArticlePreviewProps {
   formData: DetailsData;
@@ -20,11 +30,22 @@ interface ArticlePreviewProps {
 const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const currentDate = new Date().toLocaleDateString();
+  const [postBookmark, { isLoading }] = usePostBookmarkMutation();
 
   // Sort additional fields by order
-  const sortedAdditionalFields = formData.additionalContents.sort(
+  const sortedAdditionalFields = [...formData.additionalContents].sort(
     (a, b) => a.order - b.order
   );
+  const handleAddToBookmark = async (contentId: string) => {
+    try {
+      const res = await postBookmark(contentId).unwrap();
+      toast.success("Added to bookmark!");
+      console.log("Bookmark success:", res);
+    } catch (error: any) {
+      console.error("Bookmark error:", error);
+      toast.error(error?.data?.message || "Failed to add bookmark");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -57,7 +78,8 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                       <Avatar className="w-10 h-10">
                         <AvatarImage
                           src={
-                            formData.user.profilePhoto || "/default-profile.png"
+                            formData.user?.profilePhoto ||
+                            "/default-profile.png"
                           }
                         />
                         <AvatarFallback>
@@ -66,11 +88,12 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                       </Avatar>
                       <div>
                         <p className="font-medium text-gray-900">
-                          {formData.user.fullName || "Author"}
+                          {formData.user?.fullName || "Author"}
                         </p>
                         <div className="flex items-center text-sm text-gray-500">
                           <Calendar className="w-4 h-4 mr-1" />
-                          {formData.dateTimeSlot || currentDate}
+                          {new Date(formData.createdAt).toLocaleDateString() ||
+                            currentDate}
                         </div>
                       </div>
                     </div>
@@ -78,8 +101,19 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center text-sm text-gray-500">
                         <Eye className="w-4 h-4 mr-1" />
-                        {formData.views || 0} views
+                        {formData.views ?? 0} views
                       </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          handleAddToBookmark(formData.id);
+                        }}
+                      >
+                        <Bookmark className="w-4 h-4 mr-1" />
+                        Bookmark
+                      </Button>
+
                       <Button variant="outline" size="sm">
                         <Share2 className="w-4 h-4 mr-1" />
                         Share
@@ -88,25 +122,27 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                   </div>
 
                   {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {formData.tags.map((tag) => (
-                      <Badge
-                        key={tag}
-                        variant="secondary"
-                        className="bg-orange-100 text-orange-800"
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
+                  {formData.tags?.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {formData.tags.map((tag) => (
+                        <Badge
+                          key={tag}
+                          variant="secondary"
+                          className="bg-orange-100 text-orange-800"
+                        >
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Hero Image */}
-                {formData.image && (
+                {formData?.image && (
                   <div className="mb-6">
                     <img
-                      src={formData.image}
-                      alt={formData.image}
+                      src={formData?.image}
+                      alt={formData?.title}
                       className="w-full h-64 md:h-80 lg:h-full object-cover"
                     />
                     {formData.imageCaption && (
@@ -118,28 +154,48 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 )}
 
                 {/* Audio */}
-                {formData.audioFile && (
+                {formData?.audio && (
                   <div className="mb-6">
                     <div className="w-full bg-white border border-gray-300 rounded-lg shadow-sm p-3 flex items-center gap-3">
                       <audio
                         controls
-                        className="w-full focus:outline-none controls:text-red-500"
-                        src={formData.audioFile}
+                        className="w-full focus:outline-none"
+                        src={formData.audio}
                       />
                     </div>
                   </div>
                 )}
-                <div className=" leading-relaxed text-justify">
-                  {formData.paragraph && formData.paragraph}
-                </div>
+
+                {/* Paragraph */}
+                {formData?.paragraph && (
+                  <div className="leading-relaxed text-justify my-4">
+                    {formData.paragraph}
+                  </div>
+                )}
+
                 {/* Video */}
-                {formData.videoFile && (
+                {formData?.video && (
                   <div className="my-3">
                     <video
                       controls
                       className="w-full h-64 md:h-80 object-cover"
-                      src={formData.videoFile}
+                      src={formData.video}
                     />
+                  </div>
+                )}
+
+                {/* YouTube Embed */}
+                {formData?.youtubeVideoUrl && (
+                  <div className="my-6">
+                    <div className="aspect-w-16 aspect-h-9">
+                      <iframe
+                        src={formData.youtubeVideoUrl}
+                        title="YouTube video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-64 md:h-96"
+                      />
+                    </div>
                   </div>
                 )}
 
@@ -154,7 +210,7 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                   {/* Render Additional Fields Dynamically */}
                   {sortedAdditionalFields.map(({ type, value, id }) => {
                     switch (type) {
-                      case "quote":
+                      case "shortQuote":
                         return (
                           <blockquote
                             key={id}
@@ -186,7 +242,16 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                           <video
                             key={id}
                             controls
-                            className="w-full h-64 md:h-80 object-cover  my-3 md:my-5"
+                            className="w-full h-64 md:h-80 object-cover my-3 md:my-5"
+                            src={value as string}
+                          />
+                        );
+                      case "audio":
+                        return (
+                          <audio
+                            key={id}
+                            controls
+                            className="w-full my-3 md:my-5"
                             src={value as string}
                           />
                         );
@@ -200,28 +265,29 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 <div className="my-4">
                   <PrimaryButton
                     title="Report"
-                    onClick={() => {
-                      setIsReportModalOpen(true);
-                    }}
+                    onClick={() => setIsReportModalOpen(true)}
                   />
                 </div>
 
                 {/* Related Topics */}
-
-                <div>
-                  <h2 className="mb-4 text-xl font-semibold">Related Topics</h2>
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {formData.tags.map((tag) => (
-                      <Badge
-                        key={tag}
-                        variant="secondary"
-                        className="bg-orange-100 text-orange-800"
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
+                {formData.tags?.length > 0 && (
+                  <div>
+                    <h2 className="mb-4 text-xl font-semibold">
+                      Related Topics
+                    </h2>
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {formData.tags.map((tag) => (
+                        <Badge
+                          key={tag}
+                          variant="secondary"
+                          className="bg-orange-100 text-orange-800"
+                        >
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Profile Details */}
                 <div className="bg-bg-cream p-4 flex gap-4 items-center">

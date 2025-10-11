@@ -1,28 +1,31 @@
-
 import Link from "next/link";
-import React from "react";
+import React, { useMemo } from "react";
 
 type NewsCardProps = {
+  id: string;
   image: string;
   tag?: string;
   title: string;
   description: string;
   author: string;
-  readTime: string;
   imgHeight?: string;
 };
 
 const NewsCard3: React.FC<NewsCardProps> = ({
+  id,
   image,
   tag,
   title,
   //   description,
   author,
-  readTime,
   imgHeight = "h-[200px] md:h-[300px]",
 }) => {
+  const readTime = useMemo(() => {
+    const randomMinutes = Math.floor(Math.random() * 8) + 5; // 5 to 12
+    return `${randomMinutes} min read`;
+  }, []);
   return (
-    <Link href="/details/article/1" className="grid  gap-6">
+    <Link href={`/details/article/${id}`} className="grid  gap-6">
       {/* Image Section */}
       <div className={`w-full overflow-hidden ${imgHeight}`}>
         <img src={image} alt={title} className="w-full h-full object-cover" />

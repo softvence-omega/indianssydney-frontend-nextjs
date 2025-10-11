@@ -1,36 +1,44 @@
 // types.ts
-export type AdditionalFieldType = "paragraph" | "quote" | "image" | "video" |"audio";
+
+// for upload
+export type AdditionalFieldType =
+  | "paragraph"
+  | "shortQuote"
+  | "image"
+  | "video"
+  | "audio";
 
 export interface AdditionalField {
   type: AdditionalFieldType;
-  value: string | File | null | string[];
+  value: string | File | null;
 }
 
-export type ContentType = "article" | "video" | "podcast" | "live-event";
+export type ContentType = "ARTICLE" | "VIDEO" | "PODCAST";
 
-export interface FormData {
+export interface UploadFormData {
+  id?: string;
   contentType: ContentType;
-  category: string;
-  subCategory: string;
   title: string;
   subTitle: string;
-  audioFile: File | null;
-  image: File | null;
-  video: File | null;
-  imageCaption: string;
-  shortQuote: string;
+  categoryId: string;
+  subCategoryId: string;
+  categorysslug: string;
+  subcategorysslug: string;
   paragraph: string;
-  dateTimeSlot: string;
+  image?: File | null;
+  video?: File | null;
+  audio?: File | null;
+  imageCaption?: string;
+  videoThumbnail?: File | null;
+  youtubeVideoUrl?: "";
+  shortQuote: string;
   tags: string[];
-  additionalFields: { [key: string]: AdditionalField };
+  additionalContents: AdditionalField[];
   publishedAt?: string;
-  views?: number;
-  likes?: number;
-  comments?: number;
+  contentviews?: number;
+  likeCount?: number;
+  commentCount?: number;
 }
-
-
-
 
 // export interface DetailsData {
 //   id?: string;
@@ -62,8 +70,8 @@ export interface FormData {
 export interface AdditionalFields {
   id: string;
   contentId: string;
-  type: "paragraph" | "image" | "quote" | "audio" | "video";
-  value: string | File | null;  // Value can be a string or file for image/audio/video
+  type: "paragraph" | "image" | "shortQuote" | "audio" | "video";
+  value: string | File | null;
   order: number;
 }
 
@@ -76,6 +84,7 @@ export interface User {
 
 export interface Category {
   id: string;
+  tamplate: string; // ✅ Added since API returns this
   name: string;
   slug: string;
   createdAt: string;
@@ -91,21 +100,22 @@ export interface SubCategory {
 
 export interface DetailsData {
   id: string;
-  contentType: "ARTICLE" | "VIDEO" | "PODCAST"; // Can be extended to other content types if necessary
+  contentType: "ARTICLE" | "VIDEO" | "PODCAST";
   title: string;
   subTitle: string;
   paragraph: string | null;
   shortQuote: string | null;
-  image: string | null; // URL to the image
-  videoFile: string | null; // URL to the video file
+  image: string | null;
+  video: string | null; // ✅ renamed from videoFile
+  audio: string | null; // ✅ renamed from audioFile
   imageCaption: string | null;
-  audioFile: string | null;
+  youtubeVideoUrl: string; // ✅ added
   videoThumbnail: string | null;
   tags: string[];
   additionalContents: AdditionalFields[];
   createdAt: string;
   updatedAt: string;
-  status: "PENDING" | string; // Can be expanded to other statuses
+  status: "PENDING" | "APPROVE" | "DECLINED" | string;
   isDeleted: boolean;
   userId: string;
   categoryId: string;
@@ -113,7 +123,5 @@ export interface DetailsData {
   user: User;
   category: Category;
   subCategory: SubCategory;
-  dateTimeSlot?: string;
-  views?: number;
+  views?: number; // ✅ maps to API's contentviews
 }
-

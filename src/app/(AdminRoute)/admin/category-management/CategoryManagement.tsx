@@ -1,6 +1,7 @@
 "use client";
 
 import DashboardHeader from "@/components/reusable/DashboardHeader";
+import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,7 +30,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCreateNewCategoryMutation, useDeleteCategoryMutation, useGetAllCategoryQuery } from "@/store/features/category/category.api";
+import {
+  useCreateNewCategoryMutation,
+  useDeleteCategoryMutation,
+  useGetAllCategoryQuery,
+  useUpdateCategoryMutation,
+} from "@/store/features/category/category.api";
 import { ChevronDown, ChevronUp, Edit, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -50,24 +56,24 @@ interface Category {
   createdAt: string;
   isDeleted: boolean;
   subCategories: SubCategory[];
-  subnames?:string[]
+  subnames?: string[];
 }
 
-
 const CategoryManagement = () => {
-  const [createNewCategory] = useCreateNewCategoryMutation()
-  const [deleteCategoryById] = useDeleteCategoryMutation()
-  const { data, isSuccess } = useGetAllCategoryQuery(undefined)
+  const { data, isLoading } = useGetAllCategoryQuery({});
+  const [createNewCategory, { isLoading: isCreating }] =
+    useCreateNewCategoryMutation();
+  const [updateCategory] = useUpdateCategoryMutation();
+  const [deleteCategoryById] = useDeleteCategoryMutation();
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
 
-  useEffect(() => { setCategories(data?.data) }, [data?.data, isSuccess])
+  const categories = data?.data || [];
 
   const [newCategory, setNewCategory] = useState({
     name: "",
@@ -115,71 +121,78 @@ const CategoryManagement = () => {
       const newCat: Partial<Category> = {
         name: newCategory.name,
         tamplate: newCategory.tamplate,
-        subnames:newCategory.subnames,
+        subnames: newCategory.subnames,
       };
       const result = await createNewCategory(newCat)?.unwrap();
       if (result?.success) {
-        toast.success(result.message)
+        toast.success(result.message);
         setOpenAddModal(false);
       }
     } catch (error: any) {
       toast.error(error?.data?.message || "Something went wrong");
     }
-
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!selectedCategory) return;
 
-    const updatedCategories = categories?.map((cat) => {
-      if (cat.id === selectedCategory.id) {
-        // Update subcategories
-        const subCategories = editCategory.subnames
-          .filter((name) => name.trim() !== "")
-          .map((subname, index) => {
-            // Preserve existing subcategory if possible
-            if (selectedCategory.subCategories[index]) {
-              return {
-                ...selectedCategory.subCategories[index],
-                subname,
-                subslug: subname
-                  .toLowerCase()
-                  .replace(/[^a-z0-9]+/g, "-")
-                  .replace(/(^-|-$)/g, ""),
-              };
-            }
+    const toastId = toast.loading("Creating category...");
 
-            // Create new subcategory if needed
-            return {
-              id: `sub-${Math.random().toString(36).substr(2, 9)}`,
-              subname,
-              subslug: subname
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/(^-|-$)/g, ""),
-              categoryId: selectedCategory.id,
-            };
-          });
+    try {
+      const payload = {
+        name: editCategory.name,
+        tamplate: editCategory.tamplate,
+        subnames: editCategory.subnames.filter((s) => s.trim() !== ""),
+      };
 
-        return {
-          ...cat,
-          name: editCategory.name,
-          tamplate: editCategory.tamplate,
-          subCategories,
-        };
+      const result = await updateCategory({
+        id: selectedCategory.id,
+        data: payload,
+      }).unwrap();
+
+      if (result?.success) {
+        toast.success(result.message || "Category updated successfully", {
+          id: toastId,
+        });
+        setOpenEditModal(false);
       }
-      return cat;
-    });
-
-    setCategories(updatedCategories);
-    setOpenEditModal(false);
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to update category", {
+        id: toastId,
+      });
+    }
   };
+
+  useEffect(() => {
+    if (!openAddModal) {
+      setNewCategory({ name: "", tamplate: "", subnames: [""] });
+    }
+    if (!openEditModal) {
+      setEditCategory({ name: "", tamplate: "", subnames: [""] });
+      setSelectedCategory(null);
+    }
+  }, [openAddModal, openEditModal]);
 
   const handleConfirmDelete = async () => {
     if (!selectedCategory) return;
-    const result = await deleteCategoryById(selectedCategory?.id)?.unwrap();
-    if (result?.success) toast.success("Category deleted successfully")
-    setOpenDeleteModal(false);
+
+    // Start loading toast
+    const toastId = toast.loading("Deleting category...");
+
+    try {
+      const result = await deleteCategoryById(selectedCategory?.id)?.unwrap();
+
+      if (result?.success) {
+        toast.success("Category deleted successfully", { id: toastId });
+      } else {
+        toast.error("Failed to delete category", { id: toastId });
+      }
+    } catch (error) {
+      toast.error("Something went wrong", { id: toastId });
+      console.log(error)
+    } finally {
+      setOpenDeleteModal(false);
+    }
   };
 
   const addSubcategoryField = (isEdit: boolean = false) => {
@@ -247,88 +260,92 @@ const CategoryManagement = () => {
       </div>
 
       {/* Category List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        {categories?.map((category) => {
-          const isExpanded = expandedCards.has(category.id);
-          return (
-            <div
-              key={category.id}
-              className="border rounded-xl p-5 bg-white shadow-md hover:shadow-lg transition-shadow"
-            >
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="font-semibold text-lg">{category.name}</h3>
-                  <div className="flex items-center mt-1">
-                    <Badge variant="outline" className="mr-2">
-                      {category.tamplate}
-                    </Badge>
-                    <span className="text-xs text-gray-500">
-                      {new Date(category.createdAt).toLocaleDateString()}
-                    </span>
+
+      {isLoading ? (
+        <SkeletonLoader />
+      ) : (
+        <div className="grid gap-6 mt-6">
+          {categories?.map((category: any) => {
+            const isExpanded = expandedCards.has(category.id);
+            return (
+              <div
+                key={category.id}
+                className="border rounded-xl p-5 bg-white shadow-md hover:shadow-lg transition-shadow"
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 className="font-semibold text-lg">{category.name}</h3>
+                    <div className="flex items-center mt-1">
+                      <Badge variant="outline" className="mr-2">
+                        {category.tamplate}
+                      </Badge>
+                      <span className="text-xs text-gray-500">
+                        {new Date(category.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex space-x-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-blue-500"
+                      onClick={() => handleEdit(category)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-red-500"
+                      onClick={() => handleDelete(category)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-                <div className="flex space-x-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-blue-500"
-                    onClick={() => handleEdit(category)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-red-500"
-                    onClick={() => handleDelete(category)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+
+                <div className="mb-3">
+                  <p className="text-sm text-gray-600 break-words">
+                    Slug: {category.slug}
+                  </p>
                 </div>
-              </div>
 
-              <div className="mb-3">
-                <p className="text-sm text-gray-600 break-words">
-                  Slug: {category.slug}
-                </p>
-              </div>
+                <div className="border-t pt-3">
+                  <div
+                    className="flex justify-between items-center cursor-pointer"
+                    onClick={() => toggleCardExpansion(category.id)}
+                  >
+                    <h4 className="font-medium">
+                      Sub-Categories ({category.subCategories.length})
+                    </h4>
+                    {isExpanded ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </div>
 
-              <div className="border-t pt-3">
-                <div
-                  className="flex justify-between items-center cursor-pointer"
-                  onClick={() => toggleCardExpansion(category.id)}
-                >
-                  <h4 className="font-medium">
-                    Sub-Categories ({category.subCategories.length})
-                  </h4>
-                  {isExpanded ? (
-                    <ChevronUp className="h-4 w-4" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4" />
+                  {isExpanded && (
+                    <ul className="mt-2 space-y-2">
+                      {category?.subCategories?.map((sub: any) => (
+                        <li
+                          key={sub.id}
+                          className="text-sm p-2 bg-gray-50 rounded-md"
+                        >
+                          <div className="font-medium">{sub.subname}</div>
+                          <div className="text-xs text-gray-500">
+                            Slug: {sub.subslug}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
-
-                {isExpanded && (
-                  <ul className="mt-2 space-y-2">
-                    {category?.subCategories?.map((sub) => (
-                      <li
-                        key={sub.id}
-                        className="text-sm p-2 bg-gray-50 rounded-md"
-                      >
-                        <div className="font-medium">{sub.subname}</div>
-                        <div className="text-xs text-gray-500">
-                          Slug: {sub.subslug}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
-            </div>
-          );
-        })}
-      </div>
-
+            );
+          })}
+        </div>
+      )}
       {/* Add Modal */}
       <Dialog open={openAddModal} onOpenChange={setOpenAddModal}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
@@ -360,14 +377,20 @@ const CategoryManagement = () => {
                 }
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select template" className="w-full" />
+                  <SelectValue
+                    placeholder="Select template"
+                    className="w-full"
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="NewsTemplate">NewsTemplate</SelectItem>
-                  <SelectItem value="BusinessTemplate">
-                    BusinessTemplate
+                  <SelectItem value="EducationTemplate">
+                    Education Template
                   </SelectItem>
-                  <SelectItem value="string">Default Template</SelectItem>
+                  <SelectItem value="FoodTemplate">Food Template</SelectItem>
+                  <SelectItem value="BusinessTemplate">
+                    Business Template
+                  </SelectItem>
+                  <SelectItem value="NewsTemplate">Default Template</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -410,7 +433,10 @@ const CategoryManagement = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={handleSaveAdd}>
+            <Button type="submit" onClick={handleSaveAdd} disabled={isCreating}>
+              {isCreating ? (
+                <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></span>
+              ) : null}
               Save Category
             </Button>
           </DialogFooter>
@@ -424,7 +450,7 @@ const CategoryManagement = () => {
             <DialogTitle>Edit Category</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className=" items-center gap-4">
               <Label htmlFor="editName" className="text-right">
                 Category Name:
               </Label>
@@ -434,10 +460,10 @@ const CategoryManagement = () => {
                 onChange={(e) =>
                   setEditCategory({ ...editCategory, name: e.target.value })
                 }
-                className="col-span-3"
+                className="mt-2"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className=" items-center gap-4">
               <Label htmlFor="editTemplate" className="text-right">
                 Template:
               </Label>
@@ -447,7 +473,7 @@ const CategoryManagement = () => {
                   setEditCategory({ ...editCategory, tamplate: value })
                 }
               >
-                <SelectTrigger className="col-span-3">
+                <SelectTrigger className="mt-2">
                   <SelectValue placeholder="Select template" />
                 </SelectTrigger>
                 <SelectContent>
@@ -460,9 +486,9 @@ const CategoryManagement = () => {
               </Select>
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Sub-Categories:</Label>
-              <div className="col-span-3 space-y-3">
+            <div className=" items-center gap-4">
+              <Label className="text-right ">Sub-Categories:</Label>
+              <div className="space-y-2 mt-2">
                 {editCategory.subnames.map((subname, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     <Input
@@ -488,9 +514,8 @@ const CategoryManagement = () => {
                 ))}
                 <Button
                   type="button"
-                  variant="outline"
                   onClick={() => addSubcategoryField(true)}
-                  className="mt-2"
+                  className="mt-2 bg-accent-orange"
                 >
                   + Add Another Sub-category
                 </Button>
@@ -498,7 +523,11 @@ const CategoryManagement = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={handleSaveEdit}>
+            <Button
+              type="submit"
+              onClick={handleSaveEdit}
+              className="bg-green-600"
+            >
               Save Changes
             </Button>
           </DialogFooter>
