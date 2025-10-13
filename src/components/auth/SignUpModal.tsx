@@ -19,6 +19,7 @@ import VerifyOtpModal from "./VerifyOtpModal";
 import SocialLogin from "./SocialLogin";
 
 type SignUpSchemaType = {
+  fullName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -60,7 +61,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
 
     setLoading(true);
     setEmail(data.email);
-
+    console.log(data);
     try {
       const result = await registerNewUser(data).unwrap();
       if (result?.resetToken) {
@@ -111,6 +112,22 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                 className="mt-6 space-y-4"
               >
                 <div>
+                  <Label className="mb-1">Full Name</Label>
+                  <Input
+                    {...register("fullName", {
+                      required: "Name is required",
+                    })}
+                    type="text"
+                    placeholder="Full Name"
+                    className="rounded-none mt-2 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4"
+                  />
+                  {errors.fullName && (
+                    <p className="text-xs text-red-500">
+                      {errors.fullName.message}
+                    </p>
+                  )}
+                </div>
+                <div>
                   <Label className="mb-1">Email</Label>
                   <Input
                     {...register("email", {
@@ -130,7 +147,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                     </p>
                   )}
                 </div>
-
                 <div>
                   <Label className="mb-1">Password</Label>
                   <div className="relative">
@@ -160,7 +176,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                     </p>
                   )}
                 </div>
-
                 <div>
                   <Label className="mb-1">Re-enter Password</Label>
                   <Input
@@ -179,7 +194,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                     </p>
                   )}
                 </div>
-
                 <button
                   type="submit"
                   disabled={loading}
