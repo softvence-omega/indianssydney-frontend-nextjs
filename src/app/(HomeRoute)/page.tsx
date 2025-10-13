@@ -30,24 +30,26 @@ const Page = () => {
   return (
     <div>
       <CommonWrapper>
-        <NewsCurrent data={data?.data?.[0]} />
-        <BusinessInnovation data={data?.data?.[1]} />
-        <EducationCareer data={data?.data?.[2]} />
-        <Ad />
-        <SportsPlay data={data?.data?.[0]} />
-        {/* <LifeLiving data={data?.data?.[0]} /> */}
-        {/* <ArtsMedia /> */}
-        <NewsCurrent data={data?.data?.[0]} />
-        <PodcastVideo />
-        <Ad />
-        {/* <EnvironmentPlanet />
+        <div className="overflow-hidden">
+          <NewsCurrent data={data?.data?.[0]} />
+          <BusinessInnovation data={data?.data?.[1]} />
+          <EducationCareer data={data?.data?.[2]} />
+          <Ad />
+          <SportsPlay data={data?.data?.[0]} />
+          {/* <LifeLiving data={data?.data?.[0]} /> */}
+          {/* <ArtsMedia /> */}
+          <NewsCurrent data={data?.data?.[0]} />
+          <PodcastVideo />
+          <Ad />
+          {/* <EnvironmentPlanet />
         <FoodFlavours />
         <CultureIdentity />
         <VoicesPerspective />
         */}
-        <Recommendation />
-        <div className=" bottom-4 right-4 fixed z-50">
-          <Chatbot />
+          <Recommendation />
+          <div className=" bottom-4 right-4 z-50">
+            <Chatbot />
+          </div>
         </div>
       </CommonWrapper>
     </div>

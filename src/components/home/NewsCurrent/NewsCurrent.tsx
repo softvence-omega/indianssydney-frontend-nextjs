@@ -20,7 +20,7 @@ const NewsCurrent = ({ data }: { data: any }) => {
             </div>
 
             {/* Secondary cards */}
-            <div className="grid grid-cols-2 xl:grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 xl:grid-cols-1 gap-4">
               {data?.contents?.slice(0, 2)?.map((item: any) => (
                 <NewsCardSecondary
                   key={item.id}

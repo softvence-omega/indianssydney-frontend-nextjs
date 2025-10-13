@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Label } from "../ui/label";
 import VerifyOtpModal from "./VerifyOtpModal";
+import SocialLogin from "./SocialLogin";
 
 type SignUpSchemaType = {
   email: string;
@@ -197,7 +198,10 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                   Sign In
                 </span>
               </p>
+              <SocialLogin />
             </div>
+
+            {/* Divider */}
           </div>
         </DialogContent>
       </Dialog>

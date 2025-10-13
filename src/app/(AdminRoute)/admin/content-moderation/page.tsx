@@ -675,8 +675,6 @@ const ArticlesPage = () => {
     ...declinedArticles,
   ];
 
-  
-
   const handleStatusChange = async (
     id: string,
     status: "APPROVE" | "Declined"
@@ -908,14 +906,23 @@ const ArticlesPage = () => {
   };
 
   const getTabCounts = () => ({
-    recent: recentArticles.length,
-    PENDING: pendingArticles.length,
-    APPROVE: approvedArticles.length,
-    DECLINE: declinedArticles.length,
-    all: allArticles.length,
+    recent: recentArticles?.length,
+    PENDING: pendingArticles?.length,
+    APPROVE: approvedArticles?.length,
+    DECLINE: declinedArticles?.length,
+    all: allArticles?.length,
   });
 
-  const tabCounts = getTabCounts();
+  interface TabCounts {
+    [key: string]: number;
+    recent: number;
+    PENDING: number;
+    APPROVE: number;
+    DECLINE: number;
+    all: number;
+  }
+
+  const tabCounts: TabCounts = getTabCounts();
 
   return (
     <div>
@@ -939,7 +946,7 @@ const ArticlesPage = () => {
             {tab === "all"
               ? "All Articles"
               : tab.charAt(0).toUpperCase() + tab.slice(1).toLowerCase()}
-            {(tabCounts[tab]) > 0 && (
+            {tabCounts[tab] > 0 && (
               <span className="ml-2 bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
                 {tabCounts[tab]}
               </span>
