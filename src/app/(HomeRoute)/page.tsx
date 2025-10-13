@@ -16,7 +16,12 @@ import { useGetHomePageDataQuery } from "@/store/features/article/article.api";
 const Page = () => {
   const { data, isLoading, isError } = useGetHomePageDataQuery({});
 
-  if (isLoading) return <div className="p-10 text-xl">Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="p-10 text-xl min-h-[50vh] text-center animate-pulse flex items-center justify-center">
+        Loading...
+      </div>
+    );
   if (isError)
     return (
       <div className="p-10 text-xl text-red-500">Error loading articles</div>
@@ -25,23 +30,26 @@ const Page = () => {
   return (
     <div>
       <CommonWrapper>
-        <NewsCurrent data={data?.data?.[0]} />
-        <BusinessInnovation data={data?.data?.[1]} />
-        <EducationCareer data={data?.data?.[2]} />
-        <Ad />
-        <SportsPlay data={data?.data?.[0]} />
-        <LifeLiving data={data?.data?.[0]} />
-        <ArtsMedia />
-        <PodcastVideo />
-        <Ad />
-        {/* <EnvironmentPlanet />
+        <div className="overflow-hidden">
+          <NewsCurrent data={data?.data?.[0]} />
+          <BusinessInnovation data={data?.data?.[1]} />
+          <EducationCareer data={data?.data?.[2]} />
+          <Ad />
+          <SportsPlay data={data?.data?.[0]} />
+          {/* <LifeLiving data={data?.data?.[0]} /> */}
+          {/* <ArtsMedia /> */}
+          <NewsCurrent data={data?.data?.[0]} />
+          <PodcastVideo />
+          <Ad />
+          {/* <EnvironmentPlanet />
         <FoodFlavours />
         <CultureIdentity />
         <VoicesPerspective />
         */}
-        <Recommendation />
-        <div className=" bottom-4 right-4 fixed z-50">
-          <Chatbot />
+          <Recommendation />
+          <div className=" bottom-4 right-4 z-50">
+            <Chatbot />
+          </div>
         </div>
       </CommonWrapper>
     </div>

@@ -9,7 +9,7 @@ import NewsTemplate from "@/components/templates/NewsTemplate";
 import BusinessTemplate from "@/components/templates/BusinessTemplate";
 import EducationTemplate from "@/components/templates/EducationTemplate";
 import PodcastTemplate from "@/components/templates/PodcastTemplate";
-import FoodTemplate from "@/components/templates/FoodTemplate";
+// import FoodTemplate from "@/components/templates/FoodTemplate";
 import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
 
 // ------------------------------
@@ -19,8 +19,8 @@ type TemplateKeys =
   | "NewsTemplate"
   | "BusinessTemplate"
   | "EducationTemplate"
-  | "PodcastTemplate"
-  | "FoodTemplate";
+  | "PodcastTemplate";
+// | "FoodTemplate";
 
 type TemplateProps = {
   category: any;
@@ -32,7 +32,7 @@ const templateMap: Record<TemplateKeys, React.FC<TemplateProps>> = {
   BusinessTemplate,
   EducationTemplate,
   PodcastTemplate,
-  FoodTemplate,
+  // FoodTemplate,
 };
 
 // ------------------------------
@@ -42,7 +42,7 @@ const excludedComponents: Record<string, any> = {
   // Example: "/category" → Custom component for that category
   // events: dynamic(() => import("@/components/home/PodcastVideo")),
   "live-events": dynamic(() => import("@/components/home/LiveEventsPage")),
-  "video-podcast":dynamic(() => import("@/components/home/PodcastVideo")),
+  "video-podcast": dynamic(() => import("@/components/home/PodcastVideo")),
 
   // // Example: "/category/subcategory" → Custom component for that subcategory
   // "business/special": dynamic(

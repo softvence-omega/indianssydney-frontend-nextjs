@@ -9,6 +9,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ContributorApplicationModal from "./ContributorApplicationModal";
 import { useAppSelector } from "@/store/hook";
+import { useGetNotificationsQuery } from "@/store/features/notifications/notification.api";
 
 interface ProfileSheetProps {
   isOpen: boolean;
@@ -22,6 +23,8 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
   const [aiRecommendations, setAiRecommendations] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+
+  const { data: notificationCount } = useGetNotificationsQuery({});
 
   // Handle clicks outside the sidebar
   useEffect(() => {
@@ -160,7 +163,7 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
                     Notifications
                   </span>
                   <p className="text-xs  w-6 h-6 rounded-full bg-[#FFE2E2] flex items-center justify-center text-brick-red">
-                    10
+                    {notificationCount?.data?.count || 0}
                   </p>
                 </Link>
 

@@ -171,7 +171,7 @@ const AdminAdManagement = () => {
             >
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <img
-                  src={ad.image || "https://via.placeholder.com/150"}
+                  src={ad.adsimage || "https://via.placeholder.com/150"}
                   alt={ad.title}
                   className="w-16 h-16 object-cover rounded-md"
                 />

@@ -6,10 +6,12 @@ import ArticlePreview from "../ArticlePreview";
 import { useCreateNewArticleMutation } from "@/store/features/article/article.api";
 import { UploadFormData } from "../types";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const [createNewArticle] = useCreateNewArticleMutation();
   const [step, setStep] = useState<1 | 2>(1);
+  const router = useRouter();
   const initialFormData: UploadFormData = {
     contentType: "ARTICLE",
     title: "",
@@ -84,12 +86,14 @@ const Page = () => {
       // Call the API
       const result = await createNewArticle(uploadedData);
 
-
       // Reset form and update step
       toast.success("Content published successfully!");
+      router.push("/my-contents");
+
       setFormData(initialFormData);
     } catch (error) {
       console.error("Error publishing content:", error);
+      router.push("/my-contents");
     }
   };
 
@@ -100,7 +104,6 @@ const Page = () => {
           formData={formData}
           onUpdate={handleUpdate}
           onSubmit={() => setStep(2)}
-          
         />
       )}
 
