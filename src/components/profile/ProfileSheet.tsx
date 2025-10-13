@@ -217,20 +217,7 @@ const ProfileSheet: React.FC<ProfileSheetProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
           </nav>
-          <Link
-            href="/admin"
-            className="pb-2 border-b border-gray-200 text-gray-700 hover:text-accent-orange transition"
-            onClick={onClose}
-          >
-            Admin Dashboard
-          </Link>
-          <Link
-            href="/editor"
-            className="pb-2 border-b border-gray-200 text-gray-700 hover:text-accent-orange transition"
-            onClick={onClose}
-          >
-            Editor Dashboard
-          </Link>
+   
 
           {/* Logout Button */}
           <PrimaryButton
