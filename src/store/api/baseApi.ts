@@ -31,8 +31,8 @@ export const baseAPI = createApi({
     "language",
     "bookmark",
     "live",
-    "podcast"
-   
+    "podcast",
+    "report",
   ],
   endpoints: () => ({}),
 });

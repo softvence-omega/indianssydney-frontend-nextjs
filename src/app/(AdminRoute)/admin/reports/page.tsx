@@ -3,10 +3,15 @@
 import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useGetAllReportsQuery } from "@/store/features/admin/report.api";
+import {
+  useGetAllReportsQuery,
+  useSoftDeleteReportMutation,
+} from "@/store/features/admin/report.api";
+import { toast } from "sonner";
 
 const ReportsListPage = () => {
   const { data, isLoading, isError } = useGetAllReportsQuery({});
+  const [deleteReport] = useSoftDeleteReportMutation();
 
   if (isLoading)
     return <p className="text-center text-gray-500">Loading reports...</p>;
@@ -19,6 +24,17 @@ const ReportsListPage = () => {
     );
 
   const reports = data?.data || [];
+
+  const handleDelete = async (reportId: string) => {
+    try {
+      const response = await deleteReport(reportId).unwrap();
+      if (response?.success) {
+        toast.success(response?.message);
+      }
+    } catch (err) {
+      console.error("Failed to delete report:", err);
+    }
+  };
 
   return (
     <div>
@@ -80,7 +96,7 @@ const ReportsListPage = () => {
 
                   {/* Content Title */}
                   <td className="px-6 py-4 text-sm text-gray-900">
-                    {report.content?.title || "Untitled"}
+                    {report?.content?.title || "Untitled"}
                   </td>
 
                   {/* Reason */}
@@ -111,8 +127,10 @@ const ReportsListPage = () => {
                       </Button>
                     </Link>
                     <Button
+                      onClick={() => handleDelete(report.id)}
                       variant="destructive"
-                      size="sm">
+                      size="sm"
+                    >
                       Delete
                     </Button>
                   </td>
@@ -169,10 +187,7 @@ const ReportsListPage = () => {
                   View
                 </Button>
               </Link>
-              <Button
-                variant="destructive"
-                className="flex-1"
-                 >
+              <Button variant="destructive" className="flex-1">
                 Delete
               </Button>
             </div>

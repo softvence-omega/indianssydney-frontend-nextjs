@@ -158,11 +158,11 @@ const EditPodcast = () => {
 
       const result = await updateVideo({ id, data: payload });
       if ("error" in result) throw new Error("Update failed");
-      toast.success("Video updated successfully!");
+      toast.success("Podcast updated successfully!");
       router.push("/my-contents");
     } catch (err) {
       console.error("Error updating video:", err);
-      toast.error("Failed to update video");
+      toast.error("Failed to update podcast");
     }
   };
 
@@ -178,9 +178,9 @@ const EditPodcast = () => {
             <Button variant="ghost" onClick={() => router.back()}>
               <ArrowLeft className="w-4 h-4 mr-2" /> Back
             </Button>
-            <h1 className="text-3xl font-bold mb-2">Edit Video</h1>
+            <h1 className="text-3xl font-bold mb-2">Edit Podcast</h1>
             <p className="text-gray-600">
-              Update video content and related details.
+              Update podcast content and related details.
             </p>
           </div>
 

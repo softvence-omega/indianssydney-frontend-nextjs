@@ -95,8 +95,8 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
 
             <div className="md:col-span-5 flex flex-col justify-between">
               <DialogHeader>
-                <DialogTitle className="text-3xl font-bold mb-2 font-cursive">
-                  <img src="/TAC1.png" className="max-w-sm" alt="" />
+                <DialogTitle >
+                  <img src="/TAC1.png" className="max-w-sm w-full" alt="" />
                 </DialogTitle>
                 <h3 className="text-xl text-accent-orange font-semibold">
                   Register

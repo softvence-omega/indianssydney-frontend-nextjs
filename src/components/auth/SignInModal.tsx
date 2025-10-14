@@ -94,8 +94,8 @@ const SignInModal: React.FC<SignInModalProps> = ({
           {/* Right Form */}
           <div className="md:col-span-5 flex flex-col justify-between">
             <DialogHeader>
-              <DialogTitle className="text-3xl lg:text-[32px] font-bold mb-2 font-cursive">
-                <img src="/TAC1.png" alt="" className="max-w-sm" />
+              <DialogTitle>
+                <img src="/TAC1.png" alt="" className="max-w-sm w-full" />
               </DialogTitle>
               <h3 className="text-xl text-accent-orange font-semibold">
                 Sign In
@@ -115,7 +115,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
                 <Input
                   type="email"
                   placeholder="Email"
-                  className="rounded-none mt-2 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4"
+                  className="rounded-none mt-2 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4 w-full"
                   {...register("email", { required: "Email is required" })}
                 />
                 {errors.email && (
@@ -132,7 +132,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
-                    className="rounded-none mt-2 pr-10 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4"
+                    className="rounded-none mt-2 pr-10 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4 w-full"
                     {...register("password", {
                       required: "Password is required",
                     })}
