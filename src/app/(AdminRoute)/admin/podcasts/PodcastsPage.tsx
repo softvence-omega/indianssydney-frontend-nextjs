@@ -1,147 +1,94 @@
 // "use client";
 
-// import React, { useState } from "react";
-// import PodcastCard, { Podcast } from "./PodcastCard";
+// import React, { useEffect, useState } from "react";
 // import DashboardHeader from "@/components/reusable/DashboardHeader";
+// import PodcastCard, { Podcast } from "./PodcastCard";
+// import {
+//   useGetPodcastsApprovedQuery,
+//   useGetPodcastsDeclinedQuery,
+//   useGetPodcastsPendingQuery,
+// } from "@/store/features/videoPodcast/podcast.api";
 
-// type PodcastStatus = "recent" | "pending" | "approved" | "declined";
-// const initialPodcasts: Podcast[] = [
-//   {
-//     id: "1",
-//     title: "Volkswagen Profits Tumble as Tariffs Weigh on Auto Industry",
-//     coverImage: "/register.png",
-//     description:
-//       "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
-//     author: "John",
-//     date: "23 June 2025",
-//     status: "recent",
-//     negativity: {
-//       score: 95,
-//       positives: [],
-//       negatives: [
-//         "Lorem ipsum is simply dummy text",
-//         "Lorem ipsum is simply dummy text",
-//         "Lorem ipsum is simply dummy text",
-//       ],
-//     },
-//   },
-//   {
-//     id: "2",
-//     title: "Volkswagen Profits Tumble as Tariffs Weigh on Auto Industry",
-//     coverImage: "/register.png",
-//     description:
-//       "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
-//     author: "John",
-//     date: "23 June 2025",
-//     status: "recent",
-//     negativity: {
-//       score: 95,
-//       positives: [],
-//       negatives: [
-//         "Lorem ipsum is simply dummy text",
-//         "Lorem ipsum is simply dummy text",
-//         "Lorem ipsum is simply dummy text",
-//       ],
-//     },
-//   },
-//   {
-//     id: "3",
-//     title: "The Rise of Remote Work",
-//     coverImage: "/register.png",
-//     description:
-//       "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s...",
-//     author: "John",
-//     date: "23 June 2025",
-//     status: "pending",
-//     negativity: {
-//       score: 20,
-//       positives: [
-//         "Lorem ipsum is simply dummy text",
-//         "Lorem ipsum is simply dummy text",
-//       ],
-//       negatives: [],
-//     },
-//   },
-//   {
-//     id: "4",
-//     title: "Volkswagen Profits Tumble as Tariffs Weigh on Auto Industry",
-//     coverImage: "/register.png",
-//     description:
-//       "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
-//     author: "John",
-//     date: "23 June 2025",
-//     status: "approved",
-//     negativity: {
-//       score: 95,
-//       positives: [],
-//       negatives: [
-//         "Lorem ipsum is simply dummy text",
-//         "Lorem ipsum is simply dummy text",
-//         "Lorem ipsum is simply dummy text",
-//       ],
-//     },
-//   },
-//   {
-//     id: "5",
-//     title: "Volkswagen Profits Tumble as Tariffs Weigh on Auto Industry",
-//     coverImage: "/register.png",
-//     description:
-//       "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
-//     author: "John",
-//     date: "23 June 2025",
-//     status: "declined",
-//     negativity: {
-//       score: 95,
-//       positives: [],
-//       negatives: [
-//         "Lorem ipsum is simply dummy text",
-//         "Lorem ipsum is simply dummy text",
-//         "Lorem ipsum is simply dummy text",
-//       ],
-//     },
-//   },
-// ];
+// type PodcastStatus = "APPROVE" | "PENDING" | "Declined";
 
 // const PodcastsPage = () => {
-//   const [podcasts, setPodcasts] = useState<Podcast[]>(initialPodcasts);
-//   const [filter, setFilter] = useState<
-//   PodcastStatus
-//   >("recent");
+//   const [filter, setFilter] = useState<PodcastStatus>("APPROVE");
+//   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
+
+//   const { data: approvedData, isLoading: approvedLoading } =
+//     useGetPodcastsApprovedQuery({});
+//   const { data: pendingData, isLoading: pendingLoading } =
+//     useGetPodcastsPendingQuery({});
+//   const { data: declinedData, isLoading: declinedLoading } =
+//     useGetPodcastsDeclinedQuery({});
+
+//   useEffect(() => {
+//     let currentData: any[] = [];
+
+//     if (filter === "APPROVE") currentData = approvedData?.PODCAST || [];
+//     if (filter === "PENDING") currentData = pendingData?.PODCAST || [];
+//     if (filter === "Declined") currentData = declinedData?.PODCAST || [];
+
+//     const formatted: Podcast[] = currentData.map((item) => ({
+//       id: item.id,
+//       title: item.title,
+//       coverImage: item.image || "/placeholder.png",
+//       description:
+//         item.paragraph || item.subTitle || "No description available",
+//       author: item.user?.fullName || "Unknown",
+//       date: new Date(item.createdAt).toLocaleDateString(),
+//       status: item.status,
+//       negativity: {
+//         score: item.evaluationResult?.negativityScore || 0,
+//         positives: [],
+//         negatives: [],
+//       },
+//     }));
+
+//     setPodcasts(formatted);
+//   }, [filter, approvedData, pendingData, declinedData]);
 
 //   const handleStatusChange = (id: string, status: "approved" | "declined") => {
-//     setPodcasts((prev) =>
-//       prev.map((a) => (a.id === id ? { ...a, status: status } : a))
-//     );
+//     // Handle status change logic here if needed
+//     console.log(`Podcast ${id} status changed to ${status}`);
 //   };
 
-//   const filteredPodcasts = podcasts.filter((a) => a.status === filter);
+//   const isLoading = approvedLoading || pendingLoading || declinedLoading;
+
+//   if (isLoading)
+//     return (
+//       <div className="p-8 text-center text-gray-500">Loading podcasts...</div>
+//     );
 
 //   return (
 //     <div>
 //       <DashboardHeader title="Podcasts" />
+
 //       {/* Tabs */}
 //       <div className="flex gap-4 mb-6">
-//         {["recent", "pending", "approved", "declined"].map((tab) => (
+//         {["APPROVE", "PENDING", "Declined"].map((tab) => (
 //           <button
 //             key={tab}
 //             className={`cursor-pointer ${
-//               filter === tab ? "text-accent-orange" : ""
+//               filter === tab
+//                 ? "text-accent-orange font-semibold"
+//                 : "text-gray-500"
 //             }`}
 //             onClick={() => setFilter(tab as PodcastStatus)}
 //           >
-//             {tab.charAt(0).toUpperCase() + tab.slice(1)}
+//             {tab.charAt(0).toUpperCase() + tab.slice(1).toLowerCase()}
 //           </button>
 //         ))}
 //       </div>
 
-//       {/* Articles */}
-//       {filteredPodcasts.map((podcast) => (
-//         <PodcastCard
-//           key={podcast.id}
-//           podcast={podcast}
-//           onStatusChange={handleStatusChange}
-//         />
-//       ))}
+//       {/* Podcast Cards */}
+//       {podcasts.length === 0 ? (
+//         <div className="text-gray-500 text-center">No podcasts found.</div>
+//       ) : (
+//         podcasts.map((podcast) => (
+//           <PodcastCard key={podcast.id} podcast={podcast} onStatusChange={handleStatusChange} />
+//         ))
+//       )}
 //     </div>
 //   );
 // };
@@ -150,65 +97,101 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DashboardHeader from "@/components/reusable/DashboardHeader";
-import PodcastCard, { Podcast } from "./PodcastCard";
+import SkeletonLoader from "@/components/reusable/SkeletonLoader";
+import PodcastCard from "./PodcastCard";
 import {
   useGetPodcastsApprovedQuery,
-  useGetPodcastsDeclinedQuery,
   useGetPodcastsPendingQuery,
+  useGetPodcastsDeclinedQuery,
 } from "@/store/features/videoPodcast/podcast.api";
+import ArticleCard from "../articles/ArticleCard";
+import { useUpdateArticleStatusMutation } from "@/store/features/article/article.api";
 
 type PodcastStatus = "APPROVE" | "PENDING" | "Declined";
 
 const PodcastsPage = () => {
-  const [filter, setFilter] = useState<PodcastStatus>("APPROVE");
-  const [podcasts, setPodcasts] = useState<Podcast[]>([]);
+  const [activeTab, setActiveTab] = useState<PodcastStatus>("APPROVE");
 
-  const { data: approvedData, isLoading: approvedLoading } =
-    useGetPodcastsApprovedQuery({});
-  const { data: pendingData, isLoading: pendingLoading } =
-    useGetPodcastsPendingQuery({});
-  const { data: declinedData, isLoading: declinedLoading } =
-    useGetPodcastsDeclinedQuery({});
+  // ✅ Fetch podcast data by status
+  const {
+    data: approvedData,
+    isLoading: loadingApproved,
+    isError: errorApproved,
+  } = useGetPodcastsApprovedQuery({});
 
-  useEffect(() => {
-    let currentData: any[] = [];
+  const {
+    data: pendingData,
+    isLoading: loadingPending,
+    isError: errorPending,
+  } = useGetPodcastsPendingQuery({});
 
-    if (filter === "APPROVE") currentData = approvedData?.PODCAST || [];
-    if (filter === "PENDING") currentData = pendingData?.PODCAST || [];
-    if (filter === "Declined") currentData = declinedData?.PODCAST || [];
-
-    const formatted: Podcast[] = currentData.map((item) => ({
-      id: item.id,
-      title: item.title,
-      coverImage: item.image || "/placeholder.png",
-      description:
-        item.paragraph || item.subTitle || "No description available",
-      author: item.user?.fullName || "Unknown",
-      date: new Date(item.createdAt).toLocaleDateString(),
-      status: item.status,
-      negativity: {
-        score: item.evaluationResult?.negativityScore || 0,
-        positives: [],
-        negatives: [],
-      },
-    }));
-
-    setPodcasts(formatted);
-  }, [filter, approvedData, pendingData, declinedData]);
-
-  const handleStatusChange = (id: string, status: "approved" | "declined") => {
-    // Handle status change logic here if needed
-    console.log(`Podcast ${id} status changed to ${status}`);
+  const {
+    data: declinedData,
+    isLoading: loadingDeclined,
+    isError: errorDeclined,
+  } = useGetPodcastsDeclinedQuery({});
+  const [updateStatus] = useUpdateArticleStatusMutation();
+  const handleStatusChange = async (
+    id: string,
+    status: "APPROVE" | "Declined"
+  ) => {
+    try {
+      await updateStatus({ id, status });
+    } catch (err) {
+      console.error("Failed to update status", err);
+    }
   };
 
-  const isLoading = approvedLoading || pendingLoading || declinedLoading;
+  // ✅ Render podcasts similar to video rendering
+  const renderPodcasts = (data: any, isLoading: boolean, isError: boolean) => {
+    if (isLoading) return <SkeletonLoader />;
+    if (isError)
+      return <p className="text-red-500">Failed to load podcasts.</p>;
 
-  if (isLoading)
-    return (
-      <div className="p-8 text-center text-gray-500">Loading podcasts...</div>
+    const podcasts = data?.PODCAST?.filter(
+      (item: any) => item.contentType === "PODCAST"
     );
+
+    if (!podcasts?.length) return <p>No podcasts found.</p>;
+
+    return podcasts.map((podcast: any) => {
+      let parsedCompareResult = null;
+      if (podcast.compareResult) {
+        try {
+          parsedCompareResult = JSON.parse(podcast.compareResult);
+        } catch (error) {
+          console.error("Error parsing compareResult:", error);
+        }
+      }
+
+      return (
+        <ArticleCard
+          key={podcast.id}
+          article={{
+            id: podcast.id,
+            contentType: podcast.contentType,
+            title: podcast.title,
+            description:
+              podcast.subTitle ||
+              podcast.paragraph ||
+              "No description available",
+            author: podcast.user?.fullName || "Unknown",
+            date: new Date(podcast.createdAt).toLocaleDateString(),
+            status: podcast.status,
+            negativity: {
+              score: podcast.evaluationResult?.negativityScore || 0,
+              positives: [],
+              negatives: [],
+            },
+            compareResult: parsedCompareResult,
+          }}
+          onStatusChange={handleStatusChange}
+        />
+      );
+    });
+  };
 
   return (
     <div>
@@ -220,25 +203,26 @@ const PodcastsPage = () => {
           <button
             key={tab}
             className={`cursor-pointer ${
-              filter === tab
+              activeTab === tab
                 ? "text-accent-orange font-semibold"
                 : "text-gray-500"
             }`}
-            onClick={() => setFilter(tab as PodcastStatus)}
+            onClick={() => setActiveTab(tab as PodcastStatus)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1).toLowerCase()}
           </button>
         ))}
       </div>
 
-      {/* Podcast Cards */}
-      {podcasts.length === 0 ? (
-        <div className="text-gray-500 text-center">No podcasts found.</div>
-      ) : (
-        podcasts.map((podcast) => (
-          <PodcastCard key={podcast.id} podcast={podcast} onStatusChange={handleStatusChange} />
-        ))
-      )}
+      {/* Render Based on Active Tab */}
+      {activeTab === "APPROVE" &&
+        renderPodcasts(approvedData, loadingApproved, errorApproved)}
+
+      {activeTab === "PENDING" &&
+        renderPodcasts(pendingData, loadingPending, errorPending)}
+
+      {activeTab === "Declined" &&
+        renderPodcasts(declinedData, loadingDeclined, errorDeclined)}
     </div>
   );
 };

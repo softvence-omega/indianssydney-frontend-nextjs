@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export type Article = {
   id: string;
+  contentType?: string;
   title: string;
   description: string;
   author: string;
@@ -33,20 +34,29 @@ const ArticleCard: React.FC<{
   article: Article;
   onStatusChange: (id: string, status: "APPROVE" | "Declined") => void;
 }> = ({ article, onStatusChange }) => {
+  const router = useRouter();
+  const handleOpenDetails = () => {
+    if (article.contentType === "ARTICLE")
+      router.push(`/details/article/${article.id}`);
+    else if (article.contentType === "VIDEO")
+      router.push(`/details/video/${article.id}`);
+    else if (article.contentType === "PODCAST")
+      router.push(`/details/video/${article.id}`);
+  };
   return (
     <Card className="mb-4 shadow-none">
       <CardContent>
         {/* Article Info */}
         <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
-          <Link href={`/details/article/${article.id}`} className="w-full">
-            <div>
+          <div className="w-full">
+            <div onClick={handleOpenDetails} className="cursor-pointer">
               <h2 className="font-semibold text-lg">{article.title}</h2>
               <p className="text-sm text-gray-600">{article.description}</p>
               <p className="text-xs mt-2 text-gray-500">
                 Author - {article.author} | {article.date}
               </p>
             </div>
-          </Link>
+          </div>
 
           <div className="flex gap-2">
             {article.status === "APPROVE" ? (

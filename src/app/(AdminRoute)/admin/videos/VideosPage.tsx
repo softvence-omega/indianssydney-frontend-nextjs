@@ -146,6 +146,7 @@ import {
   useGetVideosPendingQuery,
   useGetVideosDeclinedQuery,
 } from "@/store/features/videoPodcast/video.api";
+import { useUpdateArticleStatusMutation } from "@/store/features/article/article.api";
 
 type VideoStatus = "APPROVE" | "PENDING" | "Declined";
 
@@ -171,8 +172,17 @@ const VideosPage = () => {
     isError: errorDeclined,
   } = useGetVideosDeclinedQuery({});
 
-  const handleStatusChange = (id: string, status: "APPROVE" | "Declined") => {
-    console.log(`Video ${id} status changed to ${status}`);
+    const [updateStatus] = useUpdateArticleStatusMutation();
+
+  const handleStatusChange = async (
+    id: string,
+    status: "APPROVE" | "Declined"
+  ) => {
+    try {
+      await updateStatus({ id, status });
+    } catch (err) {
+      console.error("Failed to update status", err);
+    }
   };
 
   // ✅ Render function (like ArticlesPage)
@@ -200,6 +210,7 @@ const VideosPage = () => {
           key={video.id}
           article={{
             id: video.id,
+            contentType: video.contentType,
             title: video.title,
             description:
               video.subTitle || video.paragraph || "No description available",
