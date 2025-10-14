@@ -501,6 +501,16 @@ import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
 import { useAppSelector } from "@/store/hook";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { LANGUAGES } from "./Language";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import ReactCountryFlag from "react-country-flag";
+import Image from "next/image";
 
 type SubCategory = {
   id: string;
@@ -521,14 +531,6 @@ type Category = {
 const staticRoutes = [
   { name: "Live Events", path: "/live-events" },
   { name: "Videos & Podcasts", path: "/video-podcast" },
-];
-
-const LANGUAGES = [
-  { code: "en", label: "English" },
-  { code: "fr", label: "French" },
-  { code: "de", label: "Deutch" },
-  { code: "bn", label: "Bengali" },
-  { code: "hi", label: "Hindi" },
 ];
 
 const Navbar: React.FC = () => {
@@ -658,17 +660,32 @@ const Navbar: React.FC = () => {
           {/* Right actions - Visible only on md+ */}
           <div className="hidden md:flex items-center space-x-2 lg:space-x-3 flex-shrink-0">
             <div className="relative inline-block notranslate">
-              <select
-                value={currentLang}
-                onChange={(e) => handleChange(e.target.value)}
-                className="px-2 lg:px-3 py-1.5 lg:py-2 rounded-md border border-gray-300 bg-white text-xs lg:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-primary"
-              >
-                {LANGUAGES.map((lang) => (
-                  <option key={lang.code} value={lang.code}>
-                    {lang.label}
-                  </option>
-                ))}
-              </select>
+              <Select value={currentLang} onValueChange={handleChange}>
+                <SelectTrigger className="w-[130px] border-gray-300">
+                  <SelectValue placeholder="Select language" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {LANGUAGES.map((lang) => (
+                    <SelectItem
+                      key={lang.code}
+                      value={lang.code}
+                      className="notranslate"
+                    >
+                      <div className="flex items-center gap-1">
+                        <Image
+                          src={`https://flagcdn.com/w20/${lang.flag.toLowerCase()}.png`}
+                          alt={lang.label}
+                          width={20}
+                          height={15}
+                          className="inline-block"
+                        />
+                        <span>{lang.label}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {user ? (
@@ -801,25 +818,33 @@ const Navbar: React.FC = () => {
                 <h3 className="text-sm font-semibold mb-3 text-gray-700">
                   Language
                 </h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => setSelectedLang(lang.code)}
-                      className={`flex items-center space-x-2 p-2 border rounded-md transition-colors text-xs ${
-                        selectedLang === lang.code
-                          ? "bg-blue-primary text-white border-blue-primary"
-                          : "bg-white text-gray-700 border-gray-200 hover:border-gray-400"
-                      }`}
-                    >
-                      <img
-                        src={lang.flag}
-                        alt={lang.label}
-                        className="w-4 h-3"
-                      />
-                      <span>{lang.code}</span>
-                    </button>
-                  ))}
+                <div className="relative  notranslate">
+                  <Select value={currentLang} onValueChange={handleChange}>
+                    <SelectTrigger className="w-full border-gray-300 bg-white">
+                      <SelectValue placeholder="Select language" />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      {LANGUAGES.map((lang) => (
+                        <SelectItem
+                          key={lang.code}
+                          value={lang.code}
+                          className="notranslate"
+                        >
+                          <div className="flex items-center gap-1">
+                            <Image
+                              src={`https://flagcdn.com/w20/${lang.flag.toLowerCase()}.png`}
+                              alt={lang.label}
+                              width={20}
+                              height={15}
+                              className="inline-block"
+                            />
+                            <span>{lang.label}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 

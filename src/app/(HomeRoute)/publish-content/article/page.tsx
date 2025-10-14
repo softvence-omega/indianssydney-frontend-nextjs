@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 const Page = () => {
-  const [createNewArticle] = useCreateNewArticleMutation();
+  const [createNewArticle, { isLoading }] = useCreateNewArticleMutation();
   const [step, setStep] = useState<1 | 2>(1);
   const router = useRouter();
   const initialFormData: UploadFormData = {
@@ -99,20 +99,28 @@ const Page = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      {step === 1 && (
-        <ArticleForm
-          formData={formData}
-          onUpdate={handleUpdate}
-          onSubmit={() => setStep(2)}
-        />
-      )}
+      {isLoading ? (
+        <div className="justify-center items-center text-center">
+          <p className="">Loading.....</p>
+        </div>
+      ) : (
+        <>
+          {step === 1 && (
+            <ArticleForm
+              formData={formData}
+              onUpdate={handleUpdate}
+              onSubmit={() => setStep(2)}
+            />
+          )}
 
-      {step === 2 && (
-        <ArticlePreview
-          formData={formData}
-          onBack={() => setStep(1)}
-          onPublish={handlePublish}
-        />
+          {step === 2 && (
+            <ArticlePreview
+              formData={formData}
+              onBack={() => setStep(1)}
+              onPublish={handlePublish}
+            />
+          )}
+        </>
       )}
     </div>
   );

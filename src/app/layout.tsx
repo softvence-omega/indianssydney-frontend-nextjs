@@ -36,7 +36,6 @@ export default function RootLayout({
       new (window as any).google.translate.TranslateElement(
         {
           pageLanguage: "en",
-          includedLanguages: "en,bn,hi",
           autoDisplay: false,
         },
         "google_translate_element"
