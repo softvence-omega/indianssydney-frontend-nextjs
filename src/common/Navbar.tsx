@@ -599,7 +599,6 @@ const Navbar: React.FC = () => {
     year: "numeric",
   });
 
-
   const handleUserButtonClick = () => {
     if (user?.role === "USER" || user?.role === "CONTIBUTOR") {
       toggleProfileSheet();
@@ -735,7 +734,7 @@ const Navbar: React.FC = () => {
             ))}
 
             {data?.data
-              ?.slice(0, showMore ? allMenus.length : 7)
+              ?.slice(0, showMore ? allMenus.length : 4)
               ?.map((menu: Category) => (
                 <div
                   key={menu?.id}
