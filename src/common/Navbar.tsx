@@ -509,7 +509,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ReactCountryFlag from "react-country-flag";
 import Image from "next/image";
 
 type SubCategory = {
@@ -600,17 +599,6 @@ const Navbar: React.FC = () => {
     year: "numeric",
   });
 
-  const languages = [
-    {
-      code: "AU",
-      label: "English(AUS)",
-      flag: "https://flagcdn.com/w20/au.png",
-    },
-    { code: "US", label: "English", flag: "https://flagcdn.com/w20/us.png" },
-    { code: "UK", label: "English", flag: "https://flagcdn.com/w20/gb.png" },
-  ];
-
-  const [selectedLang, setSelectedLang] = useState(languages[0].code);
 
   const handleUserButtonClick = () => {
     if (user?.role === "USER" || user?.role === "CONTIBUTOR") {
