@@ -30,6 +30,9 @@ export const baseAPI = createApi({
     "profile",
     "language",
     "bookmark",
+    "live",
+    "podcast",
+    "report",
   ],
   endpoints: () => ({}),
 });

@@ -16,8 +16,10 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Label } from "../ui/label";
 import VerifyOtpModal from "./VerifyOtpModal";
+import SocialLogin from "./SocialLogin";
 
 type SignUpSchemaType = {
+  fullName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -59,7 +61,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
 
     setLoading(true);
     setEmail(data.email);
-
+    console.log(data);
     try {
       const result = await registerNewUser(data).unwrap();
       if (result?.resetToken) {
@@ -93,8 +95,8 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
 
             <div className="md:col-span-5 flex flex-col justify-between">
               <DialogHeader>
-                <DialogTitle className="text-3xl font-bold mb-2 font-cursive">
-                  <img src="/TAC1.png" className="max-w-sm" alt="" />
+                <DialogTitle >
+                  <img src="/TAC1.png" className="max-w-sm w-full" alt="" />
                 </DialogTitle>
                 <h3 className="text-xl text-accent-orange font-semibold">
                   Register
@@ -109,6 +111,22 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                 onSubmit={handleSubmit(onSubmit)}
                 className="mt-6 space-y-4"
               >
+                <div>
+                  <Label className="mb-1">Full Name</Label>
+                  <Input
+                    {...register("fullName", {
+                      required: "Name is required",
+                    })}
+                    type="text"
+                    placeholder="Full Name"
+                    className="rounded-none mt-2 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4"
+                  />
+                  {errors.fullName && (
+                    <p className="text-xs text-red-500">
+                      {errors.fullName.message}
+                    </p>
+                  )}
+                </div>
                 <div>
                   <Label className="mb-1">Email</Label>
                   <Input
@@ -129,7 +147,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                     </p>
                   )}
                 </div>
-
                 <div>
                   <Label className="mb-1">Password</Label>
                   <div className="relative">
@@ -159,7 +176,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                     </p>
                   )}
                 </div>
-
                 <div>
                   <Label className="mb-1">Re-enter Password</Label>
                   <Input
@@ -178,7 +194,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                     </p>
                   )}
                 </div>
-
                 <button
                   type="submit"
                   disabled={loading}
@@ -197,7 +212,10 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                   Sign In
                 </span>
               </p>
+              <SocialLogin />
             </div>
+
+            {/* Divider */}
           </div>
         </DialogContent>
       </Dialog>

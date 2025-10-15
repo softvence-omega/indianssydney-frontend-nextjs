@@ -2,22 +2,8 @@ import { baseAPI } from "@/store/api/baseApi";
 
 export const articleApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
-
-    // Get Video Article For admin
-
-// getVideoArticle: build.query({
-//   query: () => ({
-//     url: "",
-//     method: "GET",
-//   }),
-//   providesTags: ["content"],
-// }),
-
-
-    // content by category slug
-
     getContentByCategorySlug: build.query({
-      query: (categorySlug: string) => ({
+      query: (categorySlug) => ({
         url: `/content/category/${categorySlug}`,
         method: "GET",
       }),
@@ -25,8 +11,8 @@ export const articleApi = baseAPI.injectEndpoints({
     }),
 
     geContentBySubCaregorySlug: build.query({
-      query: (ContentsubCategorySlug: string) => ({
-        url: `/content/subcategory/${ContentsubCategorySlug}`,
+      query: (ContentsubCategorySlug) => ({
+        url: `/content/ubcategory/${ContentsubCategorySlug}`,
         method: "GET",
       }),
       providesTags: ["content"],
@@ -157,6 +143,14 @@ export const articleApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["content"],
     }),
+
+    getAllArticleForReccomendation: build.query({
+      query: () => ({
+        url: "/content/contentType-article",
+        method: "GET",
+      }),
+      providesTags: ["content"],
+    }),
     //  end
   }),
 });
@@ -175,4 +169,5 @@ export const {
   useEditContentMutation,
   useGeContentBySubCaregorySlugQuery,
   useGetContentByCategorySlugQuery,
+  useGetAllArticleForReccomendationQuery,
 } = articleApi;

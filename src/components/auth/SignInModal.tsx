@@ -18,14 +18,13 @@ import { Controller, useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 import { Label } from "../ui/label";
-
-
+import SocialLogin from "./SocialLogin";
 
 type SignInSchemaType = {
   email: string;
   password: string;
   remember: boolean;
-}
+};
 
 type SignInModalProps = {
   open: boolean;
@@ -44,8 +43,8 @@ const SignInModal: React.FC<SignInModalProps> = ({
 }) => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [loginUserWithEmail] = useLoginMutation()
-  const dispatch = useAppDispatch()
+  const [loginUserWithEmail] = useLoginMutation();
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
@@ -64,16 +63,20 @@ const SignInModal: React.FC<SignInModalProps> = ({
       const result = await loginUserWithEmail(data).unwrap();
       if (result) {
         toast.success("Logged In Successfully");
-        dispatch(setUser({ user: result?.result?.data?.user, token: result?.result?.data?.token }))
+        dispatch(
+          setUser({
+            user: result?.result?.data?.user,
+            token: result?.result?.data?.token,
+          })
+        );
         reset();
         onOpenChange(false);
       }
     } catch (error: any) {
-      toast.error(error?.data?.message as string || "Something went wrong");
+      toast.error((error?.data?.message as string) || "Something went wrong");
     }
     setLoading(false);
   };
-
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -91,8 +94,8 @@ const SignInModal: React.FC<SignInModalProps> = ({
           {/* Right Form */}
           <div className="md:col-span-5 flex flex-col justify-between">
             <DialogHeader>
-              <DialogTitle className="text-3xl lg:text-[32px] font-bold mb-2 font-cursive">
-                <img src="/TAC1.png" alt="" className="max-w-sm" />
+              <DialogTitle>
+                <img src="/TAC1.png" alt="" className="max-w-sm w-full" />
               </DialogTitle>
               <h3 className="text-xl text-accent-orange font-semibold">
                 Sign In
@@ -112,7 +115,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
                 <Input
                   type="email"
                   placeholder="Email"
-                  className="rounded-none mt-2 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4"
+                  className="rounded-none mt-2 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4 w-full"
                   {...register("email", { required: "Email is required" })}
                 />
                 {errors.email && (
@@ -129,8 +132,10 @@ const SignInModal: React.FC<SignInModalProps> = ({
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
-                    className="rounded-none mt-2 pr-10 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4"
-                    {...register("password", { required: "Password is required" })}
+                    className="rounded-none mt-2 pr-10 bg-[#EDEFF0] border-none shadow-none h-auto py-3 px-4 w-full"
+                    {...register("password", {
+                      required: "Password is required",
+                    })}
                   />
                   <button
                     type="button"
@@ -198,18 +203,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
             </p>
 
             {/* Divider */}
-            <p className="text-center py-4 text-xs">Or sign in with</p>
-
-            {/* Google Button */}
-            <div className="flex items-center justify-center">
-              <Button
-                variant="outline"
-                className="w-full rounded-none border-slight-border px-4 py-3 h-auto flex justify-center items-center"
-              >
-                <FcGoogle className="w-5 h-5 mr-2" />
-                <p className="text-sm">Google</p>
-              </Button>
-            </div>
+            <SocialLogin />
           </div>
         </div>
       </DialogContent>

@@ -1,126 +1,126 @@
-"use client";
+// "use client";
 
-import CommonWrapper from "@/common/CommonWrapper";
-import CommonPadding from "@/common/CommonPadding";
-import Ad from "@/components/reusable/Ad";
-import NewsCardSecondary from "@/components/reusable/NewsCardSecondary";
-import PrimaryHeading from "@/components/reusable/PrimaryHeading";
-import { newsItems } from "@/utils/demoData";
-import NewsCard4 from "../reusable/NewsCard4";
-import { MenuItem } from "@/types";
+// import CommonWrapper from "@/common/CommonWrapper";
+// import CommonPadding from "@/common/CommonPadding";
+// import Ad from "@/components/reusable/Ad";
+// import NewsCardSecondary from "@/components/reusable/NewsCardSecondary";
+// import PrimaryHeading from "@/components/reusable/PrimaryHeading";
+// import { newsItems } from "@/utils/demoData";
+// import NewsCard4 from "../reusable/NewsCard4";
+// import { MenuItem } from "@/types";
 
-const normalizeString = (str: string) =>
-  str?.toLowerCase().replace(/[&\s]+/g, "-");
+// const normalizeString = (str: string) =>
+//   str?.toLowerCase().replace(/[&\s]+/g, "-");
 
-interface SubCategory {
-  id: string;
-  subname: string;
-  subslug: string;
-}
+// interface SubCategory {
+//   id: string;
+//   subname: string;
+//   subslug: string;
+// }
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  tamplate: string;
-  subCategories?: SubCategory[];
-}
+// interface Category {
+//   id: string;
+//   name: string;
+//   slug: string;
+//   tamplate: string;
+//   subCategories?: SubCategory[];
+// }
 
-const FoodTemplate = ({
-  category,
-  subcategorySlug,
-}: {
-  category: Category;
-  subcategorySlug: string;
-}) => {
-  // ✅ Filter main category
-  const categoryArticles = newsItems.filter(
-    (item) => normalizeString(item.category) === normalizeString(category.name)
-  );
+// const FoodTemplate = ({
+//   category,
+//   subcategorySlug,
+// }: {
+//   category: Category;
+//   subcategorySlug: string;
+// }) => {
+//   // ✅ Filter main category
+//   const categoryArticles = newsItems.filter(
+//     (item) => normalizeString(item.category) === normalizeString(category.name)
+//   );
 
-  // ✅ Group by subcategory + construct href
-  const articlesBySubcategory =
-    (category?.subCategories || []).map((submenu) => {
-      const subArticles = newsItems.filter(
-        (item) =>
-          normalizeString(item.category) === normalizeString(category.name) &&
-          normalizeString(item.subcategory || "") ===
-            normalizeString(submenu.subname)
-      );
+//   // ✅ Group by subcategory + construct href
+//   const articlesBySubcategory =
+//     (category?.subCategories || []).map((submenu) => {
+//       const subArticles = newsItems.filter(
+//         (item) =>
+//           normalizeString(item.category) === normalizeString(category.name) &&
+//           normalizeString(item.subcategory || "") ===
+//             normalizeString(submenu.subname)
+//       );
 
-      return {
-        submenu: {
-          ...submenu,
-          href: `/${category.slug}/${submenu.subslug}`, // 👈 ensure href is set
-          label: submenu.subname,
-        },
-        subArticles,
-      };
-    }) || [];
+//       return {
+//         submenu: {
+//           ...submenu,
+//           href: `/${category.slug}/${submenu.subslug}`, // 👈 ensure href is set
+//           label: submenu.subname,
+//         },
+//         subArticles,
+//       };
+//     }) || [];
 
-  return (
-    <CommonWrapper>
-      <CommonPadding>
-        {/* Main Category Title */}
-        <PrimaryHeading title={category.name} icon={false} />
+//   return (
+//     <CommonWrapper>
+//       <CommonPadding>
+//         {/* Main Category Title */}
+//         <PrimaryHeading title={category.name} icon={false} />
 
-        {/* Empty state */}
-        {categoryArticles.length === 0 && (
-          <div className="py-8 text-center text-gray-500">
-            <p>No articles found for this category.</p>
-          </div>
-        )}
+//         {/* Empty state */}
+//         {categoryArticles.length === 0 && (
+//           <div className="py-8 text-center text-gray-500">
+//             <p>No articles found for this category.</p>
+//           </div>
+//         )}
 
-        {/* 🔹 Top Row: Whole Category Grid */}
-        {categoryArticles.length > 0 && (
-          <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-4">
-            {categoryArticles[0] && (
-              <NewsCardSecondary {...categoryArticles[0]} layout="right" />
-            )}
-            {categoryArticles[1] && (
-              <div className="lg:col-start-1 lg:row-start-2">
-                <NewsCardSecondary {...categoryArticles[1]} layout="right" />
-              </div>
-            )}
-            {categoryArticles[2] && (
-              <div className="col-span-2 lg:col-span-1 lg:row-span-2 lg:col-start-2 lg:row-start-1">
-                <NewsCard4 {...categoryArticles[2]} />
-              </div>
-            )}
-            {categoryArticles[3] && (
-              <div className="lg:col-start-3 lg:row-start-1">
-                <NewsCardSecondary {...categoryArticles[3]} layout="left" />
-              </div>
-            )}
-            {categoryArticles[4] && (
-              <div className="lg:col-start-1 lg:row-start-2">
-                <NewsCardSecondary {...categoryArticles[4]} layout="left" />
-              </div>
-            )}
-          </div>
-        )}
-        <div className="my-10">
-          <Ad />
-        </div>
+//         {/* 🔹 Top Row: Whole Category Grid */}
+//         {categoryArticles.length > 0 && (
+//           <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-4">
+//             {categoryArticles[0] && (
+//               <NewsCardSecondary {...categoryArticles[0]} layout="right" />
+//             )}
+//             {categoryArticles[1] && (
+//               <div className="lg:col-start-1 lg:row-start-2">
+//                 <NewsCardSecondary {...categoryArticles[1]} layout="right" />
+//               </div>
+//             )}
+//             {categoryArticles[2] && (
+//               <div className="col-span-2 lg:col-span-1 lg:row-span-2 lg:col-start-2 lg:row-start-1">
+//                 <NewsCard4 {...categoryArticles[2]} />
+//               </div>
+//             )}
+//             {categoryArticles[3] && (
+//               <div className="lg:col-start-3 lg:row-start-1">
+//                 <NewsCardSecondary {...categoryArticles[3]} layout="left" />
+//               </div>
+//             )}
+//             {categoryArticles[4] && (
+//               <div className="lg:col-start-1 lg:row-start-2">
+//                 <NewsCardSecondary {...categoryArticles[4]} layout="left" />
+//               </div>
+//             )}
+//           </div>
+//         )}
+//         <div className="my-10">
+//           <Ad />
+//         </div>
 
-        {/* 🔹 Subcategory Sections */}
-        {articlesBySubcategory.map(({ submenu, subArticles }) =>
-          subArticles.length > 0 ? ( // ✅ render only if there are articles
-            <div key={submenu.label} className="mt-12">
-              {/* Subcategory heading */}
-              <PrimaryHeading title={submenu.label} />
+//         {/* 🔹 Subcategory Sections */}
+//         {articlesBySubcategory.map(({ submenu, subArticles }) =>
+//           subArticles.length > 0 ? ( // ✅ render only if there are articles
+//             <div key={submenu.label} className="mt-12">
+//               {/* Subcategory heading */}
+//               <PrimaryHeading title={submenu.label} />
 
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-                {subArticles.map((item) => (
-                  <NewsCardSecondary key={item.id} {...item} />
-                ))}
-              </div>
-            </div>
-          ) : null
-        )}
-      </CommonPadding>
-    </CommonWrapper>
-  );
-};
+//               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+//                 {subArticles.map((item) => (
+//                   <NewsCardSecondary key={item.id} {...item} />
+//                 ))}
+//               </div>
+//             </div>
+//           ) : null
+//         )}
+//       </CommonPadding>
+//     </CommonWrapper>
+//   );
+// };
 
-export default FoodTemplate;
+// export default FoodTemplate;

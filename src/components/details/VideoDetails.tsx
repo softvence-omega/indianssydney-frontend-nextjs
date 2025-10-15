@@ -8,23 +8,22 @@ import { ArrowLeft, Share2, Eye, Calendar, User } from "lucide-react";
 
 import RecommendedArticles from "./RecommendedArticles";
 import Newsletter from "./Newsletter";
-import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
 import ReportModal from "./ReportModal";
 import { useState } from "react";
 import PrimaryButton from "../reusable/PrimaryButton";
+import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
 
 interface VideoDetailsProps {
   formData: DetailsData;
   onBack: () => void;
 }
 
+
 const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
-  const currentDate = new Date().toLocaleDateString();
+  const currentDate = new Date(formData.createdAt).toLocaleDateString();
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
   // Sort additional fields by order if it's an array
-  const sortedAdditionalFields = formData.additionalContents
-    ? formData.additionalContents.sort((a, b) => a.order - b.order)
-    : [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -43,12 +42,12 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                 {/* Header */}
                 <div className="mb-6">
                   <h1 className="text-3xl font-semibold mb-4 leading-tight font-playfair">
-                    {formData.title}
+                    {formData?.title}
                   </h1>
 
-                  {formData.subTitle && (
+                  {formData?.subTitle && (
                     <p className="text-lg text-gray-600 mb-4">
-                      {formData.subTitle}
+                      {formData?.subTitle}
                     </p>
                   )}
 
@@ -91,7 +90,7 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
 
                   {/* Tags */}
                   <div className="flex flex-wrap gap-2 mb-6">
-                    {formData.tags.map((tag) => (
+                    {formData?.tags?.map((tag) => (
                       <Badge
                         key={tag}
                         variant="secondary"
@@ -103,16 +102,29 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                   </div>
                 </div>
 
-                {/* Hero Video */}
-                {formData.video && (
-                  <div className="mb-6">
+                {/* Video Section */}
+                <div className="mb-6">
+                  {formData.video ? (
                     <video
                       controls
                       className="w-full h-64 md:h-96 object-cover"
                       src={formData.video}
                     />
-                  </div>
-                )}
+                  ) : formData.youtubeVideoUrl ? (
+                    <iframe
+                      className="w-full h-64 md:h-96"
+                      src={`https://www.youtube.com/embed/${
+                        formData.youtubeVideoUrl.split("v=")[1]
+                      }`}
+                      title="YouTube video player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <p className="text-gray-500">No video available</p>
+                  )}
+                </div>
 
                 {/* Short Quote */}
                 {formData.shortQuote && (
@@ -128,51 +140,7 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                   </p>
                 )}
 
-                {/* Additional Fields */}
-                {sortedAdditionalFields.map(({ type, value, id }) => {
-                  switch (type) {
-                    case "shortQuote":
-                      return (
-                        <blockquote
-                          key={id}
-                          className="border-l-4 border-orange-500 pl-4 my-6 italic text-black bg-off-white py-4"
-                        >
-                          {value as string}
-                        </blockquote>
-                      );
-                    case "paragraph":
-                      return (
-                        <p
-                          key={id}
-                          className="text-gray-700 leading-relaxed text-justify my-5"
-                        >
-                          {value as string}
-                        </p>
-                      );
-                    case "image":
-                      return null;
-                    // (
-                    //   <img
-                    //     key={id}
-                    //     src={resolveSrc(value as File | string)}
-                    //     alt="Additional content"
-                    //     className="w-full h-64 md:h-80 object-cover my-5 rounded-lg"
-                    //   />
-                    // );
-                    case "video":
-                      return null;
-                    // (
-                    //   <video
-                    //     key={id}
-                    //     controls
-                    //     className="w-full h-64 md:h-96 object-cover my-5 rounded-lg"
-                    //     src={resolveSrc(value as File | string)}
-                    //   />
-                    // );
-                    default:
-                      return null;
-                  }
-                })}
+        
 
                 {/* Report Button */}
                 <div className="my-4">
@@ -183,12 +151,12 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
                     }}
                   />
                 </div>
-                {/* Related Topics */}
 
+                {/* Related Topics */}
                 <div>
                   <h2 className="mb-4 text-xl font-semibold">Related Topics</h2>
                   <div className="flex flex-wrap gap-2 mb-6">
-                    {formData.tags.map((tag) => (
+                    {formData?.tags?.map((tag) => (
                       <Badge
                         key={tag}
                         variant="secondary"

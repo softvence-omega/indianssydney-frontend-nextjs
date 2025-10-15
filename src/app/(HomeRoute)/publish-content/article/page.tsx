@@ -6,10 +6,12 @@ import ArticlePreview from "../ArticlePreview";
 import { useCreateNewArticleMutation } from "@/store/features/article/article.api";
 import { UploadFormData } from "../types";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
-  const [createNewArticle] = useCreateNewArticleMutation();
+  const [createNewArticle, { isLoading }] = useCreateNewArticleMutation();
   const [step, setStep] = useState<1 | 2>(1);
+  const router = useRouter();
   const initialFormData: UploadFormData = {
     contentType: "ARTICLE",
     title: "",
@@ -35,7 +37,6 @@ const Page = () => {
     setFormData((prev) => ({ ...prev, ...updatedFields }));
   };
 
-
   const handlePublish = async () => {
     const uploadedData = new FormData(); // Remove `as any`
     try {
@@ -50,6 +51,8 @@ const Page = () => {
       uploadedData.append("subTitle", formData.subTitle || "");
       uploadedData.append("categoryId", formData.categoryId || "");
       uploadedData.append("subCategoryId", formData.subCategoryId || "");
+      uploadedData.append("categorysslug", formData.categorysslug || "");
+      uploadedData.append("subcategorysslug", formData.subcategorysslug || "");
       uploadedData.append("imageCaption", formData.imageCaption || "");
       uploadedData.append("youtubeVideoUrl", formData.youtubeVideoUrl || "");
       uploadedData.append("shortQuote", formData.shortQuote || "");
@@ -79,37 +82,45 @@ const Page = () => {
             : formData.additionalContents
         );
       }
-      console.log(uploadedData);
+
       // Call the API
       const result = await createNewArticle(uploadedData);
-      console.log("API Response:", result);
-      console.log("Form Data:", formData);
 
       // Reset form and update step
       toast.success("Content published successfully!");
+      router.push("/my-contents");
+
       setFormData(initialFormData);
     } catch (error) {
       console.error("Error publishing content:", error);
+      router.push("/my-contents");
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      {step === 1 && (
-        <ArticleForm
-          formData={formData}
-          onUpdate={handleUpdate}
-          onSubmit={() => setStep(2)}
-          onBack={() => console.log("Go back to category page")}
-        />
-      )}
+      {isLoading ? (
+        <div className="justify-center items-center text-center">
+          <p className="">Loading.....</p>
+        </div>
+      ) : (
+        <>
+          {step === 1 && (
+            <ArticleForm
+              formData={formData}
+              onUpdate={handleUpdate}
+              onSubmit={() => setStep(2)}
+            />
+          )}
 
-      {step === 2 && (
-        <ArticlePreview
-          formData={formData}
-          onBack={() => setStep(1)}
-          onPublish={handlePublish}
-        />
+          {step === 2 && (
+            <ArticlePreview
+              formData={formData}
+              onBack={() => setStep(1)}
+              onPublish={handlePublish}
+            />
+          )}
+        </>
       )}
     </div>
   );

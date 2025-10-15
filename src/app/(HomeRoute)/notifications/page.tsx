@@ -1,54 +1,33 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
-import { Select } from "@headlessui/react"; // For dropdown filtering
-
-// Sample notifications data
-const notificationsData = [
-  {
-    type: "Saved",
-    author: "Jenny Wilson",
-    title:
-      "'Doomsday Mom': What to Know About Lori Vallow Daybell’s Life Sentences",
-    date: "July 26, 2025",
-    status: "saved",
-  },
-  {
-    type: "Submitted",
-    author: "John Doe",
-    title: "Pakistani star offers condolences after Milestone crash",
-    date: "July 22, 2025",
-    status: "pending",
-  },
-  {
-    type: "Rejected",
-    author: "Jane Smith",
-    title: "Breaking News: Market crash",
-    date: "July 20, 2025",
-    status: "rejected",
-  },
-];
+import { Select } from "@headlessui/react";
+import { useGetNotificationsQuery } from "@/store/features/notifications/notification.api";
+import Image from "next/image";
 
 const Notifications = () => {
+  const { data, isLoading, isError } = useGetNotificationsQuery({});
   const [selectedFilter, setSelectedFilter] = useState("All");
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedFilter(event.target.value);
   };
 
+  // Extract notifications safely
+  const notifications = data?.data?.notifications || [];
+
   return (
     <div>
       <CommonWrapper>
         <CommonPadding>
           <div>
-            {/* Page Header */}
+            {/* Header */}
             <div className="flex justify-between items-center mb-6">
               <PrimaryHeading title="Notifications" icon={false} />
 
-              {/* Filter Dropdown */}
               <Select
                 as="select"
                 value={selectedFilter}
@@ -63,51 +42,73 @@ const Notifications = () => {
               </Select>
             </div>
 
+            {/* Content States */}
+            {isLoading && (
+              <p className="text-center text-gray-500 py-8">
+                Loading notifications...
+              </p>
+            )}
+            {isError && (
+              <p className="text-center text-red-500 py-8">
+                Failed to load notifications.
+              </p>
+            )}
+
             {/* Notifications List */}
-            <div className="space-y-4">
-              {notificationsData.map((notification, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between items-center border-b border-gray-200 py-4"
-                >
-                  {/* Left Section - Article Details */}
-
-                  <div>
-                    <p className="text-xs text-gray-500">
-                     {notification.status === "saved"
-                        ? "You have saved this article"
-                        : notification.status === "pending"
-                        ? "You've submitted an article"
-                        : "You're submitted article has been rejected"}
-                    </p>
-                    <p className="text-sm font-semibold py-1">
-                      {notification.title}
-                    </p>
-                    <p className="text-xs text-gray-400">{notification.date}</p>
-                  </div>
-
-                  {/* Right Section - Status and Action */}
-                  <div className="flex">
-                    <span
-                      className={`text-xs py-1 px-3 text-white ${
-                        notification.status === "saved"
-                          ? "bg-blue-primary"
-                          : notification.status === "pending"
-                          ? "bg-[#8D9B90] "
-                          : "bg-brick-red "
-                      }`}
+            {!isLoading && !isError && (
+              <div className="space-y-4">
+                {notifications.length > 0 ? (
+                  notifications.map((notification: any, index: number) => (
+                    <div
+                      key={notification.id || index}
+                      className="flex justify-between items-center border-b border-gray-200 py-4"
                     >
-                      {notification.status === "saved"
-                        ? "Saved"
-                        : notification.status === "pending"
-                        ? "Pending"
-                        : "Rejected"}
-                    </span>
-                  
-                  </div>
-                </div>
-              ))}
-            </div>
+                      {/* Left Section */}
+                      <div className="flex items-center gap-3">
+                        {notification.meta?.thumbnail && (
+                          <img
+                            src={notification.meta.thumbnail}
+                            alt={notification.title}
+                            width={60}
+                            height={60}
+                            className="rounded-md object-cover"
+                          />
+                        )}
+
+                        <div>
+                          <p className="text-sm font-semibold">
+                            {notification.title}
+                          </p>
+                          <p className="text-xs text-gray-600 mt-1">
+                            {notification.message}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            {new Date(notification.meta?.date).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Right Section */}
+                      <div className="flex">
+                        <span
+                          className={`text-xs py-1 px-3 rounded-md text-white ${
+                            notification.type === "LiveEvent"
+                              ? "bg-blue-primary"
+                              : "bg-gray-500"
+                          }`}
+                        >
+                          {notification.type}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500 py-6">
+                    No notifications found.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </CommonPadding>
       </CommonWrapper>

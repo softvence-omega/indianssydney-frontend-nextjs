@@ -10,13 +10,7 @@ export const userAPI = baseAPI.injectEndpoints({
       }),
     }),
 
-    createReport: build.mutation({
-      query: (formData: FormData) => ({
-        url: "/user/create-report",
-        method: "POST",
-        body: formData,
-      }),
-    }),
+
     getPendingContributorsRequest: build.query({
       query: () => ({
         url: `/admin-management/contributor/all`,
@@ -40,5 +34,4 @@ export const {
   useCreateApplicationForContributorMutation,
   useGetPendingContributorsRequestQuery,
   useUpdateContributorRequestStatusMutation,
-  useCreateReportMutation,
 } = userAPI;

@@ -38,11 +38,9 @@ const Chatbot = () => {
 
     try {
       const response = await postChatbot({ user_message: question }).unwrap();
-      console.log("Chatbot response", response);
       const botResponse = {
         id: messages.length + 2,
-        text:
-          response?.bot_response || "Sorry, I could not process your request.",
+        text: response?.response || "Sorry, I could not process your request.",
         sender: "bot",
       };
       setMessages((prev) => [...prev, botResponse]);
@@ -70,11 +68,9 @@ const Chatbot = () => {
 
     try {
       const response = await postChatbot({ user_message: input }).unwrap();
-      console.log("Chatbot response for custom input:", response);
       const botResponse = {
         id: messages.length + 2,
-        text:
-          response?.bot_response || "Sorry, I could not process your request.",
+        text: response?.response || "Sorry, I could not process your request.",
         sender: "bot",
       };
       setMessages((prev) => [...prev, botResponse]);

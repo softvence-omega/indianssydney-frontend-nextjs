@@ -1,61 +1,38 @@
-import LivePodcastCard from "@/components/live-podcast/LiveCard";
+import React from "react";
+import FeatureVideoCard from "@/components/live-podcast/FeatureVideoCard";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
+import { useGetAllVideosQuery } from "@/store/features/videoPodcast/video.api";
 
 const WeeklyMagazine = () => {
+  const { data, isLoading, isError } = useGetAllVideosQuery({});
+
+  if (isLoading) return <p className="text-center text-gray-500">Loading...</p>;
+  if (isError)
+    return <p className="text-center text-red-500">Error loading videos.</p>;
+
+  const videos = data?.data || [];
+
   return (
     <div>
-      <PrimaryHeading title="Weekly Audio Magazine" className="mb-4" />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
-        <LivePodcastCard
-          episode="1"
-          title="The Soundwave Show"
-          description="Bringing you compelling stories and unique narratives from around the globe"
-          liveStatus={false}
-          views={10}
-          imageSrc="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        />
-        <LivePodcastCard
-          episode="1"
-          title="The Soundwave Show"
-          description="Bringing you compelling stories and unique narratives from around the globe"
-          liveStatus={false}
-          views={10}
-          imageSrc="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 mt-4 lg:mt-6">
-        <LivePodcastCard
-          episode="1"
-          title="The Soundwave Show"
-          description="Bringing you compelling stories and unique narratives from around the globe"
-          liveStatus={false}
-          views={10}
-          imageSrc="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        />
-        <LivePodcastCard
-          episode="1"
-          title="The Soundwave Show"
-          description="Bringing you compelling stories and unique narratives from around the globe"
-          liveStatus={false}
-          views={10}
-          imageSrc="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        />
-        <LivePodcastCard
-          episode="1"
-          title="The Soundwave Show"
-          description="Bringing you compelling stories and unique narratives from around the globe"
-          liveStatus={false}
-          views={10}
-          imageSrc="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        />
-        <LivePodcastCard
-          episode="1"
-          title="The Soundwave Show"
-          description="Bringing you compelling stories and unique narratives from around the globe"
-          liveStatus={false}
-          views={10}
-          imageSrc="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        />
+      <PrimaryHeading title="Featured Video Articles" className="mb-6" />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {videos.map((item: any) => (
+          <FeatureVideoCard
+            id={item.id}
+            key={item.id}
+            video={item.video}
+            youtubeVideoUrl={item.youtubeVideoUrl}
+            category={item.category?.name}
+            title={item.title}
+            description={item.subTitle || item.paragraph}
+            createdAt={item.createdAt}
+            contentviews={item.contentviews}
+            onClick={() =>
+              window.open(item.youtubeVideoUrl || item.video, "_blank")
+            }
+          />
+        ))}
       </div>
     </div>
   );

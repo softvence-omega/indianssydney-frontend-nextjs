@@ -11,8 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import { useCreateReportMutation } from "@/store/features/user/user.api";
+
 import { toast } from "sonner";
+import { useCreateReportMutation } from "@/store/features/admin/report.api";
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -56,7 +57,6 @@ const ReportModal = ({ isOpen, onClose, contentId }: ReportModalProps) => {
       screenshots.forEach((file) => formData.append("files", file));
 
       const res = await createReport(formData).unwrap();
-      console.log("✅ Report API Response:", res);
 
       toast.success("Report submitted successfully!");
       onClose();
@@ -66,7 +66,6 @@ const ReportModal = ({ isOpen, onClose, contentId }: ReportModalProps) => {
       setScreenshots([]);
       setPreviewUrls([]);
     } catch (error: any) {
-      console.error("❌ Report submission failed:", error);
       toast.error(error?.data?.message || "Failed to submit report");
     }
   };

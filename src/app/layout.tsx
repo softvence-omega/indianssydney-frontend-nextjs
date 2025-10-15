@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 
 import { persistor, store } from "@/store/store";
 import "./globals.css";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({
@@ -20,23 +21,42 @@ const unifraktur = UnifrakturCook({
   variable: "--font-cursive",
 });
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = process.env.NEXT_PUBLIC_TRANSLATE_API_KEY as string;
+    script.src =
+      "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
     document.body.appendChild(script);
 
     (window as any).googleTranslateElementInit = () => {
       new (window as any).google.translate.TranslateElement(
         {
           pageLanguage: "en",
-          includeLanguages: "en,bn,hi",
+          autoDisplay: false,
         },
         "google_translate_element"
       );
     };
-  }, []);
 
+    const hideGoogleBar = () => {
+      const frame = document.querySelector(
+        "iframe.skiptranslate"
+      ) as HTMLIFrameElement;
+      if (frame) frame.style.display = "none";
+      document.body.style.top = "0px";
+    };
+
+    // Observe DOM changes and hide again if it reappears
+    const observer = new MutationObserver(hideGoogleBar);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    hideGoogleBar();
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <html
@@ -44,15 +64,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${inter.variable} ${playfair.variable} ${unifraktur.variable}`}
     >
       <body suppressHydrationWarning>
-        {/* ✅ Redux Provider should wrap PersistGate */}
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            {children}
-          </PersistGate>
-        </Provider>
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+        >
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              {children}
+            </PersistGate>
+          </Provider>
+        </GoogleOAuthProvider>
 
-        <Toaster richColors/>
-        <div id="google_translate_element"></div>
+        <Toaster richColors />
+        {/* Hidden element for Google Translate */}
+        <div id="google_translate_element" style={{ display: "none" }}></div>
       </body>
     </html>
   );

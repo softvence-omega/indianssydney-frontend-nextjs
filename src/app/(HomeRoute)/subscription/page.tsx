@@ -3,9 +3,8 @@
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
-
-
 import PlanCard from "./PlanCard";
+import { useGetAllPlanQuery } from "@/store/features/plans/plans.api";
 
 const benefits = [
   {
@@ -29,47 +28,21 @@ const benefits = [
       "Engage with expert reporting, including culture coverage and analysis.",
   },
 ];
-const plans = [
-  {
-    price: "$5",
-    duration: "/Month",
-    description:
-      "Access daily articles, breaking news, and limited features. Perfect for casual readers.",
-    features: [
-      "Daily news updates",
-      "Access to top stories",
-      "Mobile-friendly design",
-      "Limited access to archives",
-      "Limited access to archives",
-    ],
-    buttonText: "Subscribe Basic",
-  },
-  {
-    price: "$15",
-    duration: "/Month",
-    description:
-      "Enjoy unlimited access to premium articles, in-depth reports, and exclusive newsletters.",
-    features: [
-      "Unlimited premium articles",
-      "Full archive access",
-      "Exclusive newsletters",
-      "Ad-free experience",
-      "Early access to special reports",
-    ],
-    buttonText: "Subscribe Premium",
-  },
-];
 
 const Subscription = () => {
-  // Dynamic plan array
+  const { data: plansData, isLoading, isError } = useGetAllPlanQuery({});
 
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading plans</div>;
+
+  const plans = plansData?.data || [];
 
   return (
     <div>
       <CommonWrapper>
         <CommonPadding>
           <div className="max-w-3xl mx-auto text-center">
-            <img src="/TAC1.png" className="w-full" alt="" />
+            <img src="/TAC1.png" className="w-full" alt="Subscription Banner" />
             <p className="text-xl md:text-3xl lg:text-[32px] font-bold mb-2 py-3 md:py-5">
               With no limits comes new horizons
             </p>
@@ -79,11 +52,31 @@ const Subscription = () => {
               className="bg-transparent text-brick-red font-semibold border-2 border-brick-red hover:bg-amber-50 mb-6 md:mb-8"
             />
 
+            {/* Plans Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center items-center py-10">
-              {plans.map((plan, index) => (
-                <PlanCard key={index} {...plan} />
-              ))}
+              {plans?.length > 0 ? (
+                plans.map((plan: any) => (
+                  <PlanCard
+                    id={plan?.id}
+                    key={plan?.id}
+                    price={`$${plan?.Price}`}
+                    duration={
+                      plan?.billingCycle === "MONTHLY"
+                        ? "/Month"
+                        : plan?.billingCycle === "YEARLY"
+                        ? "/Year"
+                        : ""
+                    }
+                    description={plan?.shortBio || ""}
+                    features={plan?.features || []}
+                    buttonText={`Subscribe ${plan?.name}`}
+                  />
+                ))
+              ) : (
+                <p>No plans available</p>
+              )}
             </div>
+
             {/* Subscribers enjoy more section */}
             <div className="mt-10 md:mt-16 text-left">
               <h3 className="text-2xl md:text-3xl lg:text-[32px] font-bold mb-4 md:mb-8 max-w-xl text-center mx-auto">
@@ -98,12 +91,11 @@ const Subscription = () => {
                     }`}
                   >
                     <strong className="text-lg md:text-2xl font-semibold">
-                      {benefit.title}
+                      {benefit?.title}
                     </strong>
                     <br />
                     <p className="text-sm md:text-base">
-                      {" "}
-                      {benefit.description}
+                      {benefit?.description}
                     </p>
                   </li>
                 ))}

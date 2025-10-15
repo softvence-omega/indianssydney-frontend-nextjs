@@ -44,7 +44,6 @@ const ForgotPasswordModal: React.FC<ForgotModalProps> = ({
 
   const onSubmit = (data: ForgotSchemaType) => {
     toast.success("Registered Successfully!");
-    console.log("✅ Registration Data:", data);
     reset();
   };
 

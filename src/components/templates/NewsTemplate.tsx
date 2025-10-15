@@ -1,16 +1,16 @@
 "use client";
 
-import CommonWrapper from "@/common/CommonWrapper";
 import CommonPadding from "@/common/CommonPadding";
+import CommonWrapper from "@/common/CommonWrapper";
 import Ad from "@/components/reusable/Ad";
 import NewsCard3 from "@/components/reusable/NewsCard3";
 import NewsCardSecondary from "@/components/reusable/NewsCardSecondary";
 import NewsTabs from "@/components/reusable/NewsTabs";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
-import { newsItems } from "@/utils/demoData";
-
-const normalizeString = (str: string) =>
-  str?.toLowerCase().replace(/[&\s]+/g, "-");
+import {
+  useGeContentBySubCaregorySlugQuery,
+  useGetContentByCategorySlugQuery,
+} from "@/store/features/article/article.api";
 
 interface SubCategory {
   id: string;
@@ -33,69 +33,110 @@ const NewsTemplate = ({
   category: Category;
   subcategorySlug: string;
 }) => {
-  // ✅ Filter main category
-  const categoryArticles = newsItems.filter(
-    (item) => normalizeString(item.category) === normalizeString(category.name)
+  const {
+    data: categoryData,
+    isLoading: categorySlugLoading,
+    isError: categorySlugError,
+  } = useGetContentByCategorySlugQuery(
+    category?.slug as string || "",
+    { skip: !category?.slug }
   );
 
-  // ✅ Group by subcategory + construct href
+  const {
+    data: subCategoryData,
+    isLoading: subCategorySlugLoading,
+    isError: subCategorySlugError,
+  } = useGeContentBySubCaregorySlugQuery(
+    subcategorySlug as string || "",
+    { skip: !subcategorySlug }
+  );
+
+  if (categorySlugLoading || subCategorySlugLoading)
+    return (
+      <CommonWrapper>
+        <CommonPadding>
+          <p className="text-center text-gray-500 py-10">Loading content...</p>
+        </CommonPadding>
+      </CommonWrapper>
+    );
+
+  if (categorySlugError || subCategorySlugError)
+    return (
+      <CommonWrapper>
+        <CommonPadding>
+          <p className="text-center text-red-500 py-10">
+            Failed to load content.
+          </p>
+        </CommonPadding>
+      </CommonWrapper>
+    );
+
   const articlesBySubcategory =
-    (category?.subCategories || []).map((submenu) => {
-      const subArticles = newsItems.filter(
-        (item) =>
-          normalizeString(item.category) === normalizeString(category.name) &&
-          normalizeString(item.subcategory || "") ===
-            normalizeString(submenu.subname)
-      );
+    category?.subCategories?.map((submenu) => ({
+      submenu: {
+        ...submenu,
+        href: `/${category.slug}/${submenu.subslug}`,
+        label: submenu.subname,
+      },
+    })) || [];
 
-      return {
-        submenu: {
-          ...submenu,
-          href: `/${category.slug}/${submenu.subslug}`, // 👈 ensure href is set
-          label: submenu.subname,
-        },
-        subArticles,
-      };
-    }) || [];
-
+  const subCategoryArticles = subCategoryData?.data
+    ? subCategoryData?.data
+    : [];
   return (
     <CommonWrapper>
       <CommonPadding>
         <PrimaryHeading title={category.name} icon={false} />
 
-        {/* Empty state */}
-        {categoryArticles.length === 0 && (
-          <div className="py-8 text-center text-gray-500">
-            <p>No articles found for this category.</p>
+        {!subcategorySlug && categoryData?.data?.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-[60vh]">
+            <p className="text-2xl font-semibold text-accent-orange">
+              No Content Found
+            </p>
           </div>
         )}
 
-        {/* Category grid */}
-        {categoryArticles.length > 0 && (
+        {!subcategorySlug && categoryData?.data?.length > 0 && (
           <div className="py-3 border-t border-slight-border mt-5 grid grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-4">
-            {categoryArticles[0] && (
-              <NewsCardSecondary {...categoryArticles[0]} layout="right" />
-            )}
-            {categoryArticles[1] && (
-              <div className="lg:col-start-1 lg:row-start-2">
-                <NewsCardSecondary {...categoryArticles[1]} layout="right" />
+            {categoryData?.data?.slice(0, 5).map((item: any, index: number) => (
+              <div
+                key={item.id}
+                className={
+                  index === 1
+                    ? "lg:col-start-1 lg:row-start-2"
+                    : index === 2
+                      ? "col-span-2 lg:col-span-1 lg:row-span-2 lg:col-start-2 lg:row-start-1"
+                      : index === 3
+                        ? "lg:col-start-3 lg:row-start-1"
+                        : index === 4
+                          ? "lg:col-start-1 lg:row-start-2"
+                          : ""
+                }
+              >
+                {index === 2 ? (
+                  <NewsCard3
+                    id={item.id}
+                    image={item.image}
+                    tag={item.tags?.[0]}
+                    title={item.title}
+                    description={item.paragraph}
+                    author={item.fullName}
+                  />
+                ) : (
+                  <NewsCardSecondary
+                    id={item.id}
+                    title={item.title}
+                    subTitle={item.subTitle}
+                    paragraph={item.paragraph}
+                    image={item.image}
+                    category={item.name}
+                    author={item.fullName}
+                    publishedAt={new Date(item.createdAt).toLocaleDateString()}
+                    layout={index % 2 === 0 ? "right" : "left"}
+                  />
+                )}
               </div>
-            )}
-            {categoryArticles[2] && (
-              <div className="col-span-2 lg:col-span-1 lg:row-span-2 lg:col-start-2 lg:row-start-1">
-                <NewsCard3 {...categoryArticles[2]} />
-              </div>
-            )}
-            {categoryArticles[3] && (
-              <div className="lg:col-start-3 lg:row-start-1">
-                <NewsCardSecondary {...categoryArticles[3]} layout="left" />
-              </div>
-            )}
-            {categoryArticles[4] && (
-              <div className="lg:col-start-1 lg:row-start-2">
-                <NewsCardSecondary {...categoryArticles[4]} layout="left" />
-              </div>
-            )}
+            ))}
           </div>
         )}
       </CommonPadding>
@@ -106,11 +147,12 @@ const NewsTemplate = ({
         <NewsTabs
           category={{
             ...category,
-            href: `/${category.slug}`, // 👈 also give category its href
+            href: `/${category.slug}`,
           }}
           activeSubcategory={subcategorySlug}
           articlesBySubcategory={articlesBySubcategory}
-          categoryArticles={categoryArticles}
+          categoryArticles={categoryData?.data || []}
+          subCategoryArticles={subCategoryArticles}
         />
       </CommonPadding>
     </CommonWrapper>

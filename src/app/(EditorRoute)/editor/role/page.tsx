@@ -48,7 +48,6 @@ const Page = () => {
   // Decline request → keep role as user
   const handleDecline = (id: string) => {
     toast.info("User request declined");
-    console.log("Declined Request", id);
   };
   const handleStatusChange = async (id: string, status: string) => {
     const toastId = toast.loading("Updating...");

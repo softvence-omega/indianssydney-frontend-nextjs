@@ -20,7 +20,6 @@ const AIRecommendations = () => {
 
   const handleSave = () => {
     toast.success("Changes saved!");
-    console.log("Selected Recommendations:", selectedRecommendations);
   };
 
   return (

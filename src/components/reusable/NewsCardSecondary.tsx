@@ -46,8 +46,12 @@ const NewsCardSecondary: React.FC<NewsCardProps> = ({
       }`}
     >
       {/* Image Section */}
-      <div className={`w-full h-[140px] ${imageHeight} overflow-hidden`}>
-        <img src={image} alt={title} className="w-full h-full object-cover" />
+      <div className={`w-auto h-[140px] ${imageHeight} overflow-hidden`}>
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-full object-cover overflow-hidden"
+        />
       </div>
 
       {/* Content Section */}

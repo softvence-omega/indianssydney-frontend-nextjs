@@ -3,6 +3,7 @@
 
 import profile from "@/assets/other/cap.svg";
 import { logout } from "@/store/features/auth/auth.slice";
+import { useGetNotificationsQuery } from "@/store/features/notifications/notification.api";
 import { AppDispatch } from "@/store/store";
 import { Bell, Menu, Search } from "lucide-react";
 import Image from "next/image";
@@ -25,9 +26,9 @@ const AdminNavBar: React.FC<NavBarProps> = ({ role, onToggleSidebar }) => {
 
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-
+  const { data: notificationCount } = useGetNotificationsQuery({});
   const handleLogout = () => {
-    dispatch(logout())
+    dispatch(logout());
     toast.success(`Logged out successfully!`);
     router.push("/");
   };
@@ -66,7 +67,7 @@ const AdminNavBar: React.FC<NavBarProps> = ({ role, onToggleSidebar }) => {
             <Bell className="h-5 w-5" />
           </div>
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-            5
+            {notificationCount?.data?.count || 0}
           </span>
         </Link>
 

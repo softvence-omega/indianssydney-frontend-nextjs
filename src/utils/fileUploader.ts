@@ -16,7 +16,7 @@ export default async function uploadFileInAws(file: File) {
     const upload = new Upload({
       client: s3,
       params: {
-        Bucket: "indianssendy12",
+        Bucket: "newportalbucket1122",
         Key: file.name,
         Body: file,
         ContentType: file.type,
@@ -24,12 +24,10 @@ export default async function uploadFileInAws(file: File) {
     });
 
     upload.on("httpUploadProgress", (progress) => {
-      console.log("Progress:", progress);
     });
 
     const result = await upload.done();
     return result?.Location;
   } catch (err) {
-    console.log("Upload Error:", err);
   }
 }

@@ -20,12 +20,6 @@ import {
   useGetAllLawsQuery,
 } from "@/store/features/admin/llm.api";
 
-interface Law {
-  id: string;
-  description: string;
-  files?: { id: string; url: string }[];
-}
-
 const Page = () => {
   const [open, setOpen] = useState(false);
   const [newLaw, setNewLaw] = useState<{ name: string; files: File[] }>({
@@ -59,6 +53,9 @@ const Page = () => {
 
     try {
       const res = await createLaw(formData).unwrap();
+      if (res) {
+        toast.success("Law added successfully!");
+      }
       toast.success("Law added successfully!");
       setNewLaw({ name: "", files: [] });
       setOpen(false);

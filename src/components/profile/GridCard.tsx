@@ -12,8 +12,19 @@ type GridCardProps = {
 const GridCard: React.FC<GridCardProps> = ({ item }) => {
   const router = useRouter();
 
-  const handleEdit = () => {
-    router.push(`/edit-article/${item.id}`);
+  const handleEdit = (contentType: string) => {
+    contentType === "ARTICLE"
+      ? router.push(`/edit-article/${item.id}`)
+      : contentType === "VIDEO"
+      ? router.push(`/edit-video/${item.id}`)
+      : router.push(`/edit-podcast/${item.id}`);
+    // router.push(`/edit-article/${item.id}`);
+  };
+
+  const handleViewDetails = (contentType: string) => {
+    contentType === "ARTICLE"
+      ? router.push(`/details/article/${item.id}`)
+      : router.push(`/details/video/${item.id}`);
   };
 
   return (
@@ -44,12 +55,13 @@ const GridCard: React.FC<GridCardProps> = ({ item }) => {
               {item.status}
             </span>
           </div>
-
-          <h2 className="text-lg md:text-xl font-semibold mb-2 font-playfair line-clamp-2">
-            {item.title}
-          </h2>
-          <div className="text-xs font-medium">
-            {item.views} views • {item.likes} likes • {item.comments} comments
+          <div onClick={() => handleViewDetails(item.contentType)}>
+            <h2 className="text-lg md:text-xl font-semibold mb-2 font-playfair line-clamp-2">
+              {item.title}
+            </h2>
+            <div className="text-xs font-medium">
+              {item.views} views • {item.likes} likes • {item.comments} comments
+            </div>
           </div>
         </div>
       </div>
@@ -61,7 +73,7 @@ const GridCard: React.FC<GridCardProps> = ({ item }) => {
           variant="secondary"
           onClick={(e) => {
             e.stopPropagation();
-            handleEdit();
+            handleEdit(item?.contentType);
           }}
           className="bg-white text-black hover:bg-gray-100"
         >

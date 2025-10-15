@@ -40,7 +40,6 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
     try {
       const res = await postBookmark(contentId).unwrap();
       toast.success("Added to bookmark!");
-      console.log("Bookmark success:", res);
     } catch (error: any) {
       console.error("Bookmark error:", error);
       toast.error(error?.data?.message || "Failed to add bookmark");
@@ -63,12 +62,12 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 {/* Article Header */}
                 <div className="mb-6">
                   <h1 className="text-3xl font-semibold mb-4 leading-tight font-playfair">
-                    {formData.title}
+                    {formData?.title}
                   </h1>
 
-                  {formData.subTitle && (
+                  {formData?.subTitle && (
                     <p className="text-lg text-gray-600 mb-4">
-                      {formData.subTitle}
+                      {formData?.subTitle}
                     </p>
                   )}
 
@@ -138,11 +137,11 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 </div>
 
                 {/* Hero Image */}
-                {formData.image && (
+                {formData?.image && (
                   <div className="mb-6">
                     <img
-                      src={formData.image}
-                      alt={formData.title}
+                      src={formData?.image}
+                      alt={formData?.title}
                       className="w-full h-64 md:h-80 lg:h-full object-cover"
                     />
                     {formData.imageCaption && (
@@ -154,7 +153,7 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 )}
 
                 {/* Audio */}
-                {formData.audio && (
+                {formData?.audio && (
                   <div className="mb-6">
                     <div className="w-full bg-white border border-gray-300 rounded-lg shadow-sm p-3 flex items-center gap-3">
                       <audio
@@ -167,14 +166,14 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 )}
 
                 {/* Paragraph */}
-                {formData.paragraph && (
+                {formData?.paragraph && (
                   <div className="leading-relaxed text-justify my-4">
                     {formData.paragraph}
                   </div>
                 )}
 
                 {/* Video */}
-                {formData.video && (
+                {formData?.video && (
                   <div className="my-3">
                     <video
                       controls
@@ -185,7 +184,7 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 )}
 
                 {/* YouTube Embed */}
-                {formData.youtubeVideoUrl && (
+                {formData?.youtubeVideoUrl && (
                   <div className="my-6">
                     <div className="aspect-w-16 aspect-h-9">
                       <iframe
