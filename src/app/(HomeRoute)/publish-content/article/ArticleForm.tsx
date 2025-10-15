@@ -163,7 +163,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
   };
 
   const acceptMap = {
-    image: "image/*",
+    image: "any",
     audio: "audio/*",
     video: "video/*",
   };
@@ -191,7 +191,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
         const newTags = result.tags.filter(
           (tag: string) => !formData.tags.includes(tag)
         );
-        onUpdate({ tags: [...formData.tags, ...newTags] });
+        onUpdate({ tags: [...newTags] });
         toast.dismiss(); // Dismiss loading toast
         toast.success("Tags generated successfully!");
       } else {

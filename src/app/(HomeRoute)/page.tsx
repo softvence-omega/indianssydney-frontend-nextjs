@@ -35,12 +35,14 @@ const Page = () => {
           <BusinessInnovation data={data?.data?.[1]} />
           <EducationCareer data={data?.data?.[2]} />
           <Ad />
-          <SportsPlay data={data?.data?.[0]} />
+          <SportsPlay data={data?.data?.[3]} />
           {/* <LifeLiving data={data?.data?.[0]} /> */}
           {/* <ArtsMedia /> */}
-          <NewsCurrent data={data?.data?.[0]} />
+          <NewsCurrent data={data?.data?.[4]} />
           <PodcastVideo />
           <Ad />
+          <EducationCareer data={data?.data?.[5]} />
+
           {/* <EnvironmentPlanet />
         <FoodFlavours />
         <CultureIdentity />
