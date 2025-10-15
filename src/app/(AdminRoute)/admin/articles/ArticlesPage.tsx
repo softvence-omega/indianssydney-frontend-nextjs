@@ -42,44 +42,44 @@ const ArticlesPage = () => {
     }
   };
 
- const renderArticles = (articles: any[], isLoading: boolean) => {
-  if (isLoading) return <SkeletonLoader />;
-  if (!articles?.length) return <p>No articles found.</p>;
+  const renderArticles = (articles: any[], isLoading: boolean) => {
+    if (isLoading) return <SkeletonLoader />;
+    if (!articles?.length) return <p>No articles found.</p>;
 
-  return articles.map((article) => {
-    let parsedCompareResult = null;
+    return articles.map((article) => {
+      let parsedCompareResult = null;
 
-    if (article.compareResult) {
-      try {
-        parsedCompareResult = JSON.parse(article.compareResult);
-      } catch (error) {
-        console.error("Error parsing compareResult:", error);
+      if (article.compareResult) {
+        try {
+          parsedCompareResult = JSON.parse(article.compareResult);
+        } catch (error) {
+          console.error("Error parsing compareResult:", error);
+        }
       }
-    }
 
-    return (
-      <ArticleCard
-        key={article.id}
-        article={{
-          id: article.id,
-          title: article.title,
-          description: article.paragraph,
-          author: article.user?.fullName || "Unknown",
-          date: new Date(article.createdAt).toLocaleDateString(),
-          status: article.status,
-          negativity: {
-            score: 0,
-            positives: [],
-            negatives: [],
-          },
-          compareResult: parsedCompareResult, // 👈 add parsed result here
-        }}
-        onStatusChange={handleStatusChange}
-      />
-    );
-  });
-};
-
+      return (
+        <ArticleCard
+          key={article.id}
+          article={{
+            id: article.id,
+            contentType: article.contentType,
+            title: article.title,
+            description: article.paragraph,
+            author: article.user?.fullName || "Unknown",
+            date: new Date(article.createdAt).toLocaleDateString(),
+            status: article.status,
+            negativity: {
+              score: 0,
+              positives: [],
+              negatives: [],
+            },
+            compareResult: parsedCompareResult, // 👈 add parsed result here
+          }}
+          onStatusChange={handleStatusChange}
+        />
+      );
+    });
+  };
 
   return (
     <div>

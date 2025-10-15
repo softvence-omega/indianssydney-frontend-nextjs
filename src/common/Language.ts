@@ -78,7 +78,7 @@ export const LANGUAGES = [
   { code: "ro", label: "Romanian", flag: "ro" },
   { code: "ru", label: "Russian", flag: "ru" },
   { code: "sm", label: "Samoan", flag: "ws" },
-  { code: "gd", label: "Scots Gaelic", flag: "gb-sct" }, // Scotland
+  { code: "gd", label: "Scots Gaelic", flag: "gb-sct" },
   { code: "sr", label: "Serbian", flag: "rs" },
   { code: "st", label: "Sesotho", flag: "ls" },
   { code: "sn", label: "Shona", flag: "zw" },
