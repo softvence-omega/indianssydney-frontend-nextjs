@@ -22,7 +22,6 @@ const NewsCard4: React.FC<NewsCardProps> = ({
   imgHeight = "h-[300px] md:h-[500px]",
   type = "transparent",
 }) => {
-  console.log({id,image,tag,title,user})
   return (
     <Link href={`/details/article/${id}`} >
       <div className={`relative w-full overflow-hidden ${imgHeight}`}>

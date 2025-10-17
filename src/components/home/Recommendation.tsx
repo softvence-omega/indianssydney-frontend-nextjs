@@ -40,7 +40,6 @@ const Recommendation = () => {
   }
 
   const recommendations = data?.data || [];
-  console.log("recommendations", data);
 
   return (
     <div>

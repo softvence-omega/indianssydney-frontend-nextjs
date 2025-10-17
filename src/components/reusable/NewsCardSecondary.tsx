@@ -1,4 +1,6 @@
-import Link from "next/link";
+"use client"
+import { useCountViewMutation } from "@/store/features/article/article.api";
+import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
 
 // Updated props to match Article interface
@@ -25,25 +27,37 @@ const NewsCardSecondary: React.FC<NewsCardProps> = ({
   id,
   image,
   tag,
-  subTitle,
   title,
   paragraph,
   author = "Unknown",
-  layout = "left", // default to left
+  layout = "left",
   imageHeight = "lg:h-[190px]", // default large screen height
   category,
   publishedAt,
 }) => {
+  const [updateViewCount] = useCountViewMutation();
+  const router = useRouter();
   const readTime = useMemo(() => {
     const randomMinutes = Math.floor(Math.random() * 8) + 5; // 5 to 12
     return `${randomMinutes} min read`;
   }, []);
+
+  const countView = async () => {
+    if (id) {
+      await updateViewCount(id);
+    }
+  }
+
+  const navigateToDetails = () => {
+    countView();
+    router.push(`/details/article/${id}`);
+  }
+
   return (
-    <Link
-      href={`/details/article/${id}`}
-      className={`grid md:grid-cols-2 gap-6 ${
-        layout === "right" ? "md:flex-row-reverse" : "md:flex-row"
-      }`}
+    <button
+      onClick={navigateToDetails}
+      className={`grid md:grid-cols-2 gap-6 ${layout === "right" ? "md:flex-row-reverse" : "md:flex-row"
+        }`}
     >
       {/* Image Section */}
       <div className={`w-auto h-[140px] ${imageHeight} overflow-hidden`}>
@@ -74,7 +88,7 @@ const NewsCardSecondary: React.FC<NewsCardProps> = ({
           {publishedAt && <span> • {publishedAt}</span>}
         </div>
       </div>
-    </Link>
+    </button>
   );
 };
 

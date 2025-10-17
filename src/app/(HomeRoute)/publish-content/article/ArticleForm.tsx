@@ -107,7 +107,6 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
     formData.append("file", file)
     try {
       const res = await uploadFIleIntoAws(formData).unwrap();
-      console.log(res)
       if(res){
         handleAdditionalFieldUpdate(index, (res as any)?.s3Url);
         toast.success(`${file.type.split("/")[0]} uploaded successfully!`, {

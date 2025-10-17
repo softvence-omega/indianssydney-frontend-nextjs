@@ -2,6 +2,7 @@
 
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
+import ErrorLoader from "@/common/ErrorLoader";
 import Ad from "@/components/reusable/Ad";
 import NewsCard3 from "@/components/reusable/NewsCard3";
 import NewsCardSecondary from "@/components/reusable/NewsCardSecondary";
@@ -62,13 +63,7 @@ const NewsTemplate = ({
 
   if (categorySlugError || subCategorySlugError)
     return (
-      <CommonWrapper>
-        <CommonPadding>
-          <p className="text-center text-red-500 py-10">
-            Failed to load content.
-          </p>
-        </CommonPadding>
-      </CommonWrapper>
+      <ErrorLoader />
     );
 
   const articlesBySubcategory =

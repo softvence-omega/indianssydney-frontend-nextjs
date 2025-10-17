@@ -173,7 +173,7 @@ const EditArticle = () => {
     try {
       const formData = new FormData()
       formData.append("file", file)
-      const res = await uloadFileInAws(formData);
+      const res = await uloadFileInAws(formData).unwrap();
       if (!res) throw new Error("Upload failed");
       handleAdditionalFieldUpdate(index, (res as any)?.s3Url);
       toast.success(`${file.type.split("/")[0]} uploaded successfully!`);
