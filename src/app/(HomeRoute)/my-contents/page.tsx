@@ -1,17 +1,16 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
 import GridCard from "@/components/profile/GridCard";
 import ListCard from "@/components/profile/ListCard";
 import UploadCard from "@/components/profile/UploadCard";
-import { LayoutGrid, LayoutList } from "lucide-react";
-import CommonPadding from "@/common/CommonPadding";
-import SavedContents from "@/components/profile/ContentStatus";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useGetMyArticlesQuery } from "@/store/features/article/article.api";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
+import { RootState } from "@/store/store";
+import { LayoutGrid, LayoutList } from "lucide-react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
 type TabKey = "my" | "saved" | "status";
 type ViewMode = "grid" | "list";
@@ -80,11 +79,10 @@ const MyContents = () => {
               <button
                 key={t.key}
                 onClick={() => onChangeTab(t.key)}
-                className={`py-2 -mb-px border-b-2 ${
-                  activeTab === t.key
-                    ? "border-black text-black"
-                    : "border-transparent text-gray-500"
-                }`}
+                className={`py-2 -mb-px border-b-2 ${activeTab === t.key
+                  ? "border-black text-black"
+                  : "border-transparent text-gray-500"
+                  }`}
               >
                 {t.label}
               </button>
@@ -95,21 +93,19 @@ const MyContents = () => {
               <div className="ml-auto flex items-center gap-2">
                 <button
                   onClick={() => onChangeView("grid")}
-                  className={` ${
-                    viewMode === "grid"
-                      ? "text-brick-red"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
+                  className={` ${viewMode === "grid"
+                    ? "text-brick-red"
+                    : "text-gray-500 hover:text-gray-700"
+                    }`}
                 >
                   <LayoutGrid />
                 </button>
                 <button
                   onClick={() => onChangeView("list")}
-                  className={` ${
-                    viewMode === "list"
-                      ? "text-brick-red"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
+                  className={` ${viewMode === "list"
+                    ? "text-brick-red"
+                    : "text-gray-500 hover:text-gray-700"
+                    }`}
                 >
                   <LayoutList />
                 </button>
@@ -120,7 +116,13 @@ const MyContents = () => {
           {/* 📰 Content Section */}
           <div className="mt-6 md:mt-10">
             {isLoading || isFetching ? (
-              <SkeletonLoader />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {
+                  [...Array(6)].map((_, index) => (
+                    <Skeleton key={index} className="h-[250px]" />
+                  ))
+                }
+              </div>
             ) : myArticles.length === 0 ? (
               <div className="text-center text-gray-500 py-10">
                 No contents found.
@@ -148,11 +150,10 @@ const MyContents = () => {
                   <button
                     onClick={prevPage}
                     disabled={currentPage === 1}
-                    className={`${
-                      currentPage === 1
-                        ? "text-gray-400 cursor-not-allowed"
-                        : "text-accent-orange"
-                    }`}
+                    className={`${currentPage === 1
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "text-accent-orange"
+                      }`}
                   >
                     Previous
                   </button>
@@ -162,11 +163,10 @@ const MyContents = () => {
                   <button
                     onClick={nextPage}
                     disabled={currentPage === totalPages}
-                    className={`${
-                      currentPage === totalPages
-                        ? "text-gray-400 cursor-not-allowed"
-                        : "text-accent-orange"
-                    }`}
+                    className={`${currentPage === totalPages
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "text-accent-orange"
+                      }`}
                   >
                     Next
                   </button>

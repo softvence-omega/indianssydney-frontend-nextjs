@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { useCountViewMutation } from "@/store/features/article/article.api";
+import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
 
 type NewsCardProps = {
@@ -20,15 +21,27 @@ const NewsCard: React.FC<NewsCardProps> = ({
   subTitle,
   user,
 }) => {
+  const [updateViewCount] = useCountViewMutation();
+  const router = useRouter()
   // Generate random read time (5–12 minutes)
   const readTime = useMemo(() => {
     const randomMinutes = Math.floor(Math.random() * 8) + 5; // 5 to 12
     return `${randomMinutes} min read`;
   }, []);
 
+  const countView = async () => {
+    if (id) {
+      await updateViewCount(id);
+    }
+  }
+
+  const navigateToDetails = () => {
+    countView();
+    router.push(`/details/article/${id}`);
+  }
   return (
-    <Link
-      href={`/details/article/${id}`}
+    <button
+      onClick={navigateToDetails}
       className="grid md:grid-cols-2 lg:grid-cols-12 gap-6"
     >
       {/* Image Section */}
@@ -52,7 +65,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
           {readTime}
         </div>
       </div>
-    </Link>
+    </button>
   );
 };
 

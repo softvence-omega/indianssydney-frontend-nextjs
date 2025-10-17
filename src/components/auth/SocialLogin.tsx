@@ -23,7 +23,6 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
 
   const handleLogin = async (credentialResponse: any) => {
     const idToken = credentialResponse?.credential;
-    console.log(idToken);
     if (!idToken) {
       console.error(" No Google ID Token found");
       toast.error("Google login failed. No ID token found.");
@@ -35,17 +34,12 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
         `https://indianssydney-backend.onrender.com/auth/google-login`,
         { idToken }
       );
-
-      console.log("raw google login response:", res.data.data);
-
       const payload = res?.data;
 
       const token = payload?.data?.token;
-      console.log("token", token);
       const user = payload?.data?.user;
 
       if (!token) {
-        console.error("No token in backend response");
         toast.error("Login failed. No token received.");
         onOpenChange(false)
         return;
@@ -59,7 +53,6 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
         })
       );
 
-      console.log("Token saved in Redux:", token);
 
       if (onSuccess) onSuccess(token);
 
@@ -78,7 +71,6 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
       <GoogleLogin
         onSuccess={handleLogin}
         onError={() => {
-          console.log(" Google Login Failed");
           toast.error("Google login failed. Please try again.");
           if (onError) onError();
         }}

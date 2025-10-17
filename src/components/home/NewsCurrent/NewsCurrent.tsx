@@ -1,8 +1,7 @@
 import CommonPadding from "@/common/CommonPadding";
+import NewsCardSecondary from "../../reusable/NewsCardSecondary";
 import PrimaryHeading from "../../reusable/PrimaryHeading";
 import NewsSlider from "./NewsSlider";
-import NewsCardSecondary from "../../reusable/NewsCardSecondary";
-import { newsItems } from "@/utils/demoData";
 
 const NewsCurrent = ({ data }: { data: any }) => {
   return (

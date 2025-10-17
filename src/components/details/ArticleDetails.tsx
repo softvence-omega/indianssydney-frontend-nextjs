@@ -1,26 +1,23 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   ArrowLeft,
-  Share2,
-  Eye,
-  Calendar,
-  User,
-  Youtube,
   Bookmark,
+  Calendar,
+  Eye,
+  Share2,
+  User
 } from "lucide-react";
-import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
-import RecommendedArticles from "./RecommendedArticles";
-import Newsletter from "./Newsletter";
-import PrimaryButton from "../reusable/PrimaryButton";
 import { useState } from "react";
+import PrimaryButton from "../reusable/PrimaryButton";
+import Newsletter from "./Newsletter";
+import RecommendedArticles from "./RecommendedArticles";
 import ReportModal from "./ReportModal";
-import { toast } from "sonner";
-import { usePostBookmarkMutation } from "@/store/features/bookmark/bookmark.api";
 
 interface ArticlePreviewProps {
   formData: DetailsData;
@@ -30,22 +27,11 @@ interface ArticlePreviewProps {
 const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const currentDate = new Date().toLocaleDateString();
-  const [postBookmark, { isLoading }] = usePostBookmarkMutation();
 
   // Sort additional fields by order
   const sortedAdditionalFields = [...formData.additionalContents].sort(
     (a, b) => a.order - b.order
   );
-  const handleAddToBookmark = async (contentId: string) => {
-    try {
-      const res = await postBookmark(contentId).unwrap();
-      toast.success("Added to bookmark!");
-    } catch (error: any) {
-      console.error("Bookmark error:", error);
-      toast.error(error?.data?.message || "Failed to add bookmark");
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto p-4">
@@ -100,14 +86,12 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center text-sm text-gray-500">
                         <Eye className="w-4 h-4 mr-1" />
-                        {formData.views ?? 0} views
+                        {formData.contentviews ?? 0} views
                       </div>
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => {
-                          handleAddToBookmark(formData.id);
-                        }}
+
                       >
                         <Bookmark className="w-4 h-4 mr-1" />
                         Bookmark
@@ -314,7 +298,7 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <RecommendedArticles />
+            <RecommendedArticles id={formData.id} />
             <Newsletter />
           </div>
         </div>

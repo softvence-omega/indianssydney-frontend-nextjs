@@ -271,7 +271,6 @@ const ReportDetailPage = ({ params }: ReportDetailPageProps) => {
     refetch,
   } = useGetSingleReportQuery(id);
 
-  console.log("report details", report);
   const [updateReportStatus, { isLoading: updating }] =
     useUpdateReportStatusMutation();
 

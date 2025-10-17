@@ -31,7 +31,6 @@ export default async function uploadFileInAws(file: File) {
     });
 
     upload.on("httpUploadProgress", (progress) => {
-      // optional: console.log(progress);
     });
 
     const result = await upload.done();

@@ -12,13 +12,13 @@ export const articleApi = baseAPI.injectEndpoints({
 
     geContentBySubCaregorySlug: build.query({
       query: (ContentsubCategorySlug) => ({
-        url: `/content/ubcategory/${ContentsubCategorySlug}`,
+        url: `/content/subcategory/${ContentsubCategorySlug}`,
         method: "GET",
       }),
       providesTags: ["content"],
     }),
 
-    // for all user home page data
+
 
     getHomePageData: build.query({
       query: () => ({
@@ -143,10 +143,24 @@ export const articleApi = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["content"],
     }),
+    countView: build.mutation({
+      query: (id) => ({
+        url: `/content/${id}/views`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["content"],
+    }),
 
     getAllArticleForReccomendation: build.query({
       query: () => ({
         url: "/content/contentType-article",
+        method: "GET",
+      }),
+      providesTags: ["content"],
+    }),
+    getRecommendedArticle: build.query({
+      query: (id) => ({
+        url: `/content/recommended-articles/${id}`,
         method: "GET",
       }),
       providesTags: ["content"],
@@ -177,5 +191,7 @@ export const {
   useGeContentBySubCaregorySlugQuery,
   useGetContentByCategorySlugQuery,
   useGetAllArticleForReccomendationQuery,
-  useUploadFileIntoAWSMutation
+  useUploadFileIntoAWSMutation,
+  useCountViewMutation,
+  useGetRecommendedArticleQuery
 } = articleApi;

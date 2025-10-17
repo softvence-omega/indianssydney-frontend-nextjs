@@ -124,4 +124,5 @@ export interface DetailsData {
   category: Category;
   subCategory: SubCategory;
   views?: number; // ✅ maps to API's contentviews
+  contentviews?:number;
 }
