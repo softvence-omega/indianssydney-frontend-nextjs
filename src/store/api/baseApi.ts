@@ -33,6 +33,7 @@ export const baseAPI = createApi({
     "live",
     "podcast",
     "report",
+    "community"
   ],
   endpoints: () => ({}),
 });

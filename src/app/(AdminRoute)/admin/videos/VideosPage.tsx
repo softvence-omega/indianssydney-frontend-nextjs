@@ -35,7 +35,7 @@ const VideosPage = () => {
     isError: errorDeclined,
   } = useGetVideosDeclinedQuery({});
 
-    const [updateStatus] = useUpdateArticleStatusMutation();
+  const [updateStatus] = useUpdateArticleStatusMutation();
 
   const handleStatusChange = async (
     id: string,
@@ -97,13 +97,15 @@ const VideosPage = () => {
     <div>
       <DashboardHeader title="Video Podcasts" />
 
-      {/* Tabs */}
+      {/* ---------- Tabs. ------------------- */}
       <div className="flex gap-4 mb-6">
         {["APPROVE", "PENDING", "Declined"].map((tab) => (
           <button
             key={tab}
             className={`cursor-pointer ${
-              activeTab === tab ? "text-accent-orange font-semibold" : "text-gray-500"
+              activeTab === tab
+                ? "text-accent-orange font-semibold"
+                : "text-gray-500"
             }`}
             onClick={() => setActiveTab(tab as VideoStatus)}
           >
