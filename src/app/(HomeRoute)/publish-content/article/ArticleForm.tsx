@@ -13,18 +13,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import uploadFileInAws from "@/utils/fileUploader";
 import { ArrowLeft, Plus, Upload, X } from "lucide-react";
 import { useRef, useState } from "react";
 
-import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
-import { AdditionalField, AdditionalFieldType } from "../types";
-import { useRouter } from "next/navigation";
 import {
   useGenerateContentMutation,
   useTagGeneratorMutation,
 } from "@/store/features/ai-content/ai-content.api";
+import { useUploadFileIntoAWSMutation } from "@/store/features/article/article.api";
+import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { AdditionalField, AdditionalFieldType } from "../types";
 
 const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
   const { data } = useGetAllCategoryQuery({});
@@ -32,7 +32,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
   const [additionalFieldType, setAdditionalFieldType] = useState<
     AdditionalFieldType | ""
   >("");
-
+  const [uploadFIleIntoAws] = useUploadFileIntoAWSMutation()
   const [generateTags] = useTagGeneratorMutation();
   const [generateContent] = useGenerateContentMutation();
   const [uploadType, setUploadType] = useState<"image" | "audio" | "video">(
@@ -75,8 +75,8 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
         type: additionalFieldType,
         value:
           additionalFieldType === "image" ||
-          additionalFieldType === "video" ||
-          additionalFieldType === "audio"
+            additionalFieldType === "video" ||
+            additionalFieldType === "audio"
             ? null
             : "",
       };
@@ -100,13 +100,23 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
     index: number,
     files: FileList | null
   ) => {
+    const id = toast.loading("Uploading...");
     const file = files ? files[0] : null;
     if (!file) return;
+    const formData = new FormData()
+    formData.append("file", file)
     try {
-      const res = await uploadFileInAws(file);
-      handleAdditionalFieldUpdate(index, res as string);
+      const res = await uploadFIleIntoAws(formData).unwrap();
+      console.log(res)
+      if(res){
+        handleAdditionalFieldUpdate(index, (res as any)?.s3Url);
+        toast.success(`${file.type.split("/")[0]} uploaded successfully!`, {
+          id,
+        });
+      }
     } catch (error) {
       console.error("Error uploading file:", error);
+      toast.error("Failed to upload file.", { id });
     }
   };
 
@@ -130,8 +140,8 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
               field.type === "image"
                 ? "image/*"
                 : field.type === "video"
-                ? "video/*"
-                : "audio/*"
+                  ? "video/*"
+                  : "audio/*"
             }
             onChange={(e) => handleAdditionalFieldFile(index, e.target.files)}
             className="hidden rounded-none"

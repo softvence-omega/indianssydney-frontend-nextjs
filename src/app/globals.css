@@ -208,29 +208,6 @@
 
 
 
-/* Hide Google Translate widget branding and banner */
-/* .goog-logo-link,
-.goog-te-gadget span,
-.goog-te-banner-frame.skiptranslate {
-  display: none !important;
-} */
-
-
-/* Prevent layout shift caused by hidden frame */
-/* .goog-te-gadget {
-  height: 0 !important;
-  overflow: hidden;
-} */
-
-
-
-
-/* Remove the iframe that sometimes appears on translate load */
-/* iframe[id^=":"] {
-  display: none !important;
-}
-} */
-
 .notranslate {
   translate: none;
 }

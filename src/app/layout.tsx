@@ -68,8 +68,7 @@ export default function RootLayout({
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
         >
           <Provider store={store}>
-            <PersistGate loading={null} persistor={persistor}>
-              {children}
+            <PersistGate loading={null} persistor={persistor}> {children}
             </PersistGate>
           </Provider>
         </GoogleOAuthProvider>

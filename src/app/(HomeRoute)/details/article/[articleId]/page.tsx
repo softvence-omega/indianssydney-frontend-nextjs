@@ -24,6 +24,7 @@ export default function ArticleDetailPage({
     isLoading,
     isError,
   } = useGetArticleDetailsQuery(articleId);
+  console.log(article)
 
   if (isLoading) {
     return (

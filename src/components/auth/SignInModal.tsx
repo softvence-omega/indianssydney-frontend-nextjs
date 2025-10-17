@@ -203,7 +203,7 @@ const SignInModal: React.FC<SignInModalProps> = ({
             </p>
 
             {/* Divider */}
-            <SocialLogin />
+            <SocialLogin onOpenChange={onOpenChange} />
           </div>
         </div>
       </DialogContent>

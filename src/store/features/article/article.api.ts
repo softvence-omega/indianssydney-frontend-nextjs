@@ -151,6 +151,13 @@ export const articleApi = baseAPI.injectEndpoints({
       }),
       providesTags: ["content"],
     }),
+    uploadFileIntoAWS: build.mutation({
+      query: (data) => ({
+        url: "/aws-additional/upload-s3-additional",
+        method: "POST",
+        body: data
+      })
+    })
     //  end
   }),
 });
@@ -170,4 +177,5 @@ export const {
   useGeContentBySubCaregorySlugQuery,
   useGetContentByCategorySlugQuery,
   useGetAllArticleForReccomendationQuery,
+  useUploadFileIntoAWSMutation
 } = articleApi;

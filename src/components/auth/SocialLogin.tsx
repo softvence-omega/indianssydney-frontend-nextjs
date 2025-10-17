@@ -1,20 +1,22 @@
-import React from "react";
+import { setUser } from "@/store/features/auth/auth.slice";
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import React from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { setUser } from "@/store/features/auth/auth.slice";
-import { baseAPI } from "@/store/api/baseApi";
 
 interface GoogleAuthButtonProps {
   onSuccess?: (token: string) => void;
   onError?: () => void;
+  onOpenChange: (open: boolean) => void
 }
 
 const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
   onSuccess,
   onError,
+  onOpenChange
+
 }) => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -45,6 +47,7 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
       if (!token) {
         console.error("No token in backend response");
         toast.error("Login failed. No token received.");
+        onOpenChange(false)
         return;
       }
 
@@ -61,6 +64,7 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
       if (onSuccess) onSuccess(token);
 
       toast.success("Login successful! Redirecting...");
+      onOpenChange(false)
       setTimeout(() => router.push("/"), 1000);
     } catch (err) {
       console.error(" Google login failed:", err);
