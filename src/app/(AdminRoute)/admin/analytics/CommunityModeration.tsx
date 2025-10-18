@@ -1,25 +1,72 @@
+import { useGetCommunityModerationQuery } from "@/store/features/admin/analytics.api";
+
 interface MetricData {
   label: string;
-  value: string;
-  trend?: "up" | "down" | "neutral";
+  value: string | number;
   color?: string;
 }
 
 const CommunityModeration: React.FC = () => {
+  const { data, isLoading, isError, error } = useGetCommunityModerationQuery(
+    undefined,
+    {
+      pollingInterval: 30000,
+      refetchOnMountOrArgChange: true,
+    }
+  );
+
+  // Debugging: Log the full API response and statsData
+  console.log("API Response:", { data, isLoading, isError, error });
+  const statsData = data?.data?.data; // Access the nested data object
+  console.log("Stats Data:", statsData);
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border p-6 text-gray-500">
+        Loading community moderation data...
+      </div>
+    );
+  }
+
+  if (isError || !data?.success) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border p-6 text-red-500">
+        Failed to load community moderation data.{" "}
+        {error && <span>Error: {JSON.stringify(error)}</span>}
+      </div>
+    );
+  }
+
+  if (!statsData || typeof statsData !== "object") {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border p-6 text-red-500">
+        Invalid data structure received from API. Received:{" "}
+        {JSON.stringify(statsData)}
+      </div>
+    );
+  }
+
   const stats: MetricData[] = [
     {
       label: "Article Scanned",
-      value: "1,452",
+      value:
+        statsData.articlesScanned !== undefined ? statsData.articlesScanned : 0,
       color: "bg-blue-50 text-blue-600",
     },
     {
       label: "Flagged for Review",
-      value: "38",
+      value:
+        statsData.flaggedForReview !== undefined
+          ? statsData.flaggedForReview
+          : 0,
       color: "bg-yellow-50 text-yellow-600",
     },
     {
       label: "Hate Speech Removed",
-      value: "7",
+      value:
+        statsData.hateSpeechRemoved !== undefined
+          ? statsData.hateSpeechRemoved
+          : 0,
       color: "bg-red-50 text-red-600",
     },
   ];

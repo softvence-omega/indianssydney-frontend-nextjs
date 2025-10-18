@@ -91,14 +91,14 @@ const PostCommunity = () => {
 
       {/* NEW STRUCTURE: Wrapper for media buttons and Post button */}
       <div className="flex justify-between items-center mt-4">
-        {/* Media Buttons (Left Side) */}
+       
         <div className="flex items-center gap-4">
           <label
             htmlFor="image-upload"
             className="flex items-center gap-2 cursor-pointer text-sm text-gray-700 hover:text-blue-500 transition-colors"
           >
             <ImageIcon size={20} className="text-blue-500" />
-            <span>Image</span> {/* Shortened text for cleaner look */}
+            <span>Image</span> 
           </label>
           <input
             id="image-upload"
@@ -106,7 +106,7 @@ const PostCommunity = () => {
             accept="image/*"
             className="hidden"
             onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-            disabled={!!videoFile} // Disable if a video is already selected
+            disabled={!!videoFile}
           />
 
           <label
@@ -114,7 +114,7 @@ const PostCommunity = () => {
             className="flex items-center gap-2 cursor-pointer text-sm text-gray-700 hover:text-blue-500 transition-colors"
           >
             <VideoIcon size={20} className="text-red-500" />
-            <span>Video</span> {/* Shortened text for cleaner look */}
+            <span>Video</span> 
           </label>
           <input
             id="video-upload"
@@ -122,7 +122,7 @@ const PostCommunity = () => {
             accept="video/*"
             className="hidden"
             onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
-            disabled={!!imageFile} // Disable if an image is already selected
+            disabled={!!imageFile} 
           />
         </div>
 

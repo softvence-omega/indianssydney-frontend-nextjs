@@ -1,3 +1,4 @@
+import { useGetAllPlanQuery } from "@/store/features/plans/plans.api";
 import { baseAPI } from "@/store/api/baseApi";
 
 export const userAPI = baseAPI.injectEndpoints({
@@ -9,7 +10,6 @@ export const userAPI = baseAPI.injectEndpoints({
         body: data,
       }),
     }),
-
 
     getPendingContributorsRequest: build.query({
       query: () => ({
@@ -26,6 +26,15 @@ export const userAPI = baseAPI.injectEndpoints({
       }),
       invalidatesTags: ["contributor"],
     }),
+
+    // ---------account setting reviw alert toggle--
+    changeReviewToggle: build.mutation({
+      query: (status: boolean) => ({
+        url: `user/toggle-review-alerts`,
+        method: "PATCH",
+        body: { reviewAlerts: status },
+      }),
+    }),
     //  end
   }),
 });
@@ -34,4 +43,5 @@ export const {
   useCreateApplicationForContributorMutation,
   useGetPendingContributorsRequestQuery,
   useUpdateContributorRequestStatusMutation,
+  useChangeReviewToggleMutation,
 } = userAPI;
