@@ -17,7 +17,7 @@ const NotificationSettings = () => {
       toast.success(`Review alerts turned ${newValue ? "on" : "off"}`);
     } catch (error) {
       toast.error("Failed to update notification setting.");
-      setSettings((prev) => ({ ...prev, [key]: !newValue })); // revert
+      setSettings((prev) => ({ ...prev, [key]: !newValue })); 
     }
   };
 
