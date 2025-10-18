@@ -12,8 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Plus, Upload, X } from "lucide-react";
+import { Editor } from 'primereact/editor';
 import { useRef, useState } from "react";
 
 import {
@@ -26,7 +26,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AdditionalField, AdditionalFieldType } from "../types";
 
-const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
+const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
   const { data } = useGetAllCategoryQuery({});
   const [newTag, setNewTag] = useState("");
   const [additionalFieldType, setAdditionalFieldType] = useState<
@@ -107,7 +107,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
     formData.append("file", file)
     try {
       const res = await uploadFIleIntoAws(formData).unwrap();
-      if(res){
+      if (res) {
         handleAdditionalFieldUpdate(index, (res as any)?.s3Url);
         toast.success(`${file.type.split("/")[0]} uploaded successfully!`, {
           id,
@@ -162,6 +162,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
       );
     }
     return (
+      // <Editor  value={typeof field.value === "string" ? field.value : ""} onTextChange={(e) => handleAdditionalFieldUpdate(index, e.htmlValue as string)} style={{ minHeight: '320px' }} />
       <Input
         placeholder={`Enter ${field.type}`}
         className="rounded-none"
@@ -239,6 +240,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
       toast.error("Failed to generate content. Please try again.");
     }
   };
+
   return (
     <div className="min-h-screen">
       <div className="max-w-4xl mx-auto">
@@ -374,7 +376,6 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
                 onChange={(e) => onUpdate({ subTitle: e.target.value })}
               />
             </div>
-
             <div>
               <Label>3. File Type</Label>
               <Select
@@ -441,13 +442,8 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
             </div>
 
             <div>
-              <Label>6. Paragraph *</Label>
-              <Textarea
-                className="w-full rounded-none shadow-none mt-2"
-                placeholder="Create a Paragraph for your file"
-                value={formData.paragraph}
-                onChange={(e) => onUpdate({ paragraph: e.target.value })}
-              />
+              <Label className="mb-3">6. Paragraph *</Label>
+              <Editor value={formData?.paragraph} onTextChange={(e) => onUpdate({ paragraph: e.htmlValue as string })} style={{ minHeight: '320px' }} />
             </div>
             <div className="flex justify-end mt-2 gap-4">
               <Button

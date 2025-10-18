@@ -42,7 +42,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
   return (
     <button
       onClick={navigateToDetails}
-      className="grid md:grid-cols-2 lg:grid-cols-12 gap-6"
+      className="grid md:grid-cols-2 lg:grid-cols-12 gap-6 text-left"
     >
       {/* Image Section */}
       <div className="w-full h-[300px] md:h-[400px] overflow-hidden lg:col-span-7">

@@ -1,17 +1,17 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Share2, Eye, Calendar, User } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowLeft, Calendar, Eye, Share2, User } from "lucide-react";
 
-import RecommendedArticles from "./RecommendedArticles";
-import Newsletter from "./Newsletter";
 import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
 import { useState } from "react";
-import ReportModal from "./ReportModal";
 import PrimaryButton from "../reusable/PrimaryButton";
+import Newsletter from "./Newsletter";
+import RecommendedArticles from "./RecommendedArticles";
+import ReportModal from "./ReportModal";
 
 interface PodcastDetailsProps {
   formData: DetailsData;
@@ -72,7 +72,7 @@ const PodcastDetails = ({ formData, onBack }: PodcastDetailsProps) => {
                         </p>
                         <div className="flex items-center text-sm text-gray-500">
                           <Calendar className="w-4 h-4 mr-1" />
-                          { currentDate}
+                          {currentDate}
                         </div>
                       </div>
                     </div>
@@ -226,7 +226,7 @@ const PodcastDetails = ({ formData, onBack }: PodcastDetailsProps) => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <RecommendedArticles />
+            <RecommendedArticles id={formData.id} />
             <Newsletter />
           </div>
         </div>
