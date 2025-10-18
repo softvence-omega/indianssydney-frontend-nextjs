@@ -1,5 +1,5 @@
+import { use } from "react";
 import { baseAPI } from "@/store/api/baseApi";
-import { get } from "http";
 
 export const llmApi = baseAPI.injectEndpoints({
   endpoints: (build) => ({
@@ -38,12 +38,38 @@ export const llmApi = baseAPI.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    // -------analytics-dashboard/top-tags--
 
-    //  end
+    topperformancetags: build.query({
+      query: () => ({
+        url: `/overview-dashboard/analytics-dashboard/top-tags`,
+        method: "GET",
+      }),
+    }),
+
+    // analytics-dashboard/content-metrics
+
+    contentmetrics: build.query({
+      query: () => ({
+        url: `/overview-dashboard/analytics-dashboard/content-metrics`,
+        method: "GET",
+      }),
+    }),
+    // ---overview-dashboard/Engagement-Personalization?period=month--
+
+    EngagementPersonalization: build.query({
+      query: ({ period }: { period: string }) => ({
+        url: `/overview-dashboard/Engagement-Personalization?period=${period}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
 export const {
+  useEngagementPersonalizationQuery,
+  useTopperformancetagsQuery,
+  useContentmetricsQuery,
   useCreateLawMutation,
   useGetAllLawsQuery,
   useGetSingleLawQuery,

@@ -21,6 +21,8 @@ import {
 } from "@/store/features/community/community";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 
+import { useGetProfileQuery } from "@/store/features/profile/profile.api";
+
 dayjs.extend(relativeTime);
 
 const DEFAULT_AVATAR =
@@ -67,10 +69,12 @@ const AllCommunityPost = () => {
   const { data, isLoading, isError } = useGetAllCommunityPostQuery(undefined, {
     refetchOnMountOrArgChange: false,
   });
+  console.log("community data", data);
   const [createCommunityPostComment] = useCreateCommunityPostCommentMutation();
   const [createCommunityPostReaction] =
     useCreateCommunityPostReactionMutation();
   const [createCommentReaction] = useCreateCommentReactionMutation();
+  const { data: profileData } = useGetProfileQuery(undefined);
   const [posts, setPosts] = useState<Post[]>([]);
   const [newComment, setNewComment] = useState<{ [key: string]: string }>({});
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -346,14 +350,14 @@ const AllCommunityPost = () => {
             .then(() => {
               toast.success("Link copied to clipboard!", {
                 duration: 2000,
-                position: "top-right",
+                position: "top-center",
               });
               setShowShareOptions((prev) => ({ ...prev, [postId]: false }));
             })
             .catch(() => {
               toast.error("Failed to copy link. Please try again.", {
                 duration: 2000,
-                position: "top-right",
+                position: "top-center",
               });
             });
           break;
@@ -394,9 +398,7 @@ const AllCommunityPost = () => {
   return (
     <div className="max-w-5xl mx-auto">
       <div className="p-4 sm:p-6">
-        {errorMessage && (
-          <p className="text-red-600 text-center mb-4">{errorMessage}</p>
-        )}
+        <h2 className="text-2xl font-semibold mb-4">Community Posts</h2>
         {posts.length === 0 && (
           <div className="bg-[#f9fbfd] p-6 rounded-lg shadow-md text-center">
             <p className="text-gray-500">No posts found.</p>
@@ -406,11 +408,10 @@ const AllCommunityPost = () => {
           <div key={post.id} className="bg-white shadow-sm mb-6 rounded-md">
             <div className="flex items-center gap-3 p-4">
               <img
-                src={post.user?.profilePhoto || DEFAULT_AVATAR}
+                src={post.user?.avatar || post.user?.profilePhoto || ""}
                 alt={post.user?.fullName || "User"}
                 className="w-10 h-10 rounded-lg"
                 loading="lazy"
-                onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR)}
               />
               <div>
                 <h3 className="font-semibold text-sm">
@@ -438,7 +439,7 @@ const AllCommunityPost = () => {
                     alt="Post Image"
                     className="w-full h-full object-cover rounded-md"
                     loading="lazy"
-                    onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR)}
+                    referrerPolicy="no-referrer"
                   />
                 ) : (
                   <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-md">
@@ -458,7 +459,7 @@ const AllCommunityPost = () => {
               <span>{post.comments?.length || 0} Comments</span>
             </div>
 
-            <div className="border-t border-b border-gray-200 flex justify-around py-2 text-sm text-gray-600 relative">
+            <div className="border-t border-b border-gray-200 flex gap-6 py-6 px-4 text-sm text-gray-600 relative">
               <button
                 onClick={() => handlePostReaction(post.id, "LIKE")}
                 className={`flex items-center gap-1 cursor-pointer ${
@@ -543,16 +544,14 @@ const AllCommunityPost = () => {
                   <div key={comment.id} className="flex gap-3 mb-3">
                     <img
                       src={
-                        comment.user?.profilePhoto ||
-                        comment.user?.avatar ||
-                        DEFAULT_AVATAR
+                        comment.user?.avatar || comment.user?.profilePhoto || ""
                       }
                       alt={
                         comment.user?.fullName || comment.user?.name || "User"
                       }
                       className="w-8 h-8 rounded-full"
                       loading="lazy"
-                      onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR)}
+                      referrerPolicy="no-referrer"
                     />
                     <div className="flex-1">
                       <div className="bg-gray-100 rounded-lg p-2 text-sm">
@@ -615,7 +614,7 @@ const AllCommunityPost = () => {
                 ))}
                 <div className="flex gap-3 mt-3">
                   <img
-                    src={DEFAULT_AVATAR}
+                    src={profileData?.profilePhoto || ""}
                     alt="Current user"
                     className="w-8 h-8 rounded-full"
                     loading="lazy"

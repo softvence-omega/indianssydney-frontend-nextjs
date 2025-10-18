@@ -1,20 +1,29 @@
-"use client"
+"use client";
 
-import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
+import { useContentmetricsQuery } from "@/store/features/admin/llm.api";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 
-
-// Dynamically import ApexCharts with no SSR
-const Chart = dynamic(() => import('react-apexcharts'), { 
+// Dynamically import ApexCharts (no SSR)
+const Chart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
-  loading: () => <div className="w-full h-32 bg-gray-100 animate-pulse rounded" />
+  loading: () => (
+    <div className="w-full h-32 bg-gray-100 animate-pulse rounded" />
+  ),
 });
+
 const ContentMetrics: React.FC = () => {
   const [mounted, setMounted] = useState(false);
+
+  // ✅ Fetch data from your RTK Query hook
+  const { data, isLoading, isError } = useContentmetricsQuery(undefined);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // ✅ Extract API values safely
+  const averagePerformance = data?.data?.data?.averagePerformance ?? 0;
 
   const chartOptions = {
     chart: {
@@ -37,7 +46,7 @@ const ContentMetrics: React.FC = () => {
               fontSize: "24px",
               fontWeight: "bold",
               color: "#f97316",
-              formatter: () => "90%",
+              formatter: () => `${averagePerformance.toFixed(1)}%`,
             },
             total: {
               show: true,
@@ -51,12 +60,20 @@ const ContentMetrics: React.FC = () => {
     },
   };
 
-  const series = [90, 10];
+  const series = [averagePerformance, 100 - averagePerformance];
 
-  if (!mounted) {
+  if (!mounted || isLoading) {
     return (
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <div className="w-32 h-32 mx-auto bg-gray-100 animate-pulse rounded-full"></div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border p-6 text-center text-red-500">
+        Failed to load metrics
       </div>
     );
   }
@@ -78,6 +95,9 @@ const ContentMetrics: React.FC = () => {
       </div>
       <div className="text-center">
         <div className="text-sm text-gray-600">Content Quality Score</div>
+        <div className="text-sm font-semibold text-orange-500 mt-1">
+          {averagePerformance.toFixed(1)}%
+        </div>
       </div>
     </div>
   );

@@ -2,29 +2,25 @@ import { Switch } from "@headlessui/react";
 import { useState } from "react";
 import PrimaryButton from "../reusable/PrimaryButton";
 import { toast } from "sonner";
+import { useChangeReviewToggleMutation } from "@/store/features/user/user.api";
 
 const NotificationSettings = () => {
-  // Define notification options
-  const notificationOptions = [
-    { key: "reviewAlerts", label: "Review Alerts" },
-    { key: "deadlinesAlerts", label: "Deadline Alerts" },
-  ];
+  const [settings, setSettings] = useState({ reviewAlerts: false });
+  const [changeReviewToggle, { isLoading }] = useChangeReviewToggleMutation();
 
-  // Store states dynamically in an object
-  const [settings, setSettings] = useState<Record<string, boolean>>({
-    reviewAlerts: false,
-    deadlinesAlerts: false,
-  });
+  const handleToggle = async (key: keyof typeof settings) => {
+    const newValue = !settings[key as keyof typeof settings];
+    setSettings((prev) => ({ ...prev, [key]: newValue }));
 
-  // Handle toggle
-  const handleToggle = (key: string) => {
-    setSettings((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+    try {
+      await changeReviewToggle(newValue).unwrap();
+      toast.success(`Review alerts turned ${newValue ? "on" : "off"}`);
+    } catch (error) {
+      toast.error("Failed to update notification setting.");
+      setSettings((prev) => ({ ...prev, [key]: !newValue })); 
+    }
   };
 
-  // Save handler
   const handleSave = () => {
     toast.success("Changes saved!");
   };
@@ -36,27 +32,23 @@ const NotificationSettings = () => {
         You can manage your notification preferences here.
       </p>
 
-      {notificationOptions.map((option) => (
-        <div
-          key={option.key}
-          className="flex items-center justify-between pb-4"
+      <div className="flex items-center justify-between pb-4">
+        <span className="text-gray-700">Review Alerts</span>
+        <Switch
+          checked={settings.reviewAlerts}
+          onChange={() => handleToggle("reviewAlerts")}
+          disabled={isLoading}
+          className={`${
+            settings.reviewAlerts ? "bg-accent-orange" : "bg-gray-300"
+          } relative inline-flex h-6 w-11 items-center rounded-full transition-colors`}
         >
-          <span className="text-gray-700">{option.label}</span>
-          <Switch
-            checked={settings[option.key]}
-            onChange={() => handleToggle(option.key)}
+          <span
             className={`${
-              settings[option.key] ? "bg-accent-orange" : "bg-gray-300"
-            } relative inline-flex h-6 w-11 items-center rounded-full transition-colors`}
-          >
-            <span
-              className={`${
-                settings[option.key] ? "translate-x-6" : "translate-x-1"
-              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-            />
-          </Switch>
-        </div>
-      ))}
+              settings.reviewAlerts ? "translate-x-6" : "translate-x-1"
+            } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+          />
+        </Switch>
+      </div>
 
       <PrimaryButton
         onClick={handleSave}

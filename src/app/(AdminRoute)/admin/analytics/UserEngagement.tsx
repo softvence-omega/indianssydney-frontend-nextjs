@@ -1,7 +1,10 @@
 "use client";
 
+import { useEngagementPersonalizationQuery } from "@/store/features/admin/llm.api";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+
+
 
 // Dynamically import ApexCharts with no SSR
 const Chart = dynamic(() => import("react-apexcharts"), {
@@ -21,6 +24,21 @@ const UserEngagement: React.FC = () => {
     setMounted(true);
   }, []);
 
+  // ✅ Fetch API data based on selected period
+  const { data, isLoading, isError } = useEngagementPersonalizationQuery({
+    period: timeRange,
+  });
+
+  // ✅ Extract data from response (fallback if API not yet loaded)
+  const engagement = data?.data || {
+    totalUsers: 0,
+    totalBookmarks: 0,
+    totalComments: 0,
+    totalReactions: 0,
+    averageGrowth: 0,
+  };
+
+  // --- Chart Configuration ---
   const chartOptions = {
     chart: {
       type: "area" as const,
@@ -59,17 +77,32 @@ const UserEngagement: React.FC = () => {
     },
   };
 
+  // ✅ Show the average growth in chart (simple static visual)
   const series = [
     {
       name: "CTR",
-      data: [2.1, 2.8, 3.2, 2.5, 4.1, 3.8, 5.8],
+      data: [
+        engagement.averageGrowth / 2,
+        engagement.averageGrowth / 1.8,
+        engagement.averageGrowth / 1.4,
+        engagement.averageGrowth / 1.2,
+        engagement.averageGrowth,
+      ],
     },
   ];
 
-  if (!mounted) {
+  if (!mounted || isLoading) {
     return (
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <div className="h-32 bg-gray-100 animate-pulse rounded"></div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border p-6 text-red-500">
+        Failed to load engagement data
       </div>
     );
   }
@@ -94,17 +127,14 @@ const UserEngagement: React.FC = () => {
       </div>
 
       <div className="h-32 mb-4">
-        <Chart
-          options={chartOptions}
-          series={series}
-          type="area"
-          height={128}
-        />
+        <Chart options={chartOptions} series={series} type="area" height={128} />
       </div>
 
       <div className="flex items-center justify-between text-sm text-gray-600">
         <span>Recommendation Engine CTR</span>
-        <span className="font-semibold text-orange-500">5.8%</span>
+        <span className="font-semibold text-orange-500">
+          {engagement.averageGrowth.toFixed(1)}%
+        </span>
       </div>
       <div className="text-xs text-gray-500 mt-1">0.3% vs last week</div>
     </div>
