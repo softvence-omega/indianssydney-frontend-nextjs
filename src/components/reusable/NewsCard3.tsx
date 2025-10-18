@@ -40,7 +40,7 @@ const NewsCard3: React.FC<NewsCardProps> = ({
     router.push(`/details/article/${id}`);
   }
   return (
-    <button onClick={navigateToDetails} className="grid  gap-6">
+    <button onClick={navigateToDetails} className="grid  gap-6 text-left">
       {/* Image Section */}
       <div className={`w-full overflow-hidden ${imgHeight}`}>
         <img src={image} alt={title} className="w-full h-full object-cover" />
@@ -56,7 +56,6 @@ const NewsCard3: React.FC<NewsCardProps> = ({
         <h2 className="text-lg md:text-xl font-semibold mb-2 font-playfair text-blk-1 line-clamp-2">
           {title}
         </h2>
-        {/* <p className="text-sm mb-6 text-blk-2">{description}</p> */}
         <div className="text-xs lg:text-sm text-accent-orange font-medium">
           <span>by {author}</span> • {readTime}
         </div>

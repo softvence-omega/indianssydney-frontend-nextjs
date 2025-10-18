@@ -28,12 +28,12 @@ const NewsCardSecondary: React.FC<NewsCardProps> = ({
   image,
   tag,
   title,
-  paragraph,
   author = "Unknown",
   layout = "left",
   imageHeight = "lg:h-[190px]", // default large screen height
   category,
   publishedAt,
+  subTitle
 }) => {
   const [updateViewCount] = useCountViewMutation();
   const router = useRouter();
@@ -57,7 +57,7 @@ const NewsCardSecondary: React.FC<NewsCardProps> = ({
     <button
       onClick={navigateToDetails}
       className={`grid md:grid-cols-2 gap-6 ${layout === "right" ? "md:flex-row-reverse" : "md:flex-row"
-        }`}
+        } text-left`}
     >
       {/* Image Section */}
       <div className={`w-auto h-[140px] ${imageHeight} overflow-hidden`}>
@@ -75,12 +75,12 @@ const NewsCardSecondary: React.FC<NewsCardProps> = ({
             {tag || category}
           </span>
         )}
-        <h2 className="text-lg font-semibold mb-2 font-playfair text-blk-1 line-clamp-2">
+        <h2 className="text-lg font-semibold mb-2 font-playfair text-blk-1 line-clamp-2 overflow-hidden">
           {title}
         </h2>
 
-        {paragraph && (
-          <p className="text-sm text-gray-600 mb-2 line-clamp-2">{paragraph}</p>
+        {subTitle && (
+          <p className="text-sm text-gray-600 mb-2 line-clamp-2">{subTitle}</p>
         )}
 
         <div className="text-xs lg:text-sm text-accent-orange font-medium">

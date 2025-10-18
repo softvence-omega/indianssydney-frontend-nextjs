@@ -21,6 +21,7 @@ import {
 import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
 import { ArrowLeft, Plus, Upload, X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { Editor } from "primereact/editor";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import ArticlePreview from "../../publish-content/ArticlePreview";
@@ -537,18 +538,12 @@ const EditArticle = () => {
                     />
                   </div>
                   <div>
-                    <Label>6. Paragraph *</Label>
-                    <Textarea
-                      className="w-full rounded-none shadow-none mt-2"
-                      placeholder="Create a Paragraph for your file"
-                      value={formData.paragraph}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          paragraph: e.target.value,
-                        }))
-                      }
-                    />
+                    <Label className="mb-4">6. Paragraph *</Label>
+                    <Editor value={formData?.paragraph} onTextChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        paragraph: e.htmlValue as string,
+                      }))} style={{ minHeight: '320px' }} />
                   </div>
                   <div className="flex justify-end mt-2">
                     <Button

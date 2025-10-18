@@ -1,11 +1,12 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Share2, Eye, Calendar, User } from "lucide-react";
-import { UploadFormData, AdditionalField } from "./types";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowLeft, Calendar, Eye, Share2, User } from "lucide-react";
+import { Editor } from "primereact/editor";
+import { AdditionalField } from "./types";
 
 interface ArticlePreviewProps {
   formData: any;
@@ -16,6 +17,9 @@ interface ArticlePreviewProps {
 const ArticlePreview = ({ formData, onBack, onPublish }: ArticlePreviewProps) => {
   const currentDate = new Date().toLocaleDateString();
 
+  const editorModules = {
+    toolbar: [],
+  };
   // Helper to resolve File | string | null -> string (for src attributes)
   const resolveSrc = (value: File | string | null): string => {
     if (!value) return "";
@@ -88,7 +92,7 @@ const ArticlePreview = ({ formData, onBack, onPublish }: ArticlePreviewProps) =>
               {/* Tags */}
               <div className="flex flex-wrap gap-2 mb-6">
                 {Array.isArray(formData.tags) && formData.tags.length > 0 ? (
-                  formData.tags.map((tag:string) => (
+                  formData.tags.map((tag: string) => (
                     <Badge
                       key={tag}
                       variant="secondary"
@@ -162,13 +166,20 @@ const ArticlePreview = ({ formData, onBack, onPublish }: ArticlePreviewProps) =>
                   {formData.shortQuote}
                 </blockquote>
               )}
+              <p>Using editor</p>
+              <Editor
+                value={formData?.paragraph}
+                readOnly
+                style={{
+                  minHeight: '320px',
+                  border: 'none'
+                }}
+                modules={editorModules}
+                showHeader={false}
+                unstyled={true}
+                className='no-border'
+              />
 
-              <div className="text-gray-700 leading-relaxed space-y-4">
-                {formData.paragraph &&
-                  formData.paragraph
-                    .split("\n")
-                    .map((p:any, i:any) => <p key={i}>{p}</p>)}
-              </div>
 
               {/* Additional Fields */}
               {formData.additionalContents.length > 0 && (
