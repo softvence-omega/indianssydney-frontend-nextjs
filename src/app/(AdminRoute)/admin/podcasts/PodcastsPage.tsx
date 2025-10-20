@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import DashboardHeader from "@/components/reusable/DashboardHeader";
@@ -11,6 +9,7 @@ import {
   useGetPodcastsPendingQuery,
 } from "@/store/features/videoPodcast/podcast.api";
 import { useState } from "react";
+import { toast } from "sonner";
 import ArticleCard from "../articles/ArticleCard";
 
 type PodcastStatus = "APPROVE" | "PENDING" | "Declined";
@@ -36,19 +35,33 @@ const PodcastsPage = () => {
     isLoading: loadingDeclined,
     isError: errorDeclined,
   } = useGetPodcastsDeclinedQuery({});
+
+  // === Update Mutation
   const [updateStatus] = useUpdateArticleStatusMutation();
+
   const handleStatusChange = async (
     id: string,
     status: "APPROVE" | "Declined"
   ) => {
     try {
-      await updateStatus({ id, status });
+      const res = await updateStatus({ id, status }).unwrap();
+
+      if (res?.success) {
+        toast.success(
+          `Podcast has been ${
+            status === "APPROVE" ? "approved" : "declined"
+          } successfully`
+        );
+      } else {
+        toast.error(res?.message || "Failed to update podcast status");
+      }
     } catch (err) {
       console.error("Failed to update status", err);
+      toast.error("Something went wrong while updating podcast status");
     }
   };
 
-  // ✅ Render podcasts similar to video rendering
+  //  Render podcasts similar to video rendering
   const renderPodcasts = (data: any, isLoading: boolean, isError: boolean) => {
     if (isLoading) return <SkeletonLoader />;
     if (isError)
@@ -58,7 +71,8 @@ const PodcastsPage = () => {
       (item: any) => item.contentType === "PODCAST"
     );
 
-    if (!podcasts?.length) return <p>No podcasts found.</p>;
+    if (!podcasts?.length)
+      return <p className="text-center text-red-400">No podcasts found.</p>;
 
     return podcasts.map((podcast: any) => {
       let parsedCompareResult = null;
@@ -85,7 +99,7 @@ const PodcastsPage = () => {
             date: new Date(podcast.createdAt).toLocaleDateString(),
             status: podcast.status,
             negativity: {
-              score: podcast.evaluationResult?.negativityScore || 0,
+              score: podcast.evaluationResult?.percentage_not_aligned|| 0,
               positives: [],
               negatives: [],
             },
@@ -106,10 +120,11 @@ const PodcastsPage = () => {
         {["APPROVE", "PENDING", "Declined"].map((tab) => (
           <button
             key={tab}
-            className={`cursor-pointer ${activeTab === tab
+            className={`cursor-pointer ${
+              activeTab === tab
                 ? "text-accent-orange font-semibold"
                 : "text-gray-500"
-              }`}
+            }`}
             onClick={() => setActiveTab(tab as PodcastStatus)}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1).toLowerCase()}

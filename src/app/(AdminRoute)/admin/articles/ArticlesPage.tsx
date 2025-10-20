@@ -42,20 +42,27 @@ const ArticlesPage = () => {
     }
   };
 
+  const parseCompareResult = (compareResult: any) => {
+    try {
+      if (typeof compareResult === "string") {
+        const parsed = JSON.parse(compareResult);
+        // Extract nested compareResult if present, otherwise use parsed object
+        return parsed.compareResult || parsed;
+      }
+      // If already an object, return it (handle nested compareResult if needed)
+      return compareResult?.compareResult || compareResult || null;
+    } catch (error) {
+      console.error("Error parsing compareResult:", error);
+      return null;
+    }
+  };
+
   const renderArticles = (articles: any[], isLoading: boolean) => {
     if (isLoading) return <SkeletonLoader />;
     if (!articles?.length) return <p>No articles found.</p>;
 
     return articles.map((article) => {
-      let parsedCompareResult = null;
-
-      if (article.compareResult) {
-        try {
-          parsedCompareResult = JSON.parse(article.compareResult);
-        } catch (error) {
-          console.error("Error parsing compareResult:", error);
-        }
-      }
+      const parsedCompareResult = parseCompareResult(article.compareResult);
 
       return (
         <ArticleCard
@@ -73,7 +80,7 @@ const ArticlesPage = () => {
               positives: [],
               negatives: [],
             },
-            compareResult: parsedCompareResult, // 👈 add parsed result here
+            compareResult: parsedCompareResult, // Pass normalized result
           }}
           onStatusChange={handleStatusChange}
         />
