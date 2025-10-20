@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Accordion,
   AccordionContent,
@@ -8,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle } from "lucide-react";
+import { toast } from "sonner";
+import { useContentStatusChangeMutation } from "@/store/features/videoPodcast/video.api";
 
 export type Video = {
   id: string;
@@ -28,18 +32,50 @@ const VideoCard: React.FC<{
   video: Video;
   onStatusChange: (id: string, status: "approved" | "declined") => void;
 }> = ({ video, onStatusChange }) => {
+  const [contentStatusChange, { isLoading }] = useContentStatusChangeMutation();
+
+  const handleStatusChange = async (
+    id: string,
+    newStatus: "approved" | "declined"
+  ) => {
+    try {
+      const res = await contentStatusChange({
+        id,
+        status: newStatus === "approved" ? "APPROVE" : "DECLINE", // ✅ consistent case
+      }).unwrap();
+
+      if (res?.success) {
+        toast.success(
+          `Video has been ${
+            newStatus === "approved" ? "approved" : "declined"
+          } successfully`
+        );
+        onStatusChange(id, newStatus);
+      } else {
+        toast.error(res?.message || "Failed to update video status");
+      }
+    } catch {
+      toast.error("Something went wrong while updating status");
+    }
+  };
+
   return (
     <Card className="mb-4 shadow-none">
       <CardContent>
-        {/* Article Info */}
         <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
           <div className="flex gap-4">
-            <div className="">
-              <img src={video.coverImage} className="h-28 w-32 object-cover object-center rounded-lg" alt="" />
-            </div>
-            <div className="">
-              <h2 className="font-semibold text-lg line-clamp-2">{video.title}</h2>
-              <p className="text-sm text-gray-600 line-clamp-2">{video.description}</p>
+            <img
+              src={video.coverImage}
+              className="h-28 w-32 object-cover rounded-lg"
+              alt={video.title}
+            />
+            <div>
+              <h2 className="font-semibold text-lg line-clamp-2">
+                {video.title}
+              </h2>
+              <p className="text-sm text-gray-600 line-clamp-2">
+                {video.description}
+              </p>
               <p className="text-xs mt-2 text-gray-500">
                 Author - {video.author} | {video.date}
               </p>
@@ -56,25 +92,27 @@ const VideoCard: React.FC<{
                 <Button
                   size="sm"
                   variant="outline"
+                  disabled={isLoading}
                   className="border-green-500 text-green-600"
-                  onClick={() => onStatusChange(video.id, "approved")}
+                  onClick={() => handleStatusChange(video.id, "approved")}
                 >
-                  Accept
+                  {isLoading ? "..." : "Accept"}
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
+                  disabled={isLoading}
                   className="border-red-500 text-red-600"
-                  onClick={() => onStatusChange(video.id, "declined")}
+                  onClick={() => handleStatusChange(video.id, "declined")}
                 >
-                  Decline
+                  {isLoading ? "..." : "Decline"}
                 </Button>
               </>
             )}
           </div>
         </div>
 
-        {/* AI Analysis Accordion */}
+        {/* AI Negativity Analysis */}
         <Accordion
           type="single"
           collapsible
@@ -85,7 +123,7 @@ const VideoCard: React.FC<{
               Negativity Estimate by AI ({video.negativity.score}%)
             </AccordionTrigger>
             <AccordionContent>
-              <div className="flex items-center gap-2 mb-4 pb-2 border-b border-slight-border/30">
+              <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-300">
                 <Badge
                   className={`text-white ${
                     video.negativity.score > 50 ? "bg-red-500" : "bg-green-500"

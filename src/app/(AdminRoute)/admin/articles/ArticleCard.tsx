@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Accordion,
   AccordionContent,
@@ -7,27 +9,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export type Article = {
   id: string;
-  contentType?: string;
+  contentType?: "ARTICLE" | "VIDEO" | "PODCAST";
   title: string;
   description: string;
   author: string;
   date: string;
   status: "recent" | "PENDING" | "APPROVE" | "Declined";
-  negativity: {
+  negativity?: {
     score: number;
     positives: string[];
     negatives: string[];
   };
-  compareResult?: {
-    matched_filename: string;
-    percentage_not_aligned: number;
-    short_summary_diff: string;
-  } | null;
+  compareResult?: any;
 };
 
 const ArticleCard: React.FC<{
@@ -35,30 +32,53 @@ const ArticleCard: React.FC<{
   onStatusChange: (id: string, status: "APPROVE" | "Declined") => void;
 }> = ({ article, onStatusChange }) => {
   const router = useRouter();
+
+  // Use compareResult directly, as it's normalized in ArticlesPage
+  const parsedCompare = article.compareResult || null;
+
+  // Open details page based on contentType
   const handleOpenDetails = () => {
-    if (article.contentType === "ARTICLE")
-      router.push(`/details/article/${article.id}`);
-    else if (article.contentType === "VIDEO")
-      router.push(`/details/video/${article.id}`);
-    else if (article.contentType === "PODCAST")
-      router.push(`/details/video/${article.id}`);
+    switch (article.contentType) {
+      case "ARTICLE":
+        router.push(`/details/article/${article.id}`);
+        break;
+      case "VIDEO":
+        router.push(`/details/video/${article.id}`);
+        break;
+      case "PODCAST":
+        router.push(`/details/podcast/${article.id}`);
+        break;
+      default:
+        console.warn("Unknown content type:", article.contentType);
+        break;
+    }
   };
+
   return (
     <Card className="mb-4 shadow-none">
       <CardContent>
         {/* Article Info */}
         <div className="flex flex-col lg:flex-row justify-between items-start gap-4">
-          <div className="w-full">
-            <div onClick={handleOpenDetails} className="cursor-pointer">
-              <h2 className="font-semibold text-lg">{article.title}</h2>
-              <p className="text-sm text-gray-600">{article.description}</p>
-              <p className="text-xs mt-2 text-gray-500">
-                Author - {article.author} | {article.date}
-              </p>
-            </div>
+          <div
+            onClick={handleOpenDetails}
+            className="w-full cursor-pointer"
+            title="View details"
+          >
+            <h2 className="font-semibold text-lg">{article.title}</h2>
+
+            {/* Summary */}
+            <p className="text-sm text-gray-600 line-clamp-3">
+              {parsedCompare?.short_summary_diff?.trim() ||
+                "No comparison summary available."}
+            </p>
+
+            <p className="text-xs mt-2 text-gray-500">
+              Author - {article.author} | {article.date}
+            </p>
           </div>
 
-          <div className="flex gap-2">
+          {/* Status / Actions */}
+          <div className="flex gap-2 shrink-0">
             {article.status === "APPROVE" ? (
               <Badge className="bg-green-500 text-white">Approved</Badge>
             ) : article.status === "Declined" ? (
@@ -68,7 +88,7 @@ const ArticleCard: React.FC<{
                 <Button
                   size="sm"
                   variant="outline"
-                  className="border-green-500 text-green-600"
+                  className="border-green-500 text-green-600 hover:bg-green-50"
                   onClick={() => onStatusChange(article.id, "APPROVE")}
                 >
                   Accept
@@ -76,7 +96,7 @@ const ArticleCard: React.FC<{
                 <Button
                   size="sm"
                   variant="outline"
-                  className="border-red-500 text-red-600"
+                  className="border-red-500 text-red-600 hover:bg-red-50"
                   onClick={() => onStatusChange(article.id, "Declined")}
                 >
                   Decline
@@ -86,8 +106,8 @@ const ArticleCard: React.FC<{
           </div>
         </div>
 
-        {/* AI Compare Result Accordion */}
-        {article.compareResult && (
+        {/* Accordion: AI Compare Result */}
+        {parsedCompare && (
           <Accordion
             type="single"
             collapsible
@@ -96,22 +116,23 @@ const ArticleCard: React.FC<{
             <AccordionItem value="compare-result">
               <AccordionTrigger>
                 Content Alignment Report (
-                {article.compareResult.percentage_not_aligned}% not aligned)
+                {parsedCompare.percentage_not_aligned ?? "N/A"}% not aligned)
               </AccordionTrigger>
               <AccordionContent>
-                <div className="mb-3">
+                <div className="mb-3 space-y-1">
                   <p className="text-sm">
                     <strong>Matched File:</strong>{" "}
-                    {article.compareResult.matched_filename}
+                    {parsedCompare.matched_filename || "N/A"}
                   </p>
                   <p className="text-sm">
                     <strong>Not Aligned:</strong>{" "}
-                    {article.compareResult.percentage_not_aligned}%
+                    {parsedCompare.percentage_not_aligned ?? "N/A"}%
                   </p>
                 </div>
 
                 <div className="bg-white p-3 rounded-md border text-sm whitespace-pre-line">
-                  {article.compareResult.short_summary_diff}
+                  {parsedCompare.short_summary_diff ||
+                    "No comparison summary available."}
                 </div>
               </AccordionContent>
             </AccordionItem>
