@@ -16,7 +16,7 @@ type VideoStatus = "APPROVE" | "PENDING" | "Declined";
 const VideosPage = () => {
   const [activeTab, setActiveTab] = useState<VideoStatus>("APPROVE");
 
-  // ✅ Fetch all video data by status
+  // Fetch all video data by status
   const {
     data: approvedData,
     isLoading: loadingApproved,

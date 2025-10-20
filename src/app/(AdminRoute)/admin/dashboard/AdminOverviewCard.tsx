@@ -7,47 +7,49 @@ import {
 } from "@/store/features/admin/admin.api";
 
 const AdminOverviewCard = () => {
+  // === User Count Query ===
   const {
     data: userCount,
     isLoading: userCountLoading,
     isFetching: userCountFetching,
   } = useGetTotalUserCountQuery({});
 
+  // === Page View / Overview Query ===
   const {
     data: pageViewCount,
     isLoading: pageViewLoading,
     isFetching: pageViewFetching,
   } = useGetPageViewCountQuery({});
 
-
-  // Users
+  // === Users ===
   const totalUsers = userCount?.data?.totalCurrentMonth ?? 0;
+  const lastMonthUsers = userCount?.data?.totalLastMonth ?? 0;
   const userGrowth =
-    userCount?.data?.totalLastMonth && userCount?.data?.totalLastMonth !== 0
-      ? (
-          ((totalUsers - userCount?.data?.totalLastMonth) /
-            userCount?.data?.totalLastMonth) *
-          100
-        ).toFixed(1) + "%"
+    lastMonthUsers !== 0
+      ? (((totalUsers - lastMonthUsers) / lastMonthUsers) * 100).toFixed(1) +
+        "%"
       : `${userCount?.data?.userGrowth ?? 0}%`;
 
-  // Page Views
+  // === Page View / Articles Data ===
+  const totalPosts = pageViewCount?.data?.totalArticles ?? 0;
+  const pendingArticles =
+    pageViewCount?.data?.totalArticleLastMonthPending ?? 0;
   const totalPageViews = pageViewCount?.data?.currentMonthCount ?? 0;
+  const lastMonthViews = pageViewCount?.data?.lastMonthCount ?? 0;
+  const contentGrowth = `${pageViewCount?.data?.contentGrowthPercentage ?? 0}%`;
   const pageGrowth =
-    pageViewCount?.data?.lastMonthCount &&
-    pageViewCount?.data?.lastMonthCount !== 0
-      ? (
-          ((totalPageViews - pageViewCount?.data?.lastMonthCount) /
-            pageViewCount?.data?.lastMonthCount) *
-          100
-        ).toFixed(1) + "%"
+    lastMonthViews !== 0
+      ? (((totalPageViews - lastMonthViews) / lastMonthViews) * 100).toFixed(
+          1
+        ) + "%"
       : `${pageViewCount?.data?.pageGroth ?? 0}%`;
 
+  // === Status Card Data ===
   const statusData = [
     {
       title: "Total Posts",
-      amount: "1938",
-      percentage: "+12.1%",
+      amount: pageViewLoading ? "..." : String(totalPosts),
+      percentage: contentGrowth,
       tag: "from last month",
     },
     {
@@ -59,7 +61,7 @@ const AdminOverviewCard = () => {
     },
     {
       title: "Pending Articles",
-      amount: "200",
+      amount: pageViewLoading ? "..." : String(pendingArticles),
       tag: "Needs review",
     },
     {
@@ -74,6 +76,7 @@ const AdminOverviewCard = () => {
   return (
     <div>
       <DashboardHeader title="Overview" />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {statusData.map((single) => (
           <div
@@ -83,9 +86,11 @@ const AdminOverviewCard = () => {
             <p className="text-sm sm:text-base text-[#727C87] font-Roboto">
               {single.title}
             </p>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-brick-red font-Roboto tracking-[-0.68px] ">
+
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-brick-red font-Roboto tracking-[-0.68px]">
               {single.amount}
             </h2>
+
             <div className="flex items-center gap-2">
               {single.percentage && (
                 <p className="text-sm sm:text-base text-[#727C87] font-Roboto">
