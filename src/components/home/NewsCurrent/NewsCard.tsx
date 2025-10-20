@@ -11,11 +11,13 @@ type NewsCardProps = {
   user: {
     fullName?: string;
   };
+  video?: string;
 };
 
 const NewsCard: React.FC<NewsCardProps> = ({
   id,
   image,
+  video,
   tags,
   title,
   subTitle,
@@ -46,7 +48,8 @@ const NewsCard: React.FC<NewsCardProps> = ({
     >
       {/* Image Section */}
       <div className="w-full h-[300px] md:h-[400px] overflow-hidden lg:col-span-7">
-        <img src={image} alt={title} className="w-full h-full object-cover" />
+        {video && <video src={video} className="w-full h-full object-cover" controls autoPlay />}
+        {image && <img src={image} alt={title} className="w-full h-full object-cover" />}
       </div>
 
       {/* Content Section */}

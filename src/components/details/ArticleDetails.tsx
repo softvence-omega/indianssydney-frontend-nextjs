@@ -188,6 +188,7 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                     minHeight: '320px',
                     border: 'none',
                     backgroundColor: 'transparent',
+                    fontSize: '16px',
                   }}
                   modules={editorModules}
                   showHeader={false}
