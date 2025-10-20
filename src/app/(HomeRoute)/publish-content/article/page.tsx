@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import ArticleForm from "./ArticleForm";
-import ArticlePreview from "../ArticlePreview";
+import HomePageLoader from "@/common/HomePageLoader";
 import { useCreateNewArticleMutation } from "@/store/features/article/article.api";
-import { UploadFormData } from "../types";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import ArticlePreview from "../ArticlePreview";
+import { UploadFormData } from "../types";
+import ArticleForm from "./ArticleForm";
 
 const Page = () => {
   const [createNewArticle, { isLoading }] = useCreateNewArticleMutation();
@@ -100,8 +101,8 @@ const Page = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       {isLoading ? (
-        <div className="justify-center items-center text-center">
-          <p className="">Loading.....</p>
+        <div >
+          <HomePageLoader />
         </div>
       ) : (
         <>

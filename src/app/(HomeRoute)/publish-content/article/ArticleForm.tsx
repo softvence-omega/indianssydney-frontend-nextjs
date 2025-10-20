@@ -16,6 +16,7 @@ import { ArrowLeft, Plus, Upload, X } from "lucide-react";
 import { Editor } from 'primereact/editor';
 import { useRef, useState } from "react";
 
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import {
   useGenerateContentMutation,
   useTagGeneratorMutation,
@@ -27,6 +28,7 @@ import { toast } from "sonner";
 import { AdditionalField, AdditionalFieldType } from "../types";
 
 const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
+  const [open, setOpen] = useState(false);
   const { data } = useGetAllCategoryQuery({});
   const [newTag, setNewTag] = useState("");
   const [additionalFieldType, setAdditionalFieldType] = useState<
@@ -191,10 +193,13 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
       return;
     }
     try {
-      toast.info("Generating tags..."); // Show loading toast
+      setOpen(true);
       const data = {
         category: formData.categorysslug,
         subcategory: formData.subcategorysslug,
+        title: formData?.title,
+        sub_title: formData?.subtitle,
+        content: formData?.paragraph
       };
       const result = await generateTags(data).unwrap();
       if (result?.tags) {
@@ -202,8 +207,8 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
           (tag: string) => !formData.tags.includes(tag)
         );
         onUpdate({ tags: [...newTags] });
-        toast.dismiss(); // Dismiss loading toast
         toast.success("Tags generated successfully!");
+        setOpen(false);
       } else {
         toast.dismiss();
         toast.error("No tags returned from the API.");
@@ -213,6 +218,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
       toast.dismiss();
       toast.error("Failed to generate tags. Please try again.");
     }
+    setOpen(false);
   };
 
   const handleGenerateContent = async () => {
@@ -221,15 +227,15 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
       return;
     }
     try {
-      toast.info("Generating content...");
+      setOpen(true)
       const data = {
         paragraph: formData.paragraph,
       };
       const result = await generateContent(data).unwrap();
       if (result?.generatedContent) {
         onUpdate({ paragraph: result.generatedContent });
-        toast.dismiss();
         toast.success("Paragraph generated successfully!");
+        setOpen(false)
       } else {
         toast.dismiss();
         toast.error("No content returned from the API.");
@@ -239,6 +245,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
       toast.dismiss();
       toast.error("Failed to generate content. Please try again.");
     }
+    setOpen(false)
   };
 
   return (
@@ -443,7 +450,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
 
             <div>
               <Label className="mb-3">6. Paragraph *</Label>
-              <Editor value={formData?.paragraph} onTextChange={(e) => onUpdate({ paragraph: e.htmlValue as string })} style={{ minHeight: '320px' }} />
+              <Editor value={formData?.paragraph} onTextChange={(e) => onUpdate({ paragraph: e.htmlValue as string })} style={{ minHeight: '320px', fontSize: '15px' }} />
             </div>
             <div className="flex justify-end mt-2 gap-4">
               <Button
@@ -576,6 +583,17 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
           </CardContent>
         </Card>
       </div>
+
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Please wait a moment...</AlertDialogTitle>
+            <AlertDialogDescription>
+              Be patient while we generate the ai response. It may take a few seconds or minutes.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

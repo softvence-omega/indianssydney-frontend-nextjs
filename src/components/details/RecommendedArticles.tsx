@@ -27,6 +27,7 @@ const RecommendedArticles = ({ id }: { id: string }) => {
             subTitle={item?.subTitle}
             paragraph={item?.paragraph}
             image={item?.image || "/placeholder.png"} // fallback if no image
+            video={item?.video}
             category={item?.category?.name}
             author={item?.user?.fullName}
             imageHeight="lg:h-[140px]"

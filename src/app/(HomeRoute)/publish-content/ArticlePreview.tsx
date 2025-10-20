@@ -166,13 +166,14 @@ const ArticlePreview = ({ formData, onBack, onPublish }: ArticlePreviewProps) =>
                   {formData.shortQuote}
                 </blockquote>
               )}
-              <p>Using editor</p>
               <Editor
                 value={formData?.paragraph}
                 readOnly
                 style={{
                   minHeight: '320px',
-                  border: 'none'
+                  border: 'none',
+                  fontSize: '16px',
+                  padding: '0px',
                 }}
                 modules={editorModules}
                 showHeader={false}

@@ -18,6 +18,7 @@ type NewsCardProps = {
   likes?: number;
   comments?: number;
   tag?: string;
+  video?: string;
   featured?: boolean;
   layout?: "left" | "right"; // layout prop for component flexibility
   imageHeight?: string; // custom image height
@@ -33,7 +34,8 @@ const NewsCardSecondary: React.FC<NewsCardProps> = ({
   imageHeight = "lg:h-[190px]", // default large screen height
   category,
   publishedAt,
-  subTitle
+  subTitle,
+  video
 }) => {
   const [updateViewCount] = useCountViewMutation();
   const router = useRouter();
@@ -61,11 +63,13 @@ const NewsCardSecondary: React.FC<NewsCardProps> = ({
     >
       {/* Image Section */}
       <div className={`w-auto h-[140px] ${imageHeight} overflow-hidden`}>
-        <img
+        {/* <img
           src={image}
           alt={title}
           className="w-full h-full object-cover overflow-hidden"
-        />
+        /> */}
+        {video && <video src={video} className="w-full h-full object-cover" controls autoPlay />}
+        {image && <img src={image} alt={title} className="w-full h-full object-cover" />}
       </div>
 
       {/* Content Section */}

@@ -28,6 +28,7 @@ const NewsCurrent = ({ data }: { data: any }) => {
                   subTitle={item.subTitle}
                   paragraph={item.paragraph}
                   image={item.image || "/placeholder.png"} // fallback if no image
+                  video={item.video}
                   category={item.category?.name}
                   author={item.user?.fullName}
                   publishedAt={new Date(item.createdAt).toLocaleDateString()}
