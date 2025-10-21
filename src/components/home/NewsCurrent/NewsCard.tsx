@@ -48,7 +48,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
     >
       {/* Image Section */}
       <div className="w-full h-[300px] md:h-[400px] overflow-hidden lg:col-span-7">
-        {video && <video src={video} className="w-full h-full object-cover" controls autoPlay />}
+        {video && <video src={video} className="w-full h-full object-cover" controls />}
         {image && <img src={image} alt={title} className="w-full h-full object-cover" />}
       </div>
 

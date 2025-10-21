@@ -30,6 +30,7 @@ import {
   AdditionalFieldType,
   UploadFormData,
 } from "../../publish-content/types";
+import ContentLoader from "@/common/ContentLoader";
 
 const EditArticle = () => {
   const router = useRouter();
@@ -312,7 +313,7 @@ const EditArticle = () => {
     video: "video/*",
   };
 
-  if (isLoading) return <div className="text-center py-10">Loading...</div>;
+  if (isLoading) return <ContentLoader/>;
   if (!articleData?.data)
     return <div className="text-center py-10">Article not found</div>;
 
