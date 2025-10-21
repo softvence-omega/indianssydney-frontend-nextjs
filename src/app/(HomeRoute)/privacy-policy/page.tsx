@@ -3,17 +3,17 @@
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
 import CommonHeader from "@/components/reusable/CommonHeader";
+import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 import { useGetAllPrivacyPolicyQuery } from "@/store/features/site/privacy.api"; // ✅ use query hook
-import { Loader2 } from "lucide-react";
 
 const PrivacyPolicy = () => {
   const { data, isLoading, isError } = useGetAllPrivacyPolicyQuery({});
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="animate-spin w-6 h-6 text-gray-600" />
-      </div>
+      <CommonWrapper>
+        <SkeletonLoader />
+      </CommonWrapper>
     );
   }
 

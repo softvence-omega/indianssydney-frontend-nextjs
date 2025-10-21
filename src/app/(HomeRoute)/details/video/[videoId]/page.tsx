@@ -7,13 +7,14 @@ import PrimaryButton from "@/components/reusable/PrimaryButton";
 import VideoDetails from "@/components/details/VideoDetails";
 import React from "react";
 import { useGetArticleDetailsQuery } from "@/store/features/article/article.api";
+import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 
 export default function VideoDetailPage({
   params,
 }: {
-  params: Promise<{ videoId: string }>; // 🚀 params is a Promise now
+  params: Promise<{ videoId: string }>; // params is a Promise now
 }) {
-  // ✅ unwrap params with React.use()
+  // unwrap params with React.use()
   const { videoId } = React.use(params);
   const router = useRouter();
   const {
@@ -26,10 +27,11 @@ export default function VideoDetailPage({
     return (
       <CommonWrapper>
         <CommonPadding>
-          <div className="h-[60vh] flex flex-col items-center justify-center">
+          <SkeletonLoader />
+          {/* <div className="h-[60vh] flex flex-col items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
             <p className="text-lg text-gray-600">Loading video...</p>
-          </div>
+          </div> */}
         </CommonPadding>
       </CommonWrapper>
     );

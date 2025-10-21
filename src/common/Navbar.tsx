@@ -295,7 +295,33 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Sidebar - Visible on md and below */}
         {isOpen && (
-          <div className="md:hidden fixed left-0 right-0 top-[60px] sm:top-[68px] bottom-0 bg-bg-cream z-40 border-t border-gray-200 overflow-y-auto transition-all duration-300">
+          <div className="md:hidden fixed left-0 right-0 top-[0px] sm:top-[68px] bottom-0 bg-bg-cream z-40 border-t border-gray-200 overflow-y-auto transition-all duration-300">
+            <div className="flex items-center pt-2 border-b border-slight-border pb-2">
+              {/* Mobile hamburger - Left side on mobile */}
+              <button
+                onClick={toggleMenu}
+                className="md:hidden text-gray-700 focus:outline-none mr-2 sm:mr-3 pl-4"
+                aria-label="Toggle menu"
+              >
+                {isOpen ? (
+                  <X className="h-5 w-5 sm:h-6 sm:w-6 transition-transform duration-200" />
+                ) : (
+                  <Menu className="h-5 w-5 sm:h-6 sm:w-6 transition-transform duration-200" />
+                )}
+              </button>
+
+              {/* Logo/Title - Centered on mobile, left-aligned on md+ */}
+              <Link
+                href="/"
+                className="flex-1 md:flex-none text-center md:text-left"
+              >
+                <img
+                  src="/TAC1.png"
+                  className="h-6 sm:h-7 md:h-8 lg:h-10 xl:h-12 mx-auto md:mx-0"
+                  alt="Logo"
+                />
+              </Link>
+            </div>
             <div className="p-4 sm:p-6">
               {/* Mobile Search */}
               <div className="mb-6">
@@ -424,10 +450,11 @@ const Navbar: React.FC = () => {
                             className="ml-auto"
                           >
                             <ChevronDown
-                              className={`h-4 w-4 transition-transform duration-200 ${openSubmenus?.includes(menu?.name)
+                              className={`h-4 w-4 transition-transform duration-200 ${
+                                openSubmenus?.includes(menu?.name)
                                   ? "rotate-180"
                                   : ""
-                                }`}
+                              }`}
                             />
                           </button>
                         ) : (

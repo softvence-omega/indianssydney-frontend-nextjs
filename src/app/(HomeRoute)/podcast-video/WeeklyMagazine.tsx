@@ -6,7 +6,7 @@ import { useGetAllVideosQuery } from "@/store/features/videoPodcast/video.api";
 const WeeklyMagazine = () => {
   const { data, isLoading, isError } = useGetAllVideosQuery({});
 
-  if (isLoading) return <p className="text-center text-gray-500">Loading...</p>;
+  // if (isLoading) return <p className="text-center text-gray-500">Loading...</p>;
   if (isError)
     return <p className="text-center text-red-500">Error loading videos.</p>;
 
