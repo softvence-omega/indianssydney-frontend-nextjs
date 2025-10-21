@@ -10,6 +10,7 @@ import {
   useUpdateProfileMutation,
 } from "@/store/features/profile/profile.api";
 import { setUser, selectToken } from "@/store/features/auth/auth.slice";
+import SkeletonLoader from "../reusable/SkeletonLoader";
 
 const AccountDetails = () => {
   const router = useRouter();
@@ -93,7 +94,7 @@ const AccountDetails = () => {
 
   // Loading & error states
   if (profileLoading) {
-    return <p className="text-center p-6">Loading profile...</p>;
+    return <SkeletonLoader />//<p className="text-center p-6">Loading profile...</p>;
   }
 
   if (isError || !profile) {

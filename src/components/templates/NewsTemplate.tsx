@@ -12,6 +12,7 @@ import {
   useGeContentBySubCaregorySlugQuery,
   useGetContentByCategorySlugQuery,
 } from "@/store/features/article/article.api";
+import SkeletonLoader from "../reusable/SkeletonLoader";
 
 interface SubCategory {
   id: string;
@@ -56,7 +57,8 @@ const NewsTemplate = ({
     return (
       <CommonWrapper>
         <CommonPadding>
-          <p className="text-center text-gray-500 py-10">Loading content...</p>
+          {/* <p className="text-center text-gray-500 py-10">Loading content...</p> */}
+          <SkeletonLoader />
         </CommonPadding>
       </CommonWrapper>
     );

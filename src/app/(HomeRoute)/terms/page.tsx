@@ -3,17 +3,17 @@
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
 import CommonHeader from "@/components/reusable/CommonHeader";
+import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 import { useGetAllTermsQuery } from "@/store/features/site/terms.api";
-import { Loader2 } from "lucide-react";
 
 const Terms = () => {
   const { data, isLoading, isError } = useGetAllTermsQuery({});
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="animate-spin w-6 h-6 text-gray-600" />
-      </div>
+      <CommonWrapper>
+        <SkeletonLoader />
+      </CommonWrapper>
     );
   }
 

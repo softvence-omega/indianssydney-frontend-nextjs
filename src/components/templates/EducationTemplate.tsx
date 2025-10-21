@@ -46,7 +46,7 @@ const EducationTemplate = ({
         (item) =>
           normalizeString(item.category) === normalizeString(category.name) &&
           normalizeString(item.subcategory || "") ===
-          normalizeString(submenu.subname)
+            normalizeString(submenu.subname)
       );
 
       return {
