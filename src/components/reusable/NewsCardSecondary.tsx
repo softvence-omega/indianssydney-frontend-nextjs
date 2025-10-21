@@ -68,7 +68,7 @@ const NewsCardSecondary: React.FC<NewsCardProps> = ({
           alt={title}
           className="w-full h-full object-cover overflow-hidden"
         /> */}
-        {video && <video src={video} className="w-full h-full object-cover" controls autoPlay />}
+        {video && <video src={video} className="w-full h-full object-cover" controls />}
         {image && <img src={image} alt={title} className="w-full h-full object-cover" />}
       </div>
 
