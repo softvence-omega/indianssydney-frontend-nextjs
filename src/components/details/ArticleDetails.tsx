@@ -41,6 +41,8 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
   const sortedAdditionalFields = [...formData.additionalContents].sort(
     (a, b) => a.order - b.order
   );
+
+
   const handleBookmark = (formData: DetailsData) => {
     if (bookmarks.find(bk => bk.id === formData?.id)) {
       dispatch(removeBookMark(formData?.id));
@@ -354,7 +356,7 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
       <ShareModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
-        contentUrl={`${ process.env.NEXT_PUBLIC_FRONTEND_URL}/details/article/${formData?.id}`} // Dynamic content URL
+        contentUrl={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/details/article/${formData?.id}`} // Dynamic content URL
         contentTitle={formData?.title || "Content Title"}
       />
     </div>
