@@ -184,7 +184,7 @@ const AdminAdManagement = () => {
                     rel="noopener noreferrer"
                     className="text-blue-500 text-sm"
                   >
-                    {ad.link}
+                    {ad.link?.slice(0, 60) + "..."}
                   </a>
                   <div className="mt-1 text-xs inline-block px-2 py-1 rounded bg-gray-100 text-gray-700">
                     Position:

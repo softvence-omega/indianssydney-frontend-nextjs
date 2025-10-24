@@ -55,18 +55,24 @@ const Page = () => {
       <CommonWrapper>
         <div className="overflow-hidden">
           <NewsCurrent data={data?.data?.[0]} />
+          <Ad />
           <BusinessInnovation data={data?.data?.[1]} />
+          <Ad />
           <EducationCareer data={data?.data?.[2]} />
           <Ad />
           <SportsPlay data={data?.data?.[3]} />
+          <Ad />
           <NewsCurrent data={data?.data?.[4]} />
+          <Ad />
           <PodcastVideo />
           <Ad />
           <EducationCareer data={data?.data?.[5]} />
+          <Ad />
           <Recommendation />
           <div className=" bottom-4 right-4 z-50">
             <Chatbot />
           </div>
+          <Ad/>
         </div>
       </CommonWrapper>
     </div>
