@@ -13,10 +13,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ArrowLeft, Plus, Upload, X } from "lucide-react";
-import { Editor } from 'primereact/editor';
-import { useRef, useState } from "react";
+import { Editor } from "primereact/editor";
+import { useEffect, useRef, useState } from "react";
 
-import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   useGenerateContentMutation,
   useTagGeneratorMutation,
@@ -28,13 +34,15 @@ import { toast } from "sonner";
 import { AdditionalField, AdditionalFieldType } from "../types";
 
 const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
+  const [value, setValue] = useState(formData?.paragraph || "");
+  const editorRef = useRef<any>(null);
   const [open, setOpen] = useState(false);
   const { data } = useGetAllCategoryQuery({});
   const [newTag, setNewTag] = useState("");
   const [additionalFieldType, setAdditionalFieldType] = useState<
     AdditionalFieldType | ""
   >("");
-  const [uploadFIleIntoAws] = useUploadFileIntoAWSMutation()
+  const [uploadFIleIntoAws] = useUploadFileIntoAWSMutation();
   const [generateTags] = useTagGeneratorMutation();
   const [generateContent] = useGenerateContentMutation();
   const [uploadType, setUploadType] = useState<"image" | "audio" | "video">(
@@ -77,8 +85,8 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
         type: additionalFieldType,
         value:
           additionalFieldType === "image" ||
-            additionalFieldType === "video" ||
-            additionalFieldType === "audio"
+          additionalFieldType === "video" ||
+          additionalFieldType === "audio"
             ? null
             : "",
       };
@@ -105,8 +113,8 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
     const id = toast.loading("Uploading...");
     const file = files ? files[0] : null;
     if (!file) return;
-    const formData = new FormData()
-    formData.append("file", file)
+    const formData = new FormData();
+    formData.append("file", file);
     try {
       const res = await uploadFIleIntoAws(formData).unwrap();
       if (res) {
@@ -141,8 +149,8 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
               field.type === "image"
                 ? "image/*"
                 : field.type === "video"
-                  ? "video/*"
-                  : "audio/*"
+                ? "video/*"
+                : "audio/*"
             }
             onChange={(e) => handleAdditionalFieldFile(index, e.target.files)}
             className="hidden rounded-none"
@@ -199,7 +207,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
         subcategory: formData.subcategorysslug,
         title: formData?.title,
         sub_title: formData?.subtitle,
-        content: formData?.paragraph
+        content: formData?.paragraph,
       };
       const result = await generateTags(data).unwrap();
       if (result?.tags) {
@@ -227,7 +235,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
       return;
     }
     try {
-      setOpen(true)
+      setOpen(true);
       const data = {
         paragraph: formData.paragraph,
       };
@@ -235,7 +243,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
       if (result?.generatedContent) {
         onUpdate({ paragraph: result.generatedContent });
         toast.success("Paragraph generated successfully!");
-        setOpen(false)
+        setOpen(false);
       } else {
         toast.dismiss();
         toast.error("No content returned from the API.");
@@ -245,7 +253,60 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
       toast.dismiss();
       toast.error("Failed to generate content. Please try again.");
     }
-    setOpen(false)
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (editorRef.current) {
+        const quill = editorRef.current.getQuill?.();
+        if (quill) {
+          // ✅ Stop checking once the editor is ready
+          clearInterval(interval);
+
+          // Add custom image upload handler
+          const toolbar = quill.getModule("toolbar");
+          toolbar.addHandler("image", () => handleImageUpload(quill));
+        }
+      }
+    }, 200);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleImageUpload = async (quill: any) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        // Upload to VPS
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (!data.url) throw new Error("Upload failed");
+
+        const imageUrl = data.url;
+        console.log("Image URL :", imageUrl);
+
+        // Insert image in the editor
+        const range = quill.getSelection(true);
+        quill.insertEmbed(range.index, "image", imageUrl);
+      } catch (error) {
+        console.error("Image upload failed:", error);
+      }
+    };
   };
 
   return (
@@ -449,8 +510,24 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
             </div>
 
             <div>
-              <Label className="mb-3">6. Paragraph *</Label>
-              <Editor value={formData?.paragraph} onTextChange={(e) => onUpdate({ paragraph: e.htmlValue as string })} style={{ minHeight: '320px', fontSize: '15px' }} />
+              {/* <Label className="mb-3">6. Paragraph *</Label> */}
+              {/* <Editor
+                value={formData?.paragraph}
+                onTextChange={(e) =>
+                  onUpdate({ paragraph: e.htmlValue as string })
+                }
+                style={{ minHeight: "320px", fontSize: "15px" }}
+              /> */}
+              <Label className="mb-3 block">6. Paragraph *</Label>
+              <Editor
+                ref={editorRef}
+                value={value}
+                onTextChange={(e) => {
+                  setValue(e.htmlValue);
+                  onUpdate({ paragraph: e.htmlValue });
+                }}
+                style={{ minHeight: "320px", fontSize: "15px" }}
+              />
             </div>
             <div className="flex justify-end mt-2 gap-4">
               <Button
@@ -589,7 +666,8 @@ const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
           <AlertDialogHeader>
             <AlertDialogTitle>Please wait a moment...</AlertDialogTitle>
             <AlertDialogDescription>
-              Be patient while we generate the ai response. It may take a few seconds or minutes.
+              Be patient while we generate the ai response. It may take a few
+              seconds or minutes.
             </AlertDialogDescription>
           </AlertDialogHeader>
         </AlertDialogContent>
