@@ -44,3 +44,6 @@ next-env.d.ts
 
 .vscode/
 test.sql
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
