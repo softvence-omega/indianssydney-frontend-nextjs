@@ -10,16 +10,16 @@ import CommonHeader from "@/components/reusable/CommonHeader";
 import CommonWrapper from "@/common/CommonWrapper";
 import CommonPadding from "@/common/CommonPadding";
 import { useGetAllFAQQuery } from "@/store/features/site/faq.api";
-import { Loader2 } from "lucide-react";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 const FAQ = () => {
   const { data, isLoading, isError } = useGetAllFAQQuery({});
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="animate-spin w-6 h-6 text-gray-600" />
-      </div>
+        <CommonWrapper>
+          <AustralianCanvasLoader />
+        </CommonWrapper>
     );
   }
 

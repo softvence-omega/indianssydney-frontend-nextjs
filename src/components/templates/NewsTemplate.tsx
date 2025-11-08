@@ -2,6 +2,7 @@
 
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
+import ErrorLoader from "@/common/ErrorLoader";
 import Ad from "@/components/reusable/Ad";
 import NewsCard3 from "@/components/reusable/NewsCard3";
 import NewsCardSecondary from "@/components/reusable/NewsCardSecondary";
@@ -11,6 +12,7 @@ import {
   useGeContentBySubCaregorySlugQuery,
   useGetContentByCategorySlugQuery,
 } from "@/store/features/article/article.api";
+import AustralianCanvasLoader from "../reusable/AustralianCanvasLoader";
 
 interface SubCategory {
   id: string;
@@ -55,20 +57,15 @@ const NewsTemplate = ({
     return (
       <CommonWrapper>
         <CommonPadding>
-          <p className="text-center text-gray-500 py-10">Loading content...</p>
+          {/* <p className="text-center text-gray-500 py-10">Loading content...</p> */}
+          <AustralianCanvasLoader />
         </CommonPadding>
       </CommonWrapper>
     );
 
   if (categorySlugError || subCategorySlugError)
     return (
-      <CommonWrapper>
-        <CommonPadding>
-          <p className="text-center text-red-500 py-10">
-            Failed to load content.
-          </p>
-        </CommonPadding>
-      </CommonWrapper>
+      <ErrorLoader />
     );
 
   const articlesBySubcategory =

@@ -1,22 +1,18 @@
 "use client";
 
-import CommonWrapper from "@/common/CommonWrapper";
 import CommonPadding from "@/common/CommonPadding";
+import CommonWrapper from "@/common/CommonWrapper";
+import ErrorLoader from "@/common/ErrorLoader";
 import Ad from "@/components/reusable/Ad";
 import NewsCardSecondary from "@/components/reusable/NewsCardSecondary";
 import NewsTabs from "@/components/reusable/NewsTabs";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
-import { newsItems } from "@/utils/demoData";
 import {
   useGeContentBySubCaregorySlugQuery,
   useGetContentByCategorySlugQuery,
 } from "@/store/features/article/article.api";
 import NewsSlider from "../home/NewsCurrent/NewsSlider";
-// import NewsSlider from "../home/NewsCurrent/NewsSlider";
-// import { MenuItem } from "@/types";
-
-const normalizeString = (str: string) =>
-  str?.toLowerCase().replace(/[&\s]+/g, "-");
+import AustralianCanvasLoader from "../reusable/AustralianCanvasLoader";
 
 interface SubCategory {
   id: string;
@@ -39,12 +35,13 @@ const BusinessTemplate = ({
   category: Category;
   subcategorySlug: string;
 }) => {
+
   const {
     data: categoryData,
     isLoading: categorySlugLoading,
     isError: categorySlugError,
   } = useGetContentByCategorySlugQuery(
-     category?.slug as string || "",
+    category?.slug as string || "",
     { skip: !category?.slug }
   );
 
@@ -54,28 +51,19 @@ const BusinessTemplate = ({
     isLoading: subCategorySlugLoading,
     isError: subCategorySlugError,
   } = useGeContentBySubCaregorySlugQuery(
-     subcategorySlug as string || "",
+    subcategorySlug as string || "",
     { skip: !subcategorySlug }
   );
   // ✅ Handle loading/error
   if (categorySlugLoading || subCategorySlugLoading)
     return (
-      <CommonWrapper>
-        <CommonPadding>
-          <p className="text-center text-gray-500 py-10">Loading content...</p>
-        </CommonPadding>
-      </CommonWrapper>
+      <AustralianCanvasLoader />
+      // <HomePageLoader />
     );
 
   if (categorySlugError || subCategorySlugError)
     return (
-      <CommonWrapper>
-        <CommonPadding>
-          <p className="text-center text-red-500 py-10">
-            Failed to load content.
-          </p>
-        </CommonPadding>
-      </CommonWrapper>
+      <ErrorLoader />
     );
 
   // ✅ Articles by subcategory (for tab links)

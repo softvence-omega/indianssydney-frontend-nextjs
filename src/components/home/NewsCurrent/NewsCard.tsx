@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { useCountViewMutation } from "@/store/features/article/article.api";
+import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
 
 type NewsCardProps = {
@@ -10,30 +11,45 @@ type NewsCardProps = {
   user: {
     fullName?: string;
   };
+  video?: string;
 };
 
 const NewsCard: React.FC<NewsCardProps> = ({
   id,
   image,
+  video,
   tags,
   title,
   subTitle,
   user,
 }) => {
+  const [updateViewCount] = useCountViewMutation();
+  const router = useRouter()
   // Generate random read time (5–12 minutes)
   const readTime = useMemo(() => {
     const randomMinutes = Math.floor(Math.random() * 8) + 5; // 5 to 12
     return `${randomMinutes} min read`;
   }, []);
 
+  const countView = async () => {
+    if (id) {
+      await updateViewCount(id);
+    }
+  }
+
+  const navigateToDetails = () => {
+    countView();
+    router.push(`/details/article/${id}`);
+  }
   return (
-    <Link
-      href={`/details/article/${id}`}
-      className="grid md:grid-cols-2 lg:grid-cols-12 gap-6"
+    <button
+      onClick={navigateToDetails}
+      className="grid md:grid-cols-2 lg:grid-cols-12 gap-6 text-left"
     >
       {/* Image Section */}
       <div className="w-full h-[300px] md:h-[400px] overflow-hidden lg:col-span-7">
-        <img src={image} alt={title} className="w-full h-full object-cover" />
+        {video && <video src={video} className="w-full h-full object-cover" controls />}
+        {image && <img src={image} alt={title} className="w-full h-full object-cover" />}
       </div>
 
       {/* Content Section */}
@@ -52,7 +68,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
           {readTime}
         </div>
       </div>
-    </Link>
+    </button>
   );
 };
 

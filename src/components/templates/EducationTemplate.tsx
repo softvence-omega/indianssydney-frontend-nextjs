@@ -1,7 +1,7 @@
 "use client";
 
-import CommonWrapper from "@/common/CommonWrapper";
 import CommonPadding from "@/common/CommonPadding";
+import CommonWrapper from "@/common/CommonWrapper";
 import Ad from "@/components/reusable/Ad";
 import NewsCardSecondary from "@/components/reusable/NewsCardSecondary";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";

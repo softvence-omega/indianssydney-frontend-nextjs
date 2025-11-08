@@ -7,6 +7,7 @@ import CommonPadding from "@/common/CommonPadding";
 import { useGetAllLiveEventQuery } from "@/store/features/live-events/live.api";
 import { useRouter } from "next/navigation";
 import PrimaryHeading from "../reusable/PrimaryHeading";
+import AustralianCanvasLoader from "../reusable/AustralianCanvasLoader";
 
 const LiveEventsPage = () => {
   const router = useRouter();
@@ -18,9 +19,10 @@ const LiveEventsPage = () => {
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center h-60 text-gray-500">
-        Loading live events...
-      </div>
+      <CommonWrapper className="">
+        {/* Loading live events... */}
+        <AustralianCanvasLoader />
+      </CommonWrapper>
     );
 
   if (isError)

@@ -12,27 +12,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import uploadFileInAws from "@/utils/fileUploader";
 import { ArrowLeft, Plus, Upload, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { Editor } from "primereact/editor";
+import { useEffect, useRef, useState } from "react";
 
-import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
-import { AdditionalField, AdditionalFieldType } from "../types";
-import { useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   useGenerateContentMutation,
   useTagGeneratorMutation,
 } from "@/store/features/ai-content/ai-content.api";
+import { useUploadFileIntoAWSMutation } from "@/store/features/article/article.api";
+import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { AdditionalField, AdditionalFieldType } from "../types";
 
-const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
+const ArticleForm = ({ formData, onUpdate, onSubmit }: any) => {
+  const [value, setValue] = useState(formData?.paragraph || "");
+  const editorRef = useRef<any>(null);
+  const [open, setOpen] = useState(false);
   const { data } = useGetAllCategoryQuery({});
   const [newTag, setNewTag] = useState("");
   const [additionalFieldType, setAdditionalFieldType] = useState<
     AdditionalFieldType | ""
   >("");
-
+  const [uploadFIleIntoAws] = useUploadFileIntoAWSMutation();
   const [generateTags] = useTagGeneratorMutation();
   const [generateContent] = useGenerateContentMutation();
   const [uploadType, setUploadType] = useState<"image" | "audio" | "video">(
@@ -100,13 +110,22 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
     index: number,
     files: FileList | null
   ) => {
+    const id = toast.loading("Uploading...");
     const file = files ? files[0] : null;
     if (!file) return;
+    const formData = new FormData();
+    formData.append("file", file);
     try {
-      const res = await uploadFileInAws(file);
-      handleAdditionalFieldUpdate(index, res as string);
+      const res = await uploadFIleIntoAws(formData).unwrap();
+      if (res) {
+        handleAdditionalFieldUpdate(index, (res as any)?.s3Url);
+        toast.success(`${file.type.split("/")[0]} uploaded successfully!`, {
+          id,
+        });
+      }
     } catch (error) {
       console.error("Error uploading file:", error);
+      toast.error("Failed to upload file.", { id });
     }
   };
 
@@ -153,6 +172,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
       );
     }
     return (
+      // <Editor  value={typeof field.value === "string" ? field.value : ""} onTextChange={(e) => handleAdditionalFieldUpdate(index, e.htmlValue as string)} style={{ minHeight: '320px' }} />
       <Input
         placeholder={`Enter ${field.type}`}
         className="rounded-none"
@@ -181,10 +201,13 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
       return;
     }
     try {
-      toast.info("Generating tags..."); // Show loading toast
+      setOpen(true);
       const data = {
         category: formData.categorysslug,
         subcategory: formData.subcategorysslug,
+        title: formData?.title,
+        sub_title: formData?.subtitle,
+        content: formData?.paragraph,
       };
       const result = await generateTags(data).unwrap();
       if (result?.tags) {
@@ -192,8 +215,8 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
           (tag: string) => !formData.tags.includes(tag)
         );
         onUpdate({ tags: [...newTags] });
-        toast.dismiss(); // Dismiss loading toast
         toast.success("Tags generated successfully!");
+        setOpen(false);
       } else {
         toast.dismiss();
         toast.error("No tags returned from the API.");
@@ -203,6 +226,7 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
       toast.dismiss();
       toast.error("Failed to generate tags. Please try again.");
     }
+    setOpen(false);
   };
 
   const handleGenerateContent = async () => {
@@ -211,15 +235,15 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
       return;
     }
     try {
-      toast.info("Generating content...");
+      setOpen(true);
       const data = {
         paragraph: formData.paragraph,
       };
       const result = await generateContent(data).unwrap();
       if (result?.generatedContent) {
         onUpdate({ paragraph: result.generatedContent });
-        toast.dismiss();
         toast.success("Paragraph generated successfully!");
+        setOpen(false);
       } else {
         toast.dismiss();
         toast.error("No content returned from the API.");
@@ -229,7 +253,62 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
       toast.dismiss();
       toast.error("Failed to generate content. Please try again.");
     }
+    setOpen(false);
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (editorRef.current) {
+        const quill = editorRef.current.getQuill?.();
+        if (quill) {
+          // ✅ Stop checking once the editor is ready
+          clearInterval(interval);
+
+          // Add custom image upload handler
+          const toolbar = quill.getModule("toolbar");
+          toolbar.addHandler("image", () => handleImageUpload(quill));
+        }
+      }
+    }, 200);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleImageUpload = async (quill: any) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        // Upload to VPS
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (!data.url) throw new Error("Upload failed");
+
+        const imageUrl = data.url;
+        console.log("Image URL :", imageUrl);
+
+        // Insert image in the editor
+        const range = quill.getSelection(true);
+        quill.insertEmbed(range.index, "image", imageUrl);
+      } catch (error) {
+        console.error("Image upload failed:", error);
+      }
+    };
+  };
+
   return (
     <div className="min-h-screen">
       <div className="max-w-4xl mx-auto">
@@ -365,7 +444,6 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
                 onChange={(e) => onUpdate({ subTitle: e.target.value })}
               />
             </div>
-
             <div>
               <Label>3. File Type</Label>
               <Select
@@ -432,12 +510,23 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
             </div>
 
             <div>
-              <Label>6. Paragraph *</Label>
-              <Textarea
-                className="w-full rounded-none shadow-none mt-2"
-                placeholder="Create a Paragraph for your file"
-                value={formData.paragraph}
-                onChange={(e) => onUpdate({ paragraph: e.target.value })}
+              {/* <Label className="mb-3">6. Paragraph *</Label> */}
+              {/* <Editor
+                value={formData?.paragraph}
+                onTextChange={(e) =>
+                  onUpdate({ paragraph: e.htmlValue as string })
+                }
+                style={{ minHeight: "320px", fontSize: "15px" }}
+              /> */}
+              <Label className="mb-3 block">6. Paragraph *</Label>
+              <Editor
+                ref={editorRef}
+                value={value}
+                onTextChange={(e) => {
+                  setValue(e.htmlValue);
+                  onUpdate({ paragraph: e.htmlValue });
+                }}
+                style={{ minHeight: "320px", fontSize: "15px" }}
               />
             </div>
             <div className="flex justify-end mt-2 gap-4">
@@ -571,6 +660,18 @@ const ArticleForm = ({ formData, onUpdate, onSubmit, onBack }: any) => {
           </CardContent>
         </Card>
       </div>
+
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Please wait a moment...</AlertDialogTitle>
+            <AlertDialogDescription>
+              Be patient while we generate the ai response. It may take a few
+              seconds or minutes.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

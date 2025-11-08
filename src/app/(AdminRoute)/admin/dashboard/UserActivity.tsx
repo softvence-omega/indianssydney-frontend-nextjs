@@ -4,7 +4,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import DashboardHeader from "@/components/reusable/DashboardHeader";
 import { useGetTotalUserActivityCountQuery } from "@/store/features/admin/admin.api";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -58,7 +58,7 @@ const DonutChart: React.FC = () => {
     <div className="bg-white p-6 rounded-lg shadow-md">
       <DashboardHeader title="User Activity" />
       {userActivityLoading || userActivityFetching ? (
-        <SkeletonLoader />
+        <AustralianCanvasLoader />
       ) : (
         <Chart options={options} series={series} type="donut" width="100%" />
       )}

@@ -18,6 +18,7 @@ import { Swiper as SwiperType } from "swiper";
 type NewsItem = {
   id: string; // ✅ match your data
   image: string;
+  video?: string;
   tags?: string[];
   title: string;
   subTitle: string;
@@ -41,7 +42,6 @@ const NewsSlider: React.FC<NewsSliderProps> = ({ items }) => {
     setIsFirstSlide(swiper.isBeginning); // Check if it's the first slide
     setIsLastSlide(swiper.isEnd); // Check if it's the last slide
   };
-
   return (
     <div className="relative w-full">
       <Swiper

@@ -2,48 +2,14 @@
 
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
-import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
 import BookmarkCard from "@/components/reusable/BookmarkCard";
-import { useState, useMemo } from "react";
-import { useGetBookmarksQuery } from "@/store/features/bookmark/bookmark.api";
-import { Loader2 } from "lucide-react"; // optional loading spinner
-
-const ITEMS_PER_PAGE = 3; // number of items per page
+import { selectUser } from "@/store/features/auth/auth.slice";
+import { useAppSelector } from "@/store/hook";
 
 const BookmarkedArticles = () => {
-  const user = useSelector((state: RootState) => state.auth.user);
-  const { data, isLoading, isError } = useGetBookmarksQuery({});
-  const [currentPage, setCurrentPage] = useState(1);
+  const user = useAppSelector(selectUser)
+  const bookmarks = useAppSelector((state) => state.bookMark?.bookMarks);
 
-  // ✅ Ensure we always have an array even if data is undefined
-  const bookmarks = useMemo(() => data || [], [data]);
-
-  // Pagination calculations
-  const totalPages = Math.ceil(bookmarks.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentItems = bookmarks.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
-  // Pagination handlers
-  const nextPage = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
-  const prevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
-
-  // Loading and Error States
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
-        <Loader2 className="animate-spin w-6 h-6 mr-2" /> Loading bookmarks...
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-red-500">
-        Failed to load bookmarks. Please try again later.
-      </div>
-    );
-  }
 
   return (
     <div className="bg-white">
@@ -79,43 +45,10 @@ const BookmarkedArticles = () => {
             ) : (
               <>
                 <div className="grid gap-4">
-                  {currentItems.map((item: any) => (
+                  {bookmarks.map((item: any) => (
                     <BookmarkCard key={item.id} item={item} />
                   ))}
                 </div>
-
-                {/* Pagination Controls */}
-                {totalPages > 1 && (
-                  <div className="flex justify-between mt-6">
-                    <button
-                      onClick={prevPage}
-                      className={`${
-                        currentPage === 1
-                          ? "text-gray-400 cursor-not-allowed"
-                          : "text-accent-orange cursor-pointer"
-                      }`}
-                      disabled={currentPage === 1}
-                    >
-                      Previous
-                    </button>
-
-                    <div>
-                      Page {currentPage} of {totalPages}
-                    </div>
-
-                    <button
-                      onClick={nextPage}
-                      className={`${
-                        currentPage === totalPages
-                          ? "text-gray-400 cursor-not-allowed"
-                          : "text-accent-orange cursor-pointer"
-                      }`}
-                      disabled={currentPage === totalPages}
-                    >
-                      Next
-                    </button>
-                  </div>
-                )}
               </>
             )}
           </div>

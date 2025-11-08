@@ -194,7 +194,7 @@ const VideoDetails = ({ formData, onBack }: VideoDetailsProps) => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <RecommendedArticles />
+            <RecommendedArticles id={formData?.id} />
             <Newsletter />
           </div>
         </div>

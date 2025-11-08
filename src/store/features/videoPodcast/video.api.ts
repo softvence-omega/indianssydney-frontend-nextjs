@@ -1,3 +1,4 @@
+import { use } from 'react';
 import { baseAPI } from "@/store/api/baseApi";
 
 export const videoApi = baseAPI.injectEndpoints({
@@ -25,15 +26,27 @@ export const videoApi = baseAPI.injectEndpoints({
       }),
       providesTags: ["content"],
     }),
-
-    getAllVideos: build.query({
+     getAllVideos: build.query({
       query: () => ({
         url: "/content/contentType-video",
         method: "GET",
       }),
       providesTags: ["content"],
-    })
+    }),
+      // -----status chnage api--
+    contentStatusChange: build.mutation({
+      query: ({ status, id }) => ({
+        url: `/admin-management/${id}/content-status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["content"],
+    }),
+
+   
+  
   }),
+  
 
 });
 
@@ -41,5 +54,6 @@ export const {
   useGetVideosApprovedQuery,
   useGetVideosPendingQuery,
   useGetVideosDeclinedQuery,
-  useGetAllVideosQuery
+  useGetAllVideosQuery,
+  useContentStatusChangeMutation
 } = videoApi;

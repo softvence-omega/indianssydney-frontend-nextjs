@@ -1,24 +1,22 @@
 "use client";
 
-import * as React from "react";
-import { useRouter } from "next/navigation";
-import ArticleDetails from "@/components/details/ArticleDetails";
-import CommonWrapper from "@/common/CommonWrapper";
 import CommonPadding from "@/common/CommonPadding";
+import CommonWrapper from "@/common/CommonWrapper";
+import ContentLoader from "@/common/ContentLoader";
+import ArticleDetails from "@/components/details/ArticleDetails";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useGetArticleDetailsQuery } from "@/store/features/article/article.api";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 export default function ArticleDetailPage({
   params,
 }: {
-  params: Promise<{ articleId: string }>; // 🚀 params is a Promise now
+  params: Promise<{ articleId: string }>;
 }) {
   const router = useRouter();
-
-  // ✅ unwrap params with React.use()
   const { articleId } = React.use(params);
-
-  // ✅ Fetch article details from API
   const {
     data: article,
     isLoading,
@@ -27,14 +25,8 @@ export default function ArticleDetailPage({
 
   if (isLoading) {
     return (
-      <CommonWrapper>
-        <CommonPadding>
-          <div className="h-[60vh] flex flex-col items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-            <p className="text-lg text-gray-600">Loading article...</p>
-          </div>
-        </CommonPadding>
-      </CommonWrapper>
+      <AustralianCanvasLoader />
+      // <ContentLoader />
     );
   }
 

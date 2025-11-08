@@ -1,8 +1,7 @@
 import CommonPadding from "@/common/CommonPadding";
+import NewsCardSecondary from "../../reusable/NewsCardSecondary";
 import PrimaryHeading from "../../reusable/PrimaryHeading";
 import NewsSlider from "./NewsSlider";
-import NewsCardSecondary from "../../reusable/NewsCardSecondary";
-import { newsItems } from "@/utils/demoData";
 
 const NewsCurrent = ({ data }: { data: any }) => {
   return (
@@ -29,6 +28,7 @@ const NewsCurrent = ({ data }: { data: any }) => {
                   subTitle={item.subTitle}
                   paragraph={item.paragraph}
                   image={item.image || "/placeholder.png"} // fallback if no image
+                  video={item.video}
                   category={item.category?.name}
                   author={item.user?.fullName}
                   publishedAt={new Date(item.createdAt).toLocaleDateString()}

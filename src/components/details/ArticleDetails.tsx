@@ -1,26 +1,27 @@
 "use client";
-
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { addBookMark, removeBookMark } from "@/store/features/bookmark/bookmark.slice";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
 import {
   ArrowLeft,
-  Share2,
-  Eye,
-  Calendar,
-  User,
-  Youtube,
   Bookmark,
+  Calendar,
+  Eye,
+  Share2,
+  User
 } from "lucide-react";
-import { DetailsData } from "@/app/(HomeRoute)/publish-content/types";
-import RecommendedArticles from "./RecommendedArticles";
-import Newsletter from "./Newsletter";
-import PrimaryButton from "../reusable/PrimaryButton";
+import { Editor } from "primereact/editor";
 import { useState } from "react";
-import ReportModal from "./ReportModal";
 import { toast } from "sonner";
-import { usePostBookmarkMutation } from "@/store/features/bookmark/bookmark.api";
+import PrimaryButton from "../reusable/PrimaryButton";
+import ShareModal from "../reusable/ShareModal";
+import Newsletter from "./Newsletter";
+import RecommendedArticles from "./RecommendedArticles";
+import ReportModal from "./ReportModal";
 
 interface ArticlePreviewProps {
   formData: DetailsData;
@@ -29,22 +30,34 @@ interface ArticlePreviewProps {
 
 const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const bookmarks = useAppSelector((state) => state.bookMark?.bookMarks);
+  const dispatch = useAppDispatch();
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const currentDate = new Date().toLocaleDateString();
-  const [postBookmark, { isLoading }] = usePostBookmarkMutation();
-
+  const editorModules = {
+    toolbar: [],
+  };
   // Sort additional fields by order
   const sortedAdditionalFields = [...formData.additionalContents].sort(
     (a, b) => a.order - b.order
   );
-  const handleAddToBookmark = async (contentId: string) => {
-    try {
-      const res = await postBookmark(contentId).unwrap();
-      toast.success("Added to bookmark!");
-    } catch (error: any) {
-      console.error("Bookmark error:", error);
-      toast.error(error?.data?.message || "Failed to add bookmark");
+
+
+  const handleBookmark = (formData: DetailsData) => {
+    if (bookmarks.find(bk => bk.id === formData?.id)) {
+      dispatch(removeBookMark(formData?.id));
+      toast.warning("Bookmark removed successfully!");
+    } else {
+      dispatch(addBookMark({
+        id: formData?.id,
+        title: formData?.title,
+        subTitle: formData?.subTitle,
+        headingImage: formData?.image,
+        createdAt: formData?.createdAt
+      }));
+      toast.success("Bookmark added successfully!");
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -100,20 +113,19 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center text-sm text-gray-500">
                         <Eye className="w-4 h-4 mr-1" />
-                        {formData.views ?? 0} views
+                        {formData.contentviews ?? 0} views
                       </div>
                       <Button
+                        onClick={() => handleBookmark(formData)}
                         variant="outline"
                         size="sm"
-                        onClick={() => {
-                          handleAddToBookmark(formData.id);
-                        }}
+                        className={`${bookmarks.find(bk => bk.id == formData?.id) && "bg-accent-orange text-white hover:bg-accent-orange hover:text-white"}`}
                       >
                         <Bookmark className="w-4 h-4 mr-1" />
                         Bookmark
                       </Button>
 
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" onClick={() => setIsShareModalOpen(true)}>
                         <Share2 className="w-4 h-4 mr-1" />
                         Share
                       </Button>
@@ -166,11 +178,25 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                 )}
 
                 {/* Paragraph */}
-                {formData?.paragraph && (
+                {/* {formData?.paragraph && (
                   <div className="leading-relaxed text-justify my-4">
                     {formData.paragraph}
                   </div>
-                )}
+                )} */}
+                <Editor
+                  value={formData?.paragraph as string}
+                  readOnly
+                  style={{
+                    minHeight: '320px',
+                    border: 'none',
+                    backgroundColor: 'transparent',
+                    fontSize: '16px',
+                  }}
+                  modules={editorModules}
+                  showHeader={false}
+                  unstyled={true}
+                  className='no-border'
+                />
 
                 {/* Video */}
                 {formData?.video && (
@@ -229,6 +255,7 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                         );
                       case "image":
                         return (
+                          value &&
                           <img
                             key={id}
                             src={value as string}
@@ -238,6 +265,7 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                         );
                       case "video":
                         return (
+                          value &&
                           <video
                             key={id}
                             controls
@@ -314,7 +342,7 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <RecommendedArticles />
+            <RecommendedArticles id={formData.id} />
             <Newsletter />
           </div>
         </div>
@@ -323,6 +351,13 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
         contentId={formData.id}
+      />
+
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        contentUrl={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/details/article/${formData?.id}`} // Dynamic content URL
+        contentTitle={formData?.title || "Content Title"}
       />
     </div>
   );

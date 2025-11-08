@@ -1,15 +1,10 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Upload, X } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -17,12 +12,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
+import { Textarea } from "@/components/ui/textarea";
 import {
   useEditContentMutation,
   useGetArticleDetailsQuery,
 } from "@/store/features/article/article.api";
+import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
 import uploadFileInAws from "@/utils/fileUploader";
+import { ArrowLeft, Upload, X } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import ArticlePreview from "../../publish-content/ArticlePreview";
 
 const EditPodcast = () => {
@@ -66,8 +66,8 @@ const EditPodcast = () => {
       const tags = Array.isArray(videoData.data.tags)
         ? videoData.data.tags
         : typeof videoData.data.tags === "string"
-        ? videoData.data.tags.split(",").map((t: string) => t.trim())
-        : [];
+          ? videoData.data.tags.split(",").map((t: string) => t.trim())
+          : [];
 
       setFormData({
         ...initialForm,
@@ -287,9 +287,9 @@ const EditPodcast = () => {
                     <p className="text-sm text-gray-500 mb-2">
                       {formData.video
                         ? `Current video: ${String(formData.video).slice(
-                            0,
-                            30
-                          )}`
+                          0,
+                          30
+                        )}`
                         : "Upload new video"}
                     </p>
                     <Button variant="outline" size="sm" disabled={uploading}>

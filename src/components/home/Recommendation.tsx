@@ -1,10 +1,10 @@
 "use client";
 
 import CommonPadding from "@/common/CommonPadding";
-import PrimaryHeading from "../reusable/PrimaryHeading";
-import NewsCardSecondary from "../reusable/NewsCardSecondary";
-import { useGetAllArticleForReccomendationQuery } from "@/store/features/article/article.api";
 import { Skeleton } from "@/components/ui/skeleton"; // optional for better UX
+import { useGetAllArticleForReccomendationQuery } from "@/store/features/article/article.api";
+import NewsCardSecondary from "../reusable/NewsCardSecondary";
+import PrimaryHeading from "../reusable/PrimaryHeading";
 
 const Recommendation = () => {
   const { data, isLoading, isError } = useGetAllArticleForReccomendationQuery(
@@ -40,7 +40,6 @@ const Recommendation = () => {
   }
 
   const recommendations = data?.data || [];
-  console.log("recommendations", data);
 
   return (
     <div>
@@ -57,6 +56,7 @@ const Recommendation = () => {
                   subTitle={item.subTitle}
                   paragraph={item.paragraph}
                   image={item.image || "/placeholder.png"} // fallback if no image
+                  video={item.video}
                   category={item.category?.name}
                   author={item.user?.fullName}
                   publishedAt={new Date(item.createdAt).toLocaleDateString()}

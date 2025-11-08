@@ -45,7 +45,6 @@ const EducationCareer = ({ data }: { data: any }) => {
 
             <div className="hidden lg:grid grid-cols-2 lg:grid-cols-1 gap-4">
               {data?.contents?.slice(0, 4)?.map((item: any) => {
-                console.log(item)
                 return (
                   <NewsCardSecondary
                     key={item.id}

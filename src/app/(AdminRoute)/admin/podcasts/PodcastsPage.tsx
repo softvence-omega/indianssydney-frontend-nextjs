@@ -1,113 +1,16 @@
-// "use client";
-
-// import React, { useEffect, useState } from "react";
-// import DashboardHeader from "@/components/reusable/DashboardHeader";
-// import PodcastCard, { Podcast } from "./PodcastCard";
-// import {
-//   useGetPodcastsApprovedQuery,
-//   useGetPodcastsDeclinedQuery,
-//   useGetPodcastsPendingQuery,
-// } from "@/store/features/videoPodcast/podcast.api";
-
-// type PodcastStatus = "APPROVE" | "PENDING" | "Declined";
-
-// const PodcastsPage = () => {
-//   const [filter, setFilter] = useState<PodcastStatus>("APPROVE");
-//   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
-
-//   const { data: approvedData, isLoading: approvedLoading } =
-//     useGetPodcastsApprovedQuery({});
-//   const { data: pendingData, isLoading: pendingLoading } =
-//     useGetPodcastsPendingQuery({});
-//   const { data: declinedData, isLoading: declinedLoading } =
-//     useGetPodcastsDeclinedQuery({});
-
-//   useEffect(() => {
-//     let currentData: any[] = [];
-
-//     if (filter === "APPROVE") currentData = approvedData?.PODCAST || [];
-//     if (filter === "PENDING") currentData = pendingData?.PODCAST || [];
-//     if (filter === "Declined") currentData = declinedData?.PODCAST || [];
-
-//     const formatted: Podcast[] = currentData.map((item) => ({
-//       id: item.id,
-//       title: item.title,
-//       coverImage: item.image || "/placeholder.png",
-//       description:
-//         item.paragraph || item.subTitle || "No description available",
-//       author: item.user?.fullName || "Unknown",
-//       date: new Date(item.createdAt).toLocaleDateString(),
-//       status: item.status,
-//       negativity: {
-//         score: item.evaluationResult?.negativityScore || 0,
-//         positives: [],
-//         negatives: [],
-//       },
-//     }));
-
-//     setPodcasts(formatted);
-//   }, [filter, approvedData, pendingData, declinedData]);
-
-//   const handleStatusChange = (id: string, status: "approved" | "declined") => {
-//     // Handle status change logic here if needed
-//     console.log(`Podcast ${id} status changed to ${status}`);
-//   };
-
-//   const isLoading = approvedLoading || pendingLoading || declinedLoading;
-
-//   if (isLoading)
-//     return (
-//       <div className="p-8 text-center text-gray-500">Loading podcasts...</div>
-//     );
-
-//   return (
-//     <div>
-//       <DashboardHeader title="Podcasts" />
-
-//       {/* Tabs */}
-//       <div className="flex gap-4 mb-6">
-//         {["APPROVE", "PENDING", "Declined"].map((tab) => (
-//           <button
-//             key={tab}
-//             className={`cursor-pointer ${
-//               filter === tab
-//                 ? "text-accent-orange font-semibold"
-//                 : "text-gray-500"
-//             }`}
-//             onClick={() => setFilter(tab as PodcastStatus)}
-//           >
-//             {tab.charAt(0).toUpperCase() + tab.slice(1).toLowerCase()}
-//           </button>
-//         ))}
-//       </div>
-
-//       {/* Podcast Cards */}
-//       {podcasts.length === 0 ? (
-//         <div className="text-gray-500 text-center">No podcasts found.</div>
-//       ) : (
-//         podcasts.map((podcast) => (
-//           <PodcastCard key={podcast.id} podcast={podcast} onStatusChange={handleStatusChange} />
-//         ))
-//       )}
-//     </div>
-//   );
-// };
-
-// export default PodcastsPage;
-
 "use client";
 
-import React, { useState } from "react";
 import DashboardHeader from "@/components/reusable/DashboardHeader";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
-import PodcastCard from "./PodcastCard";
+import { useUpdateArticleStatusMutation } from "@/store/features/article/article.api";
 import {
   useGetPodcastsApprovedQuery,
-  useGetPodcastsPendingQuery,
   useGetPodcastsDeclinedQuery,
+  useGetPodcastsPendingQuery,
 } from "@/store/features/videoPodcast/podcast.api";
+import { useState } from "react";
+import { toast } from "sonner";
 import ArticleCard from "../articles/ArticleCard";
-import { useUpdateArticleStatusMutation } from "@/store/features/article/article.api";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 type PodcastStatus = "APPROVE" | "PENDING" | "Declined";
 
@@ -132,21 +35,35 @@ const PodcastsPage = () => {
     isLoading: loadingDeclined,
     isError: errorDeclined,
   } = useGetPodcastsDeclinedQuery({});
+
+  // === Update Mutation
   const [updateStatus] = useUpdateArticleStatusMutation();
+
   const handleStatusChange = async (
     id: string,
     status: "APPROVE" | "Declined"
   ) => {
     try {
-      await updateStatus({ id, status });
+      const res = await updateStatus({ id, status }).unwrap();
+
+      if (res?.success) {
+        toast.success(
+          `Podcast has been ${
+            status === "APPROVE" ? "approved" : "declined"
+          } successfully`
+        );
+      } else {
+        toast.error(res?.message || "Failed to update podcast status");
+      }
     } catch (err) {
       console.error("Failed to update status", err);
+      toast.error("Something went wrong while updating podcast status");
     }
   };
 
-  // ✅ Render podcasts similar to video rendering
+  //  Render podcasts similar to video rendering
   const renderPodcasts = (data: any, isLoading: boolean, isError: boolean) => {
-    if (isLoading) return <SkeletonLoader />;
+    if (isLoading) return <AustralianCanvasLoader />;
     if (isError)
       return <p className="text-red-500">Failed to load podcasts.</p>;
 
@@ -154,7 +71,8 @@ const PodcastsPage = () => {
       (item: any) => item.contentType === "PODCAST"
     );
 
-    if (!podcasts?.length) return <p>No podcasts found.</p>;
+    if (!podcasts?.length)
+      return <p className="text-center text-red-400">No podcasts found.</p>;
 
     return podcasts.map((podcast: any) => {
       let parsedCompareResult = null;
@@ -181,7 +99,7 @@ const PodcastsPage = () => {
             date: new Date(podcast.createdAt).toLocaleDateString(),
             status: podcast.status,
             negativity: {
-              score: podcast.evaluationResult?.negativityScore || 0,
+              score: podcast.evaluationResult?.percentage_not_aligned|| 0,
               positives: [],
               negatives: [],
             },

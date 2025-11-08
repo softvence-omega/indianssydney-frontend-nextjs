@@ -2,7 +2,7 @@
 
 import DashboardHeader from "@/components/reusable/DashboardHeader";
 import { useGetEditorActivityQuery } from "@/store/features/admin/admin.api";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 interface EditorStats {
   id: string;
@@ -54,7 +54,7 @@ const EditorActivity = () => {
       <DashboardHeader title="Editor Activity" />
 
       {isLoading || isFetching ? (
-        <SkeletonLoader />
+        <AustralianCanvasLoader />
       ) : editorStats.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="w-full table-auto text-left min-w-[400px]">

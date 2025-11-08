@@ -639,7 +639,6 @@ import {
   useGetDeclinedArticleQuery,
   useUpdateArticleStatusMutation,
 } from "@/store/features/article/article.api";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -650,6 +649,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical, ChevronLeft, ChevronRight } from "lucide-react";
 import ArticleCard from "../articles/ArticleCard";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 type ArticleStatus = "recent" | "PENDING" | "APPROVE" | "Declined" | "all";
 
@@ -687,7 +687,7 @@ const ArticlesPage = () => {
   };
 
   const renderArticles = (articles: any[], isLoading: boolean) => {
-    if (isLoading) return <SkeletonLoader />;
+    if (isLoading) return <AustralianCanvasLoader />;
     if (!articles?.length) return <p>No articles found.</p>;
 
     return articles.map((article) => {

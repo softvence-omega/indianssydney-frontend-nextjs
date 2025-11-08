@@ -33,7 +33,11 @@
     font-family: var(--font-inter);
   }
 }
-
+@layer components {
+  .no-normalize {
+    all: unset;
+  }
+}
 .custom-bullet {
   @apply w-2 h-2 rounded-full bg-slight-border cursor-pointer transition;
 }
@@ -208,29 +212,16 @@
 
 
 
-/* Hide Google Translate widget branding and banner */
-/* .goog-logo-link,
-.goog-te-gadget span,
-.goog-te-banner-frame.skiptranslate {
-  display: none !important;
-} */
-
-
-/* Prevent layout shift caused by hidden frame */
-/* .goog-te-gadget {
-  height: 0 !important;
-  overflow: hidden;
-} */
-
-
-
-
-/* Remove the iframe that sometimes appears on translate load */
-/* iframe[id^=":"] {
-  display: none !important;
-}
-} */
-
 .notranslate {
   translate: none;
+}
+
+/* .ql-toolbar{
+  border: 0px !important;
+} */
+
+/* Remove border from the toolbar only when showing the article */
+.no-border .ql-toolbar {
+  border: 0px !important;
+  background-color: transparent !important;
 }

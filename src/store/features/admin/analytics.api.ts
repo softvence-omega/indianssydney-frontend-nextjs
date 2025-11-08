@@ -1,3 +1,4 @@
+import { use } from "react";
 import { baseAPI } from "@/store/api/baseApi";
 
 export const adminAnalyticsApi = baseAPI.injectEndpoints({
@@ -18,9 +19,20 @@ export const adminAnalyticsApi = baseAPI.injectEndpoints({
       }),
     }),
 
+    // -----------------------  overview-dashboard/community-moderation -----------------------
+
+    getCommunityModeration: build.query({
+      query: () => ({
+        url: `/overview-dashboard/community-moderation`,
+        method: "GET",
+      }),
+    }),
     //  end
   }),
 });
 
-export const { useGetTopArticlesQuery, useGetTopCategoryQuery } =
-  adminAnalyticsApi;
+export const {
+  useGetTopArticlesQuery,
+  useGetTopCategoryQuery,
+  useGetCommunityModerationQuery,
+} = adminAnalyticsApi;

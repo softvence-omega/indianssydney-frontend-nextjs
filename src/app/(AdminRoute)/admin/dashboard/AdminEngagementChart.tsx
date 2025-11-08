@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetTrafficEngagementQuery } from "@/store/features/admin/admin.api";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 const AdminEngagementChart = () => {
   const { data, isLoading, isFetching } = useGetTrafficEngagementQuery({});
@@ -117,7 +117,7 @@ const AdminEngagementChart = () => {
       </div>
 
       {isLoading || isFetching ? (
-        <SkeletonLoader />
+        <AustralianCanvasLoader />
       ) : (
         <div id="chart" ref={chartRef}></div>
       )}

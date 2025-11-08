@@ -5,6 +5,7 @@ import CommonWrapper from "@/common/CommonWrapper";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import PlanCard from "./PlanCard";
 import { useGetAllPlanQuery } from "@/store/features/plans/plans.api";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 const benefits = [
   {
@@ -32,7 +33,14 @@ const benefits = [
 const Subscription = () => {
   const { data: plansData, isLoading, isError } = useGetAllPlanQuery({});
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div>
+        <CommonWrapper>
+          <AustralianCanvasLoader />
+        </CommonWrapper>
+      </div>
+    );
   if (isError) return <div>Error loading plans</div>;
 
   const plans = plansData?.data || [];

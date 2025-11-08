@@ -4,7 +4,7 @@ import React from "react";
 
 import GrowthMetrics from "./GrowthMetrics";
 import TopPerformingTags from "./TopPerformingTags";
-import AITranscription from "./AITranscription";
+// import AITranscription from "./AITranscription";
 import ContentMetrics from "./ContentMetrics";
 import PredictiveInsight from "./PredictiveInsight";
 import UserEngagement from "./UserEngagement";
@@ -38,12 +38,13 @@ const AnalyticsDashboard: React.FC = () => {
           <div className="space-y-4 md:space-y-6">
             <ContentMetrics />
             <TopPerformingTags />
-            <AITranscription />
+
+            {/* <AITranscription /> */}
           </div>
           <div className="space-y-4 md:space-y-6 lg:col-span-2">
             <CommunityModeration />
-            <AutomatedTranslations />
             <GrowthMetrics />
+            {/* <AutomatedTranslations /> */}
           </div>
         </div>
       </div>

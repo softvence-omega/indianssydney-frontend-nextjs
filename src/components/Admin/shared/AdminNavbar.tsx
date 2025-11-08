@@ -17,7 +17,7 @@ import { toast } from "sonner";
 
 type NavBarProps = {
   role: "admin" | "editor";
-  onToggleSidebar?: () => void; // ✅ Add trigger for sidebar
+  onToggleSidebar?: () => void; 
 };
 
 const AdminNavBar: React.FC<NavBarProps> = ({ role, onToggleSidebar }) => {

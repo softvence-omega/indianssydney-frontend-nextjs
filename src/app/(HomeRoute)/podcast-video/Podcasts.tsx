@@ -2,11 +2,17 @@ import React from "react";
 import FeatureVideoCard from "@/components/live-podcast/FeatureVideoCard";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
 import { useGetAllPodcastsQuery } from "@/store/features/videoPodcast/podcast.api";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 const Podcasts = () => {
   const { data, isLoading, isError } = useGetAllPodcastsQuery({});
 
-  if (isLoading) return <p className="text-center text-gray-500">Loading...</p>;
+  if (isLoading)
+    return (
+      <p className="text-center text-gray-500">
+        <AustralianCanvasLoader />
+      </p>
+    );
   if (isError)
     return <p className="text-center text-red-500">Error loading podcasts.</p>;
 

@@ -40,33 +40,6 @@ export interface UploadFormData {
   commentCount?: number;
 }
 
-// export interface DetailsData {
-//   id?: string;
-//   contentType: ContentType;
-//   category: string;
-//   subCategory: string;
-//   title: string;
-//   subTitle: string;
-
-//   audioFile: string | null;
-//   image: string | null;
-//   video: string | null;
-//   imageCaption: string;
-//   shortQuote: string;
-//   paragraph: string;
-
-//   tags: string[];
-//   additionalFields: Record<string, AdditionalField>;
-
-//   dateTimeSlot?: string;
-//   about: string;
-
-//   publishedAt?: string;
-//   views?: number;
-//   likes?: number;
-//   comments?: number;
-// }
-
 export interface AdditionalFields {
   id: string;
   contentId: string;
@@ -124,4 +97,5 @@ export interface DetailsData {
   category: Category;
   subCategory: SubCategory;
   views?: number; // ✅ maps to API's contentviews
+  contentviews?:number;
 }
