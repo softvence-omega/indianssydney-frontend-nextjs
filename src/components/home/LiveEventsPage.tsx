@@ -7,7 +7,7 @@ import CommonPadding from "@/common/CommonPadding";
 import { useGetAllLiveEventQuery } from "@/store/features/live-events/live.api";
 import { useRouter } from "next/navigation";
 import PrimaryHeading from "../reusable/PrimaryHeading";
-import SkeletonLoader from "../reusable/SkeletonLoader";
+import AustralianCanvasLoader from "../reusable/AustralianCanvasLoader";
 
 const LiveEventsPage = () => {
   const router = useRouter();
@@ -21,7 +21,7 @@ const LiveEventsPage = () => {
     return (
       <CommonWrapper className="">
         {/* Loading live events... */}
-        <SkeletonLoader />
+        <AustralianCanvasLoader />
       </CommonWrapper>
     );
 

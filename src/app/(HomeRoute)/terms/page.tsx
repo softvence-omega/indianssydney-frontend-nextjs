@@ -2,17 +2,18 @@
 
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 import CommonHeader from "@/components/reusable/CommonHeader";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 import { useGetAllTermsQuery } from "@/store/features/site/terms.api";
 
 const Terms = () => {
   const { data, isLoading, isError } = useGetAllTermsQuery({});
-
+console.log(isLoading)
   if (isLoading) {
     return (
       <CommonWrapper>
-        <SkeletonLoader />
+        {/* <SkeletonLoader /> */}
+        <AustralianCanvasLoader />
       </CommonWrapper>
     );
   }
@@ -40,7 +41,8 @@ const Terms = () => {
               <section key={section.id || index} className="mb-10">
                 <h2 className="text-xl font-semibold mb-4">{section.title}</h2>
                 <p className="text-gray-700 leading-relaxed">
-                  {section.content}
+                  {/* {section.content} */}
+                  <div dangerouslySetInnerHTML={{ __html: section.content }} style={{ border: '1px solid #ccc', padding: '10px' }}></div>
                 </p>
               </section>
             ))}

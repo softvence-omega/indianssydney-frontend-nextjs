@@ -2,7 +2,7 @@ import React from "react";
 import FeatureVideoCard from "@/components/live-podcast/FeatureVideoCard";
 import PrimaryHeading from "@/components/reusable/PrimaryHeading";
 import { useGetAllPodcastsQuery } from "@/store/features/videoPodcast/podcast.api";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 const Podcasts = () => {
   const { data, isLoading, isError } = useGetAllPodcastsQuery({});
@@ -10,7 +10,7 @@ const Podcasts = () => {
   if (isLoading)
     return (
       <p className="text-center text-gray-500">
-        <SkeletonLoader />
+        <AustralianCanvasLoader />
       </p>
     );
   if (isError)

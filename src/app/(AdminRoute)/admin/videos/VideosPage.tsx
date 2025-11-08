@@ -3,13 +3,13 @@
 import React, { useState } from "react";
 import DashboardHeader from "@/components/reusable/DashboardHeader";
 import ArticleCard from "../articles/ArticleCard"; // Reusing ArticleCard for videos
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 import {
   useGetVideosApprovedQuery,
   useGetVideosPendingQuery,
   useGetVideosDeclinedQuery,
 } from "@/store/features/videoPodcast/video.api";
 import { useUpdateArticleStatusMutation } from "@/store/features/article/article.api";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 type VideoStatus = "APPROVE" | "PENDING" | "Declined";
 
@@ -50,7 +50,7 @@ const VideosPage = () => {
 
   // ✅ Render function (like ArticlesPage)
   const renderVideos = (data: any, isLoading: boolean, isError: boolean) => {
-    if (isLoading) return <SkeletonLoader />;
+    if (isLoading) return <AustralianCanvasLoader />;
     if (isError) return <p className="text-red-500">Failed to load videos.</p>;
     const videos = data?.VIDEO?.filter(
       (item: any) => item.contentType === "VIDEO"

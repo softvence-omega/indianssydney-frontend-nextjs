@@ -10,7 +10,7 @@ import {
   useGetDeclinedArticleQuery,
   useUpdateArticleStatusMutation,
 } from "@/store/features/article/article.api";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 type ArticleStatus = "recent" | "PENDING" | "APPROVE" | "DECLINE";
 
@@ -58,7 +58,7 @@ const ArticlesPage = () => {
   };
 
   const renderArticles = (articles: any[], isLoading: boolean) => {
-    if (isLoading) return <SkeletonLoader />;
+    if (isLoading) return <AustralianCanvasLoader />;
     if (!articles?.length) return <p>No articles found.</p>;
 
     return articles.map((article) => {

@@ -26,6 +26,7 @@ import {
   useGetSingleLiveEventQuery,
   useUpdateLiveEventMutation,
 } from "@/store/features/live-events/live.api";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 // Extend LiveEvent type to include youtubeLiveUrl and tags
 interface ExtendedLiveEvent extends LiveEvent {
@@ -948,11 +949,7 @@ const LiveEventsPage = () => {
       </div>
 
       {/* Loading State */}
-      {isLoading && (
-        <div className="flex justify-center items-center py-10">
-          <Loader2 className="animate-spin mr-2" /> Loading live events...
-        </div>
-      )}
+      {isLoading && <AustralianCanvasLoader />}
 
       {/* Error State */}
       {isError && (

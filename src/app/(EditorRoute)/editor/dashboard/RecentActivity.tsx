@@ -66,9 +66,8 @@
 
 "use client";
 
-import { useGetRecentUserActivityQuery } from "@/store/features/admin/admin.api";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 import { useGetRecentActivityEditorQuery } from "@/store/features/editor/editor.api";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 const RecentActivity = () => {
   const {
@@ -84,7 +83,7 @@ const RecentActivity = () => {
       <h2 className="text-lg lg:text-xl font-medium mb-6">Recent Activity</h2>
 
       {isLoading || isFetching ? (
-        <SkeletonLoader />
+        <AustralianCanvasLoader />
       ) : activities.length > 0 ? (
         <div className="space-y-3">
           {activities.map((activity: any, index: number) => (

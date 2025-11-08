@@ -2,9 +2,9 @@
 
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 import CommonHeader from "@/components/reusable/CommonHeader";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
-import { useGetAllPrivacyPolicyQuery } from "@/store/features/site/privacy.api"; // ✅ use query hook
+import { useGetAllPrivacyPolicyQuery } from "@/store/features/site/privacy.api"; // use query hook
 
 const PrivacyPolicy = () => {
   const { data, isLoading, isError } = useGetAllPrivacyPolicyQuery({});
@@ -12,7 +12,7 @@ const PrivacyPolicy = () => {
   if (isLoading) {
     return (
       <CommonWrapper>
-        <SkeletonLoader />
+        <AustralianCanvasLoader />
       </CommonWrapper>
     );
   }
@@ -40,7 +40,9 @@ const PrivacyPolicy = () => {
               <div key={section.id || index} className="pb-10">
                 <h2 className="text-xl font-semibold mb-4">{section.title}</h2>
                 <p className="text-gray-700 leading-relaxed">
-                  {section.subtext}
+                  {/* {section.subtext} */}
+                  {/* <Editor value={section.subtext} /> */}
+                  <div dangerouslySetInnerHTML={{ __html: section.subtext }} style={{ border: '1px solid #ccc', padding: '10px' }}></div>
                 </p>
               </div>
             ))}

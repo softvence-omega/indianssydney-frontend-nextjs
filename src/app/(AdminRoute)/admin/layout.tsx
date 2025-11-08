@@ -64,7 +64,7 @@ const navItems: NavItem[] = [
       { title: "Privacy Policy", href: "/admin/privacy-policy" },
       { title: "Terms & Conditions", href: "/admin/terms" },
       { title: "FAQ Management", href: "/admin/faq" },
-      { title: "Language Setting", href: "/admin/languages" },
+      // { title: "Language Setting", href: "/admin/languages" },
     ],
   },
   {

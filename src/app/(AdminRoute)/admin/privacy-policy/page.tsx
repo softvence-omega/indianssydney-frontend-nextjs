@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   useCreatePrivacyPolicyMutation,
   useDeletePrivacyPolicyMutation,
@@ -26,27 +27,34 @@ interface PrivacySection {
   subtext: string;
 }
 
-// const API_BASE_URL = "https://api.australiancanvas.com";
-
 const AdminPrivacyPolicy = () => {
-  const { data } = useGetAllPrivacyPolicyQuery(undefined);
+  const { data, refetch } = useGetAllPrivacyPolicyQuery(undefined);
   const [createPrivacyPolicy] = useCreatePrivacyPolicyMutation();
   const [updatePrivacyPolicy] = useUpdatePrivacyPolicyMutation();
   const [deletePrivacyPolicy] = useDeletePrivacyPolicyMutation();
+  
   const [sections, setSections] = useState<PrivacySection[]>([]);
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<PrivacySection | null>(null);
+  const [form, setForm] = useState({ title: "", subtext: "" });
 
+  // Delete modal
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [sectionToDelete, setSectionToDelete] = useState<PrivacySection | null>(null);
+
+  // Load data
   useEffect(() => {
-    if (data?.data) setSections(data.data);
+    if (data?.data) {
+      setSections(data.data);
+    }
   }, [data]);
 
   console.log(data);
 
-  const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState<PrivacySection | null>(null);
-  const [editorContent, setEditorContent] = useState("");
-
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+  // Handle input change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   // Upload Image Function
   const uploadImageToServer = async (file: File): Promise<string | null> => {
@@ -74,10 +82,10 @@ const AdminPrivacyPolicy = () => {
     }
   };
 
-  // ✅ Handle image insert (convert base64 → URL)
+  // Handle image insert (convert base64 → URL)
   const handleEditorChange = async (e: any) => {
     const html = e.htmlValue || "";
-    setEditorContent(html);
+    setForm({ ...form, subtext: html });
 
     // Detect base64 image
     const regex = /<img[^>]+src="data:image\/([^;]+);base64,([^"]+)"/g;
@@ -92,13 +100,13 @@ const AdminPrivacyPolicy = () => {
         if (imageUrl) {
           // Replace base64 with uploaded URL
           const updatedHtml = html.replace(src, imageUrl);
-          setEditorContent(updatedHtml);
+          setForm({ ...form, subtext: updatedHtml });
         }
       }
     }
   };
 
-  // ✅ Convert base64 → File
+  // Convert base64 → File
   const base64ToFile = (base64: string): File => {
     const arr = base64.split(",");
     const mime = arr[0].match(/:(.*?);/)?.[1] || "";
@@ -111,65 +119,83 @@ const AdminPrivacyPolicy = () => {
     return new File([u8arr], `upload_${Date.now()}.png`, { type: mime });
   };
 
-  // ✅ Save handler
+  // Save handler
   const handleSave = async () => {
     try {
-      if (!editorContent.trim()) {
+      if (!form.title.trim()) {
+        toast.error("Title cannot be empty");
+        return;
+      }
+      
+      if (!form.subtext.trim()) {
         toast.error("Content cannot be empty");
         return;
       }
 
       if (editing) {
-        await updatePrivacyPolicy({
+        const res = await updatePrivacyPolicy({
           id: editing.id,
-          data: { title: "Privacy Policy", subtext: editorContent },
+          data: form,
         }).unwrap();
-        toast.success("Section updated successfully");
+        if (res?.success) toast.success("Section updated successfully");
       } else {
-        const result = await createPrivacyPolicy({
-          data: { title: "Privacy Policy", subtext: editorContent },
+        const res = await createPrivacyPolicy({
+          data: form,
         }).unwrap();
-
-        console.log("result: ", result);
-        toast.success("Section created successfully");
+        if (res?.success) toast.success("Section created successfully");
       }
 
-      setEditorContent("");
+      setForm({ title: "", subtext: "" });
       setEditing(null);
       setOpen(false);
+      refetch();
     } catch (err) {
-      toast.error("Something went wrong");
+      console.error(err);
+      toast.error("Failed to save section");
     }
   };
 
-  // ✅ Delete handler
+  // Confirm delete
+  const confirmDelete = (section: PrivacySection) => {
+    setSectionToDelete(section);
+    setDeleteDialogOpen(true);
+  };
+
+  // Delete handler
   const handleDelete = async () => {
-    if (!deleteId) return;
+    if (!sectionToDelete) return;
     try {
-      await deletePrivacyPolicy(deleteId).unwrap();
-      toast.success("Section deleted successfully");
+      const res = await deletePrivacyPolicy(sectionToDelete.id).unwrap();
+      if (res?.success) {
+        toast.success("Section deleted successfully");
+        refetch();
+      }
     } catch (err) {
+      console.error(err);
       toast.error("Failed to delete section");
     } finally {
-      setConfirmOpen(false);
-      setDeleteId(null);
+      setDeleteDialogOpen(false);
+      setSectionToDelete(null);
     }
   };
 
+  // Edit section
   const handleEdit = (section: PrivacySection) => {
     setEditing(section);
-    setEditorContent(section.subtext);
+    setForm({ title: section.title, subtext: section.subtext });
     setOpen(true);
   };
 
+  // Add new section
   const handleAdd = () => {
+    setForm({ title: "", subtext: "" });
     setEditing(null);
-    setEditorContent("");
     setOpen(true);
   };
 
   return (
     <div className="p-6">
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Manage Privacy Policy</h1>
         <Button
@@ -180,6 +206,7 @@ const AdminPrivacyPolicy = () => {
         </Button>
       </div>
 
+      {/* Sections List */}
       <div className="space-y-4">
         {sections.map((section) => (
           <Card key={section.id} className="shadow-sm">
@@ -187,7 +214,7 @@ const AdminPrivacyPolicy = () => {
               <div className="flex justify-between items-start">
                 <div className="w-full">
                   <h2 className="text-lg font-semibold mb-2">
-                    {section.title || "Privacy Policy"}
+                    {section.title}
                   </h2>
                   <div
                     className="text-sm text-gray-700 prose max-w-none"
@@ -205,10 +232,7 @@ const AdminPrivacyPolicy = () => {
                   <Button
                     variant="destructive"
                     size="icon"
-                    onClick={() => {
-                      setDeleteId(section.id);
-                      setConfirmOpen(true);
-                    }}
+                    onClick={() => confirmDelete(section)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -228,9 +252,15 @@ const AdminPrivacyPolicy = () => {
             </DialogTitle>
           </DialogHeader>
 
-          <div className="mt-4">
+          <div className="space-y-4 mt-4">
+            <Input
+              name="title"
+              placeholder="Section Title"
+              value={form.title}
+              onChange={handleChange}
+            />
             <Editor
-              value={editorContent}
+              value={form.subtext}
               onTextChange={handleEditorChange}
               style={{ height: "450px" }}
               placeholder="Write or paste your content here..."
@@ -252,17 +282,18 @@ const AdminPrivacyPolicy = () => {
       </Dialog>
 
       {/* Confirm Delete Modal */}
-      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogTitle>Delete Section</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-gray-600">
-            Are you sure you want to delete this section? This action cannot be
-            undone.
+            Are you sure you want to delete{" "}
+            <span className="font-semibold">{sectionToDelete?.title}</span>? 
+            This action cannot be undone.
           </p>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setConfirmOpen(false)}>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
               Cancel
             </Button>
             <Button
