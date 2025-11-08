@@ -12,7 +12,7 @@ import {
   useGeContentBySubCaregorySlugQuery,
   useGetContentByCategorySlugQuery,
 } from "@/store/features/article/article.api";
-import SkeletonLoader from "../reusable/SkeletonLoader";
+import AustralianCanvasLoader from "../reusable/AustralianCanvasLoader";
 
 interface SubCategory {
   id: string;
@@ -58,7 +58,7 @@ const NewsTemplate = ({
       <CommonWrapper>
         <CommonPadding>
           {/* <p className="text-center text-gray-500 py-10">Loading content...</p> */}
-          <SkeletonLoader />
+          <AustralianCanvasLoader />
         </CommonPadding>
       </CommonWrapper>
     );

@@ -7,7 +7,7 @@ import PrimaryButton from "@/components/reusable/PrimaryButton";
 import VideoDetails from "@/components/details/VideoDetails";
 import React from "react";
 import { useGetArticleDetailsQuery } from "@/store/features/article/article.api";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 export default function VideoDetailPage({
   params,
@@ -27,7 +27,7 @@ export default function VideoDetailPage({
     return (
       <CommonWrapper>
         <CommonPadding>
-          <SkeletonLoader />
+          <AustralianCanvasLoader />
           {/* <div className="h-[60vh] flex flex-col items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
             <p className="text-lg text-gray-600">Loading video...</p>

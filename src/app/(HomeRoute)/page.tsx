@@ -1,7 +1,6 @@
 "use client";
 
 import CommonWrapper from "@/common/CommonWrapper";
-import HomePageLoader from "@/common/HomePageLoader";
 import Chatbot from "@/components/chatbot/Chatbot";
 import BusinessInnovation from "@/components/home/BusinessInnovation";
 import EducationCareer from "@/components/home/EducationCareer";
@@ -10,6 +9,7 @@ import PodcastVideo from "@/components/home/PodcastVideo";
 import Recommendation from "@/components/home/Recommendation";
 import SportsPlay from "@/components/home/SportsPlay";
 import Ad from "@/components/reusable/Ad";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useGetHomePageDataQuery } from "@/store/features/article/article.api";
 import { AlertCircleIcon, CheckCircle2Icon, PopcornIcon } from "lucide-react";
@@ -18,7 +18,8 @@ const Page = () => {
   const { data, isLoading, isError } = useGetHomePageDataQuery({});
 
   if (isLoading)
-    return <HomePageLoader />;
+    return <AustralianCanvasLoader />;
+    // return <HomePageLoader />;
   if (isError)
     return (
       <div className="grid w-full max-w-xl items-start gap-4">

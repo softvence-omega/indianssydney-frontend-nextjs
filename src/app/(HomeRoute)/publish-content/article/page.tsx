@@ -1,6 +1,5 @@
 "use client";
 
-import HomePageLoader from "@/common/HomePageLoader";
 import { useCreateNewArticleMutation } from "@/store/features/article/article.api";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -8,6 +7,7 @@ import { toast } from "sonner";
 import ArticlePreview from "../ArticlePreview";
 import { UploadFormData } from "../types";
 import ArticleForm from "./ArticleForm";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 const Page = () => {
   const [createNewArticle, { isLoading }] = useCreateNewArticleMutation();
@@ -102,7 +102,8 @@ const Page = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       {isLoading ? (
         <div >
-          <HomePageLoader />
+          {/* <HomePageLoader /> */}
+           <AustralianCanvasLoader />
         </div>
       ) : (
         <>

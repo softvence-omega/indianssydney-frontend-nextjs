@@ -11,8 +11,8 @@ import { useParams, usePathname } from "next/navigation";
 import React from "react";
 // import FoodTemplate from "@/components/templates/FoodTemplate";
 import ErrorLoader from "@/common/ErrorLoader";
-import HomePageLoader from "@/common/HomePageLoader";
 import { useGetAllCategoryQuery } from "@/store/features/category/category.api";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 type TemplateKeys =
   | "NewsTemplate"
@@ -63,7 +63,8 @@ const CategoryPage = () => {
 
   if (isLoading) {
     return (
-      <HomePageLoader />
+      <AustralianCanvasLoader />
+      // <HomePageLoader />
     );
   }
 

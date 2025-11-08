@@ -4,6 +4,7 @@ import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
 import ContentLoader from "@/common/ContentLoader";
 import ArticleDetails from "@/components/details/ArticleDetails";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import { useGetArticleDetailsQuery } from "@/store/features/article/article.api";
 import { useRouter } from "next/navigation";
@@ -24,7 +25,8 @@ export default function ArticleDetailPage({
 
   if (isLoading) {
     return (
-      <ContentLoader />
+      <AustralianCanvasLoader />
+      // <ContentLoader />
     );
   }
 

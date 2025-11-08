@@ -1,7 +1,7 @@
 "use client";
 
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 import DashboardHeader from "@/components/reusable/DashboardHeader";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -261,7 +261,7 @@ const CategoryManagement = () => {
       {/* Category List */}
 
       {isLoading ? (
-        <SkeletonLoader />
+        <AustralianCanvasLoader />
       ) : (
         <div className="grid gap-6 mt-6">
           {categories?.map((category: any) => {

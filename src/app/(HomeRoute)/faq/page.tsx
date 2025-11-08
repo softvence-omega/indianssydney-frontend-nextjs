@@ -10,7 +10,7 @@ import CommonHeader from "@/components/reusable/CommonHeader";
 import CommonWrapper from "@/common/CommonWrapper";
 import CommonPadding from "@/common/CommonPadding";
 import { useGetAllFAQQuery } from "@/store/features/site/faq.api";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 const FAQ = () => {
   const { data, isLoading, isError } = useGetAllFAQQuery({});
@@ -18,7 +18,7 @@ const FAQ = () => {
   if (isLoading) {
     return (
         <CommonWrapper>
-          <SkeletonLoader />
+          <AustralianCanvasLoader />
         </CommonWrapper>
     );
   }

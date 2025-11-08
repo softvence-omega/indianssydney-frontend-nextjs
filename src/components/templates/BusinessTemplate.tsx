@@ -3,7 +3,6 @@
 import CommonPadding from "@/common/CommonPadding";
 import CommonWrapper from "@/common/CommonWrapper";
 import ErrorLoader from "@/common/ErrorLoader";
-import HomePageLoader from "@/common/HomePageLoader";
 import Ad from "@/components/reusable/Ad";
 import NewsCardSecondary from "@/components/reusable/NewsCardSecondary";
 import NewsTabs from "@/components/reusable/NewsTabs";
@@ -13,6 +12,7 @@ import {
   useGetContentByCategorySlugQuery,
 } from "@/store/features/article/article.api";
 import NewsSlider from "../home/NewsCurrent/NewsSlider";
+import AustralianCanvasLoader from "../reusable/AustralianCanvasLoader";
 
 interface SubCategory {
   id: string;
@@ -57,7 +57,8 @@ const BusinessTemplate = ({
   // ✅ Handle loading/error
   if (categorySlugLoading || subCategorySlugLoading)
     return (
-      <HomePageLoader />
+      <AustralianCanvasLoader />
+      // <HomePageLoader />
     );
 
   if (categorySlugError || subCategorySlugError)

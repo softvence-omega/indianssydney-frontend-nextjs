@@ -1,7 +1,6 @@
 "use client";
 
 import DashboardHeader from "@/components/reusable/DashboardHeader";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
 import { useUpdateArticleStatusMutation } from "@/store/features/article/article.api";
 import {
   useGetPodcastsApprovedQuery,
@@ -11,6 +10,7 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import ArticleCard from "../articles/ArticleCard";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 type PodcastStatus = "APPROVE" | "PENDING" | "Declined";
 
@@ -63,7 +63,7 @@ const PodcastsPage = () => {
 
   //  Render podcasts similar to video rendering
   const renderPodcasts = (data: any, isLoading: boolean, isError: boolean) => {
-    if (isLoading) return <SkeletonLoader />;
+    if (isLoading) return <AustralianCanvasLoader />;
     if (isError)
       return <p className="text-red-500">Failed to load podcasts.</p>;
 

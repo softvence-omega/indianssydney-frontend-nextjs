@@ -5,7 +5,7 @@ import CommonWrapper from "@/common/CommonWrapper";
 import PrimaryButton from "@/components/reusable/PrimaryButton";
 import PlanCard from "./PlanCard";
 import { useGetAllPlanQuery } from "@/store/features/plans/plans.api";
-import SkeletonLoader from "@/components/reusable/SkeletonLoader";
+import AustralianCanvasLoader from "@/components/reusable/AustralianCanvasLoader";
 
 const benefits = [
   {
@@ -37,7 +37,7 @@ const Subscription = () => {
     return (
       <div>
         <CommonWrapper>
-          <SkeletonLoader />
+          <AustralianCanvasLoader />
         </CommonWrapper>
       </div>
     );

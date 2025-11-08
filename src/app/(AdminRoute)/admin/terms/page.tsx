@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -13,13 +12,14 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trash2, Pencil } from "lucide-react";
+import { toast } from "sonner";
 import {
   useGetAllTermsQuery,
   useCreateTermsMutation,
   useUpdateTermsMutation,
   useDeleteTermsMutation,
-} from "@/store/features/site/terms.api"; // adjust path if needed
-import { toast } from "sonner";
+} from "@/store/features/site/terms.api";
+import { Editor } from "primereact/editor";
 
 interface TermsSection {
   id: string;
@@ -38,27 +38,32 @@ const AdminTerms = () => {
   const [editing, setEditing] = useState<TermsSection | null>(null);
   const [form, setForm] = useState({ title: "", content: "" });
 
-  // 🔹 Delete confirm modal state
+  // Delete modal
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [sectionToDelete, setSectionToDelete] = useState<TermsSection | null>(
     null
   );
 
-  // Load API data into local state
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Load data
   useEffect(() => {
     if (data?.data) {
       setSections(data.data);
     }
   }, [data]);
 
-  // handle input
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  // Handle title
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // add or update section
+  // Handle editor text
+  const handleEditorChange = (e: any) => {
+    setForm({ ...form, content: e.htmlValue });
+  };
+
+  // Handle save
   const handleSave = async () => {
     try {
       if (editing) {
@@ -82,13 +87,13 @@ const AdminTerms = () => {
     }
   };
 
-  // confirm delete handler
+  // Confirm delete
   const confirmDelete = (section: TermsSection) => {
     setSectionToDelete(section);
     setDeleteDialogOpen(true);
   };
 
-  // delete section
+  // Delete section
   const handleDelete = async () => {
     if (!sectionToDelete) return;
     try {
@@ -106,11 +111,64 @@ const AdminTerms = () => {
     }
   };
 
-  // edit section
+  // Edit section
   const handleEdit = (section: TermsSection) => {
     setEditing(section);
     setForm({ title: section.title, content: section.content });
     setOpen(true);
+  };
+
+  // Image upload handler for editor
+  const handleImageUpload = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const uploadImageToServer = async (file: File): Promise<string | null> => {
+    try {
+      // Example Cloudinary upload
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "your_preset"); // 🔸 replace with your Cloudinary preset
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/upload`, // 🔸 replace with your Cloudinary name
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = await res.json();
+      return data.secure_url || null;
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      toast.error("Image upload failed");
+      return null;
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = await uploadImageToServer(file);
+      if (imageUrl) {
+        const newContent =
+          form.content + `<img src="${imageUrl}" alt="uploaded image" />`;
+        setForm({ ...form, content: newContent });
+      }
+    }
+  };
+
+  const toolbarTemplate = {
+    container: [
+      ["bold", "italic", "underline", "strike"],
+      [{ header: [1, 2, 3, false] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image", "code-block"],
+      ["clean"],
+    ],
+    handlers: {
+      image: handleImageUpload,
+    },
   };
 
   return (
@@ -138,7 +196,10 @@ const AdminTerms = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-lg font-semibold">{section.title}</h2>
-                  <p className="text-sm text-gray-600">{section.content}</p>
+                  <div
+                    className="text-sm text-gray-600"
+                    dangerouslySetInnerHTML={{ __html: section.content }}
+                  />
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -164,7 +225,7 @@ const AdminTerms = () => {
 
       {/* Add/Edit Modal */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>
               {editing ? "Edit Section" : "Add New Section"}
@@ -178,12 +239,19 @@ const AdminTerms = () => {
               value={form.title}
               onChange={handleChange}
             />
-            <Textarea
-              name="content"
-              placeholder="Section Content"
+            <Editor
               value={form.content}
-              onChange={handleChange}
-              rows={5}
+              onTextChange={handleEditorChange}
+              headerTemplate={undefined}
+              style={{ height: "320px" }}
+              modules={toolbarTemplate}
+            />
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              style={{ display: "none" }}
             />
           </div>
 
@@ -213,7 +281,10 @@ const AdminTerms = () => {
             This action cannot be undone.
           </p>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button
