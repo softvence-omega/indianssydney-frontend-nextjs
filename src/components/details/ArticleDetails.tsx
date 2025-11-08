@@ -4,16 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { addBookMark, removeBookMark } from "@/store/features/bookmark/bookmark.slice";
-import { useAppDispatch, useAppSelector } from "@/store/hook";
 import {
-  ArrowLeft,
-  Bookmark,
-  Calendar,
-  Eye,
-  Share2,
-  User
-} from "lucide-react";
+  addBookMark,
+  removeBookMark,
+} from "@/store/features/bookmark/bookmark.slice";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { ArrowLeft, Bookmark, Calendar, Eye, Share2, User } from "lucide-react";
 import { Editor } from "primereact/editor";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -22,6 +18,8 @@ import ShareModal from "../reusable/ShareModal";
 import Newsletter from "./Newsletter";
 import RecommendedArticles from "./RecommendedArticles";
 import ReportModal from "./ReportModal";
+import TTSPlayer from "../reusable/TTSPlayer";
+// import TTSPlayer from '@/components/TTSPlayer';
 
 interface ArticlePreviewProps {
   formData: DetailsData;
@@ -42,22 +40,23 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
     (a, b) => a.order - b.order
   );
 
-
   const handleBookmark = (formData: DetailsData) => {
-    if (bookmarks.find(bk => bk.id === formData?.id)) {
+    if (bookmarks.find((bk) => bk.id === formData?.id)) {
       dispatch(removeBookMark(formData?.id));
       toast.warning("Bookmark removed successfully!");
     } else {
-      dispatch(addBookMark({
-        id: formData?.id,
-        title: formData?.title,
-        subTitle: formData?.subTitle,
-        headingImage: formData?.image,
-        createdAt: formData?.createdAt
-      }));
+      dispatch(
+        addBookMark({
+          id: formData?.id,
+          title: formData?.title,
+          subTitle: formData?.subTitle,
+          headingImage: formData?.image,
+          createdAt: formData?.createdAt,
+        })
+      );
       toast.success("Bookmark added successfully!");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -83,6 +82,37 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                       {formData?.subTitle}
                     </p>
                   )}
+
+                  <div className="my-3">
+                    {(() => {
+                      const parts: string[] = [];
+                      // formData.title && parts.push(formData.title);
+                      // formData.subTitle && parts.push(formData.subTitle);
+
+                      // Clean paragraph (strip HTML if any)
+                      if (formData.paragraph) {
+                        const cleanPara = (formData.paragraph as string)
+                          .replace(/<[^>]*>/g, " ")
+                          .replace(/\s+/g, " ");
+                        parts.push(cleanPara);
+                      }
+
+                      sortedAdditionalFields.forEach((f) => {
+                        if (f.type === "shortQuote" || f.type === "paragraph") {
+                          const cleanValue = (f.value as string)
+                            .replace(/<[^>]*>/g, " ")
+                            .replace(/\s+/g, " ");
+                          parts.push(cleanValue);
+                        }
+                        if (f.type === "image" && formData.imageCaption) {
+                          parts.push(formData.imageCaption);
+                        }
+                      });
+
+                      const fullText = parts.join("   ");
+                      return fullText ? <TTSPlayer text={fullText} /> : null;
+                    })()}
+                  </div>
 
                   {/* Author + Meta */}
                   <div className="flex items-center justify-between mb-4">
@@ -119,13 +149,20 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                         onClick={() => handleBookmark(formData)}
                         variant="outline"
                         size="sm"
-                        className={`${bookmarks.find(bk => bk.id == formData?.id) && "bg-accent-orange text-white hover:bg-accent-orange hover:text-white"}`}
+                        className={`${
+                          bookmarks.find((bk) => bk.id == formData?.id) &&
+                          "bg-accent-orange text-white hover:bg-accent-orange hover:text-white"
+                        }`}
                       >
                         <Bookmark className="w-4 h-4 mr-1" />
                         Bookmark
                       </Button>
 
-                      <Button variant="outline" size="sm" onClick={() => setIsShareModalOpen(true)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsShareModalOpen(true)}
+                      >
                         <Share2 className="w-4 h-4 mr-1" />
                         Share
                       </Button>
@@ -187,15 +224,15 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                   value={formData?.paragraph as string}
                   readOnly
                   style={{
-                    minHeight: '320px',
-                    border: 'none',
-                    backgroundColor: 'transparent',
-                    fontSize: '16px',
+                    minHeight: "320px",
+                    border: "none",
+                    backgroundColor: "transparent",
+                    fontSize: "16px",
                   }}
                   modules={editorModules}
                   showHeader={false}
                   unstyled={true}
-                  className='no-border'
+                  className="no-border"
                 />
 
                 {/* Video */}
@@ -255,23 +292,25 @@ const ArticleDetails = ({ formData, onBack }: ArticlePreviewProps) => {
                         );
                       case "image":
                         return (
-                          value &&
-                          <img
-                            key={id}
-                            src={value as string}
-                            alt="Additional content"
-                            className="w-full h-64 md:h-80 object-cover my-3 md:my-5"
-                          />
+                          value && (
+                            <img
+                              key={id}
+                              src={value as string}
+                              alt="Additional content"
+                              className="w-full h-64 md:h-80 object-cover my-3 md:my-5"
+                            />
+                          )
                         );
                       case "video":
                         return (
-                          value &&
-                          <video
-                            key={id}
-                            controls
-                            className="w-full h-64 md:h-80 object-cover my-3 md:my-5"
-                            src={value as string}
-                          />
+                          value && (
+                            <video
+                              key={id}
+                              controls
+                              className="w-full h-64 md:h-80 object-cover my-3 md:my-5"
+                              src={value as string}
+                            />
+                          )
                         );
                       case "audio":
                         return (
